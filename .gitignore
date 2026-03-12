@@ -1,15 +1,30 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
-*
-# Python
-__pycache__/
-*.py[cod]
-venv/
-env/
-
 # Django
+*.log
+local_settings.py
 db.sqlite3
-media/
-staticfiles/
+db.sqlite3-journal
+media
 
-# VS Code
-.vscode/
+# Django Migrations
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Assets
+node_modules/
+
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
