@@ -25,6 +25,8 @@ venv.bak/
 # Python
 *.pyc
 __pycache__/
+**/__pycache__/
+
 *.pyo
 *.pyd
 .Python
