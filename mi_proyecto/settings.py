@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 
@@ -32,6 +31,8 @@ INSTALLED_APPS = [
     'inicio',
     'reservas',
     
+    
+    'inicio.apps.InicioConfig',
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
