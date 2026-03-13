@@ -5,4 +5,4 @@ def inicio_inicio(request):
         'nombre': 'kevin neira',
         'titulo': 'Página de Inicio'
     }
-    return render(request, 'inicio/index.html', context)
+    return render(request, 'index.html', context)

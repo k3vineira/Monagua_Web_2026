@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{%load static %}  
+{% block content %}
+<main>
+    <div id="carouselDestinos" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselDestinos" data-bs-slide-to="0" class="active" aria-current="true"></button>
+            <button type="button" data-bs-target="#carouselDestinos" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#carouselDestinos" data-bs-slide-to="2"></button>
+        </div>
+
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'img/carousel/img1.png' %}" class="d-block w-100 object-fit-cover" style="height: 500px;" alt="Laguna Negra">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h5>Laguna Negra</h5>
+                    <p>Un espejo de agua sagrado rodeado de misticismo boyacense.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'img/paramo.png' %}" class="d-block w-100 object-fit-cover" style="height: 500px;" alt="Páramo de Ocetá">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h5>Páramo de Ocetá</h5>
+                    <p>Explora la "Ciudad de Piedra" en uno de los páramos más bellos del mundo.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'img/arquic.jpg' %}" class="d-block w-100 object-fit-cover" style="height: 500px;" alt="Arquitectura Colonial">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h5>Historia y Cultura</h5>
+                    <p>Descubre las calles empedradas y la calidez de nuestro pueblo.</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselDestinos" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselDestinos" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Siguiente</span>
+        </button>
+    </div>
+
+    <section class="text-center py-5 container">
+        <h1 class="display-4 fw-bold text-success">AVENTÚRATE CON NOSOTROS</h1>
+        <p class="text-muted mb-4">Encuentra la aventura perfecta en Monagua.</p>
+        <div class="input-group mb-3 mx-auto shadow-sm" style="max-width: 600px;">
+            <input type="text" class="form-control" placeholder="¿A dónde quieres ir?">
+            <button class="btn btn-success px-4" type="button">BUSCAR</button>
+        </div>
+    </section>
+
+    <section class="container mb-5">
+        <div class="row g-4">
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="ratio ratio-4x3">
+                        <img src="{% static 'img/Lagunanegra.png' %}" class="card-img-top object-fit-cover" alt="Laguna Negra">
+                    </div>
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="fw-bold">Laguna Negra</h5>
+                        <p class="small text-muted flex-grow-1">Belleza misteriosa en las montañas sagradas de Mongua.</p>
+                        <h4 class="text-success fw-bold">$45.000</h4>
+                        <a href="{% url 'ir_a_reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="ratio ratio-4x3">
+                        <img src="{% static 'img/museo.jpg' %}" class="card-img-top object-fit-cover" alt="Museo Arqueológico">
+                    </div>
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="fw-bold">Museo Arqueológico</h5>
+                        <p class="small text-muted flex-grow-1">Explora la historia y cultura a través de piezas antiguas.</p>
+                        <h4 class="text-success fw-bold">$80.000</h4>
+                        <a href="{% url 'ir_a_reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="ratio ratio-4x3">
+                        <img src="{% static 'img/miradorcumbre.png' %}" class="card-img-top object-fit-cover" alt="Mirador de la Cumbre">
+                    </div>
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="fw-bold">Mirador de la Cumbre</h5>
+                        <p class="small text-muted flex-grow-1">Vistas panorámicas impresionantes de todo el paisaje.</p>
+                        <h4 class="text-success fw-bold">$65.000</h4>
+                        <a href="{% url 'ir_a_reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="ratio ratio-4x3">
+                        <img src="{% static 'img/paramo.png' %}" class="card-img-top object-fit-cover" alt="Páramo Ocetá">
+                    </div>
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="fw-bold">Páramo Ocetá</h5>
+                        <p class="small text-muted flex-grow-1">Adéntrate en uno de los ecosistemas más bellos del mundo.</p>
+                        <h4 class="text-success fw-bold">$50.000</h4>
+                        <a href="{% url 'ir_a_reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="ratio ratio-4x3">
+                        <img src="{% static 'img/pictografias.png' %}" class="card-img-top object-fit-cover" alt="Pictografías">
+                    </div>
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="fw-bold">Pictografías Indígenas</h5>
+                        <p class="small text-muted flex-grow-1">Descubre antiguas pinturas rupestres y sus historias.</p>
+                        <h4 class="text-success fw-bold">$50.000</h4>
+                        <a href="{% url 'ir_a_reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="ratio ratio-4x3">
+                        <img src="{% static 'img/artesanias.jpg' %}" class="card-img-top object-fit-cover" alt="Museo Artesanal">
+                    </div>
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="fw-bold">Museo Artesanal</h5>
+                        <p class="small text-muted flex-grow-1">Aprecia el talento y la tradición en cada artesanía local.</p>
+                        <h4 class="text-success fw-bold">$95.000</h4>
+                        <a href="{% url 'ir_a_reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+    </section>
+</main>
+{% endblock %}
