@@ -3,12 +3,6 @@ from django.shortcuts import render
 def registro(request):
     return render(request, 'usuarios/registro.html')
 
-def principal(request):
-    return render(request, 'usuarios/principal.html')
-
-def login(request):
-    return render(request, 'usuarios/login.html')
-
 from django.shortcuts import render, redirect
 from .models import Usuario
 
@@ -36,4 +30,10 @@ def registro(request):
 
         return redirect('/login/')
 
+    return render(request, 'usuarios/registro.html')
+
+from django.shortcuts import render
+
+def vista_registro(request):
+    # Aquí le decimos qué archivo HTML debe cargar
     return render(request, 'usuarios/registro.html')
