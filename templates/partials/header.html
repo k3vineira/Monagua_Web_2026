@@ -3,7 +3,7 @@
       <nav class="navbar navbar-expand-lg navbar-custom bg-transparent">
         <div class="container">
           <a class="navbar-brand" href="#">
-            <img src="{% static 'inicio/img/Logo.png' %}" alt="Monagua Logo" height="70" />
+            <img src="{% static 'img/Logo.png' %}" alt="Monagua Logo" height="70" />
           </a>
 
           <button
@@ -26,9 +26,10 @@
               <li class="nav-item">
                 <a class="nav-link" href="#home">Inicio</a>
               </li>
+             
               <li class="nav-item">
-                <a class="nav-link" href="#destinations">Destinos</a>
-              </li>
+                  <a class="nav-link" href="{% url 'destinos' %}">Destinos</a>
+               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#experiences">Experiencias</a>
               </li>
@@ -38,6 +39,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="#contact">Contacto</a>
               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="{% url 'blog' %}">Blog</a>
+               </li>
             </ul>
           </div>
 

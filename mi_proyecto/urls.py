@@ -1,8 +1,8 @@
-# mi_proyecto/urls.py
 from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('inicio.urls')), # Conecta las URLs de tu app
+    path('', include('inicio.urls')),       # Maneja el home
+    path('reservas/', include('reservas.urls')), # Maneja destinos, blog y reservas
 ]
