@@ -1,10 +1,15 @@
     {% load static %}
     <header>
-      <nav class="navbar navbar-expand-lg navbar-custom bg-transparent">
-        <div class="container">
-          <a class="navbar-brand" href="#">
-            <img src="{% static 'img/Logo.png' %}" alt="Monagua Logo" height="70" />
-          </a>
+   <nav class="navbar navbar-expand-lg navbar-custom bg-transparent">
+    <div class="container">
+      <a class="navbar-brand d-flex flex-column align-items-center" href="#home">
+        <img src="{% static 'img/Logo.png' %}" alt="Monagua Logo" height="70" />
+        
+        <span class="nombre-empresa" style="font-size: 0.8rem; font-weight: bold; text-transform: uppercase; color: #fff; margin-top: 5px;">
+            Agencia de Viajes y Turismo
+        </span>
+        <span style="display: block; font-weight: bold; font-size: 1.1rem; text-transform: uppercase; color: #fff;">Monagua</span>
+      </a>
 
           <button
             class="navbar-toggler border-0"

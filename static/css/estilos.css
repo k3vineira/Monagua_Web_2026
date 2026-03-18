@@ -1,6 +1,4 @@
-/* =========================================
-   1. VARIABLES Y ESTILOS GLOBALES
-   ========================================= */
+/*  1. VARIABLES Y ESTILOS GLOBALES */
 body {
     font-family: 'Poppins', sans-serif;
     color: #333;
@@ -13,9 +11,7 @@ body {
 .text-brand { color: #3B643F !important; }
 .bg-brand-dark { background-color: #1a251e; }
 
-/* =========================================
-   2. NAVEGACIÓN (NAVBAR)
-   ========================================= */
+/* 2. NAVEGACIÓN (NAVBAR)*/
 .navbar-custom {
     position: fixed; 
     top: 0;
@@ -43,10 +39,12 @@ body {
 .navbar-toggler-icono-light {
     filter: invert(1);
 }
+/* Añade esto en tu sección 2 de NAVEGACIÓN */
+.barra-oculta {
+    top: -120px !important; 
+}
 
-/* =========================================
-   3. SECCIÓN HERO (SOLO PARA INDEX.HTML)
-   ========================================= */
+/* 3. SECCIÓN HERO (SOLO PARA INDEX.HTML */
 .hero-section {
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/Fondo.jpg');
     background-size: cover;
@@ -71,9 +69,7 @@ body {
     filter: brightness(0); 
 }
 
-/* =========================================
-   4. BOTONES
-   ========================================= */
+/*  4. BOTONES */
 .btn-brand {
     background-color: #3B643F;
     color: white;
@@ -93,9 +89,7 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* =========================================
-   5. TARJETAS Y EXPERIENCIAS
-   ========================================= */
+/* 5. TARJETAS Y EXPERIENCIAS */
 .card-hover {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: none;
@@ -129,66 +123,68 @@ body {
     background-color: #f2b0358f;
 }
 
-/* =========================================
-   6. FOOTER (PIE DE PÁGINA)
-   ========================================= */
-.footer-custom {
+/* 6. FOOTER (PIE DE PÁGINA) */
+.footer {
     background-color: #1a251e;
+    color: #e9ecef;
+    padding: 80px 0 40px;
+}
+
+.footer h5 {
     color: #ffffff;
-    padding: 70px 20px 30px 20px;
-}
-
-.footer-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 40px;
-}
-
-.footer-logo {
-    height: 100px;
-    margin-bottom: 20px;
-    display: block;
-}
-
-.footer-desc {
-    font-size: 0.95rem;
-    color: #cbd5e0;
-    line-height: 1.6;
-}
-
-.footer-heading {
-    margin-bottom: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
     font-size: 1.1rem;
-    border-bottom: 2px solid #4ade80;
-    display: inline-block;
-    padding-bottom: 5px;
+    margin-bottom: 20px;
 }
 
-.footer-list {
-    list-style: none;
-    padding: 0;
-}
-
-.footer-list li { margin-bottom: 12px; }
-
-.footer-list a {
-    color: #cbd5e0;
+.footer .list-unstyled a {
+    color: #adb5bd;
     text-decoration: none;
-    transition: color 0.3s ease;
+    line-height: 2;
+    transition: 0.3s;
 }
 
-.footer-list a:hover { color: #4ade80; }
+.footer .list-unstyled a:hover {
+    color: #ffffff;
+    padding-left: 5px;
+}
 
-.footer-bottom {
-    max-width: 1100px;
-    margin: 50px auto 0;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
+.footer .nav-link {
+    color: #e3e4e3;
+    font-size: 1.2rem;
+    transition: 0.3s;
+}
+
+.footer .nav-link:hover {
+    transform: scale(1.2);
+    color: #fff;
+}
+
+/* Estilo personalizado para el input y el botón */
+.footer .form-control {
+    background-color: #7d8a7db6;
+    border: 1px solid #505750b3;
+    color: #fff;
+}
+
+.footer .form-control:focus {
+    background-color: #eaedef;
+    border-color: #20c997;
+    box-shadow: none;
+    color: #000000;
+}
+
+.btn-outline-custom {
+    color: #d0d0d0;
+    border: 2px solid #bebebe;
+    border-radius: 50px;
+    padding: 8px 30px;
+    transition: 0.4s;
+}
+
+.btn-outline-custom:hover {
+    background-color: #959595;
+    color: #1a1c20;
+    box-shadow: 0 4px 15px rgba(31, 218, 255, 0.689);
 }
