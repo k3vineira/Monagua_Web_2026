@@ -39,21 +39,23 @@
           <div class="col-md-4">
             <article class="card card-hover h-100 p-4 shadow-sm border-light">
               <div class="card-body">
-                <i class="icono-box">🌿</i>
-                <h3 class="h5 fw-bold">Naturaleza</h3>
-                <p class="text-muted mb-0">
-                  Sumérgete en los paisajes vírgenes de los Andes, el hogar de
-                  frailejones únicos en el mundo.
-                </p>
-              </div>
+             <img src="{% static 'img/icono_hoja.png' %}" alt="Icono de naturaleza" class="icono-box-img" style="width: 60px; height: 60px;">
+    
+              <h3 class="h5 fw-bold">Naturaleza</h3>
+             <p class="text-muted mb-0">
+              Sumérgete en los paisajes vírgenes de los Andes, el hogar de
+              frailejones únicos en el mundo.
+              </p>
+         </div>
             </article>
-          </div>
+        </div>
+
           <div class="col-md-4">
             <article class="card card-hover h-100 p-4 shadow-sm border-light">
               <div class="card-body">
-                <i class="icono-box">👥</i>
-                <h3 class="h5 fw-bold">Cultura</h3>
-                <p class="text-muted mb-0">
+              <img src="{% static 'img/icono_iglesia.png' %}" alt="Icono de cultura" class="icono-box-img" style="width: 60px; height: 60px;">
+               <h3 class="h5 fw-bold">Cultura</h3>
+               <p class="text-muted mb-0">
                   Conecta con artesanos locales, descubre antiguas tradiciones
                   Muiscas y teje tu propia historia.
                 </p>
@@ -63,9 +65,9 @@
           <div class="col-md-4">
             <article class="card card-hover h-100 p-4 shadow-sm border-light">
               <div class="card-body">
-                <i class="icono-box">🧗</i>
-                <h3 class="h5 fw-bold">Aventura</h3>
-                <p class="text-muted mb-0">
+               <img src="{% static 'img/icono_aventura.png' %}" alt="Icono de aventura" class="icono-box-img" style="width: 60px; height: 60px;">
+               <h3 class="h5 fw-bold">Aventura</h3>
+               <p class="text-muted mb-0">
                   Ponte a prueba en senderos que atraviesan bosques de niebla
                   hasta alcanzar las cumbres del páramo.
                 </p>
@@ -96,7 +98,7 @@
             <div class="col-lg-4 col-md-6">
               <article class="card card-hover h-100 shadow-sm">
                 <img
-                  src="{% static 'inicio/img/Fondo4.jpg' %}"
+                  src="{% static 'img/Fondo4.jpg' %}"
                   class="card-img-top tour-img"
                   alt="Laguna Negra"
                 />
@@ -124,7 +126,7 @@
             <div class="col-lg-4 col-md-6">
               <article class="card card-hover h-100 shadow-sm">
                 <img
-                  src="{% static 'inicio/img/Fondo.jpg' %}"
+                  src="{% static 'img/paramo_oseta.jpg' %}"
                   class="card-img-top tour-img"
                   alt="Páramo de Ocetá"
                 />
@@ -152,7 +154,7 @@
             <div class="col-lg-4 col-md-6">
               <article class="card card-hover h-100 shadow-sm">
                 <img
-                  src="{% static 'inicio/img/Fondo5.jpg' %}"
+                  src="{% static 'img/estatua_piedra.jpg' %}"
                   class="card-img-top tour-img"
                   alt="Artesanías Ancestrales"
                 />
@@ -209,9 +211,7 @@
       </section>
     {% endblock content %}
 
-    {% block scripts %}
-    <script src='js/Java.js'></script>
-    {% endblock scripts %}
+
     
   </body>
 </html>
