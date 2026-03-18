@@ -1,60 +1,42 @@
     {% load static %}
     <header>
-   <nav class="navbar navbar-expand-lg navbar-custom bg-transparent">
-    <div class="container">
-      <a class="navbar-brand d-flex flex-column align-items-center" href="#home">
+   <nav  class="navbar navbar-custom bg-transparent  ">
+
+    <a class="navbar-brand d-flex flex-column align-items-center ms-5" href="#home">
         <img src="{% static 'img/Logo.png' %}" alt="Monagua Logo" height="70" />
         
-        <span class="nombre-empresa" style="font-size: 0.8rem; font-weight: bold; text-transform: uppercase; color: #fff; margin-top: 5px;">
+        <span class="nombre-empresa fw-bold text-uppercase text-white mt-1 fs-6">
             Agencia de Viajes y Turismo
         </span>
-        <span style="display: block; font-weight: bold; font-size: 1.1rem; text-transform: uppercase; color: #fff;">Monagua</span>
+        <span class="d-block fw-bold text-uppercase text-white fs-6">Monagua</span>
       </a>
 
-          <button
-            class="navbar-toggler border-0"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icono navbar-toggler-icono-light"></span>
-          </button>
 
-          <div
-            class="collapse navbar-collapse justify-content-center"
-            id="navbarNav"
-          >
-            <ul class="navbar-nav gap-lg-4">
-              <li class="nav-item">
-                <a class="nav-link" href="#home">Inicio</a>
-              </li>
-             
-              <li class="nav-item">
-                  <a class="nav-link" href="{% url 'destinos' %}">Destinos</a>
-               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#experiences">Experiencias</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#about">Nosotros</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#contact">Contacto</a>
-              </li>
-               <li class="nav-item">
-                  <a class="nav-link" href="{% url 'blog' %}">Blog</a>
-               </li>
-            </ul>
-          </div>
+<ul class="nav mx-auto gap-3 me-1 ">
+  <li class="nav-item">
+    <a class="nav-link fs-5 active " aria-current="page" href="#">Inicio</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link fs-5" href="#">Destinos</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link fs-5" href="#">Experiencias</a>
+  </li>
+    <li class="nav-item">
+    <a class="nav-link fs-5" href="#">Nosotros</a>
+  </li>
+    <li class="nav-item">
+    <a class="nav-link fs-5" href="#">Contacto</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link fs-5" href="#">Blog</a>
+  </li>
+</ul>
 
-          <div class="d-none d-lg-flex gap-3">
-            <a href="#login" class="btn btn-outline-light btn-lg">Iniciar sesión</a>
-            <a href="#book" class="btn btn-brand">Reserva ahora</a>
-          </div>
-        </div>
-        
+<div class="d-flex ms-auto gap-3 me-5">
+  <button class="btn btn-outline-success me-2 px-4 py-2" type="button">Iniciar sesión</button>
+  <button class="btn btn-lg btn-outline-secondary " type="button">Reserva ahora</button>
+</div>
+
       </nav>
     </header>
