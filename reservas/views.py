@@ -10,8 +10,9 @@ def destinos_view(request):
 def blog_view(request):
     return render(request, 'blog.html')
 
-def crear_reserva(request):
-    return render(request, 'reservas.html')
+
+def reservas_view(request): 
+    return render(request,'reservas.html') 
 
 
 #categorias
