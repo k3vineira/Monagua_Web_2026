@@ -5,5 +5,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('inicio.urls')),       # Maneja el home
     path('reservas/', include('reservas.urls')),
-        path('reservas/', include('reservas.urls')),# Maneja destinos, blog y reservas
+    path('usuario/', include('usuario.urls')),
+
 ]

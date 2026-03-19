@@ -1,9 +1,7 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from . import views  
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('inicio.urls')),       # Maneja el home
-    path('reservas/', include('reservas.urls')), # Maneja destinos, blog y reservas
-    
+    # Cuando alguien entre a /usuario/login/ se ejecutará la función 'login_view'
+    path('login/', views.login_view, name='login'),
 ]
