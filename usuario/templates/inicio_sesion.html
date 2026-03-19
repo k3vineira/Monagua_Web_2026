@@ -92,70 +92,72 @@
     </style>
   </head>
   <body>
-    <div class="login-card">
-      <div class="mb-3">
-        <img
-          src="img/logo_monagua.png"
-          alt="Monagua Logo"
-          style="width: 100px"
-        />
-      </div>
-
-      <h2 class="h4 fw-bold mb-1">Bienvenido de nuevo</h2>
-      <p class="text-muted small mb-4">
-        Ingresa tus datos para acceder a tu experiencia.
-      </p>
-
-      <div class="nav-tabs-custom">
-        <a href="#" class="nav-item-custom active-tab">Iniciar Sesión</a>
-        <a href="#" class="nav-item-custom">Regístrate</a>
-      </div>
-
-      <form>
-        <div class="text-start mb-3">
-          <label class="form-label small fw-bold">Correo Electrónico</label>
-          <div class="input-group">
-            <input
-              type="email"
-              class="form-control bg-light"
-              placeholder="nombre@ejemplo.com"
-            />
-            <span class="input-group-text bg-light border-start-0"
-              ><i class="bi bi-envelope"></i
-            ></span>
-          </div>
-        </div>
-
-        <div class="text-start mb-4">
-          <div class="d-flex justify-content-between">
-            <label class="form-label small fw-bold">Contraseña</label>
-            <a href="#" class="small text-decoration-none text-muted"
-              >¿Olvidaste tu contraseña?</a
-            >
-          </div>
-          <div class="input-group">
-            <input
-              type="password"
-              class="form-control bg-light"
-              placeholder="Ingresa tu contraseña"
-            />
-            <span class="input-group-text bg-light border-start-0"
-              ><i class="bi bi-eye-slash"></i
-            ></span>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-iniciar w-100 mb-4">
-          Iniciar Sesión
-        </button>
-      </form>
-
-      <p class="small text-muted">
-        ¿No tienes una cuenta?
-        <a href="#" class="fw-bold text-dark text-decoration-none"
-          >Regístrate Ahora</a
-        >
-      </p>
+  <div class="login-card">
+    <div class="mb-3">
+      <img
+        src="img/logo_monagua.png"
+        alt="Monagua Logo"
+        style="width: 100px"
+      />
     </div>
-  </body>
+
+    <h2 class="h4 fw-bold mb-1">Bienvenido de nuevo</h2>
+    <p class="text-muted small mb-4">
+      Ingresa tus datos para acceder a tu experiencia.
+    </p>
+
+    <div class="nav-tabs-custom">
+      <a href="#" class="nav-item-custom active-tab">Iniciar Sesión</a>
+      <a href="#" class="nav-item-custom">Regístrate</a>
+    </div>
+
+    <form action="/login" method="POST">
+      <div class="text-start mb-3">
+        <label for="email" class="form-label small fw-bold">Correo Electrónico</label>
+        <div class="input-group">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            class="form-control bg-light"
+            placeholder="nombre@ejemplo.com"
+            required
+          />
+          <span class="input-group-text bg-light border-start-0">
+            <i class="bi bi-envelope"></i>
+          </span>
+        </div>
+      </div>
+
+      <div class="text-start mb-4">
+        <div class="d-flex justify-content-between">
+          <label for="password" class="form-label small fw-bold">Contraseña</label>
+          <a href="#" class="small text-decoration-none text-muted">¿Olvidaste tu contraseña?</a>
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control bg-light"
+            placeholder="Ingresa tu contraseña"
+            required
+          />
+          <span class="input-group-text bg-light border-start-0">
+            <i class="bi bi-eye-slash"></i>
+          </span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-iniciar w-100 mb-4">
+        Iniciar Sesión
+      </button>
+    </form>
+
+    <p class="small text-muted">
+      ¿No tienes una cuenta?
+      <a href="#" class="fw-bold text-dark text-decoration-none">Regístrate Ahora</a>
+    </p>
+  </div>
+</body>
 </html>
