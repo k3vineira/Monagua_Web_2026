@@ -8,8 +8,13 @@ urlpatterns = [
     path('reservas/', include('reservas.urls')),
     path('usuario/', include('usuario.urls')),
     path('reservas/', include('reservas.urls')),# Maneja destinos, blog y reservas
+    
+   # Autenticación (Login / Logout)
+    # IMPORTANTE: El 'name' debe ser 'login' para que tus templates funcionen
     path('login/', auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    
+    # Recuperación de contraseña (Password Reset)
     path('recuperar-password/', auth_views.PasswordResetView.as_view(template_name='recuperar.html'), name='password_reset'),
     path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_sent.html'), name='password_reset_done'),
     path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_form.html'), name='password_reset_confirm'),
