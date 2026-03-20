@@ -19,7 +19,7 @@
       body {
         background:
           linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-          url("img/fondo.jpg") no-repeat;
+          url("{% static 'img/fondo_log.jpg' %}") no-repeat;
 
         background-size: cover;
         background-position: center;
@@ -96,7 +96,7 @@
     <div class="login-card">
       <div class="mb-3">
         <img
-          src="img/logo_monagua.png"
+          src="{% static 'img/Logo.png' %}"
           alt="Monagua Logo"
           style="width: 100px"
         />
