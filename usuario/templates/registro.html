@@ -6,37 +6,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - Monagua</title>
-   <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
         .form-control,
         .form-select {
             border-color: #333;
         }
-        
+
         .form-control:focus,
         .form-select:focus {
             border-color: #406d46;
             box-shadow: 0 0 0 0.25rem rgba(64, 109, 70, 0.25);
         }
-        
+
         .btn-custom-green {
             background-color: #406d46;
             border-color: #406d46;
             color: white;
         }
-        
+
         .btn-custom-green:hover {
             background-color: #2e4f32;
             color: white;
         }
-        
+
         .text-custom-green {
             color: #406d46 !important;
         }
-        
+
         #tarjetaRegistro {
             backdrop-filter: blur(5px);
         }
@@ -44,8 +41,8 @@
 </head>
 
 <body class="d-flex flex-column justify-content-center align-items-center vh-100"
-style="background: url('{% static 'img/Fondo.jpg' %}') no-repeat center center fixed; background-size: cover;">
-    <!-- TARJETA REGISTRO -->
+    style="background: url('{% static 'img/Fondo.jpg' %}') no-repeat center center fixed; background-size: cover;">
+    
     <div id="tarjetaRegistro" class="card p-3 rounded-4 border-0 shadow" style="width: 100%; max-width: 330px; background-color: rgba(255, 255, 255, 0.92);">
 
         <div class="d-flex justify-content-end mb-1">
@@ -53,46 +50,43 @@ style="background: url('{% static 'img/Fondo.jpg' %}') no-repeat center center f
         </div>
 
         <div class="text-center mb-2">
-           <img src="{% static 'img/Logo.png' %}" class="img-fluid" style="height: 70px; object-fit: contain;">
+            <img src="{% static 'img/Logo.png' %}" class="img-fluid" style="height: 70px; object-fit: contain;">
         </div>
 
         <h6 class="text-center mb-3 text-dark fw-normal">
             Crea Tu Cuenta Nueva
         </h6>
 
-        <form id="formularioRegistro">
-
-            <form method="POST">
+        <form id="formularioRegistro" method="POST">
             {% csrf_token %}
 
             <div class="mb-2">
-                <input type="text" class="form-control rounded-pill" placeholder="Ingrese Sus Nombres" required>
+                <input type="text" name="nombres" class="form-control rounded-pill" placeholder="Ingrese Sus Nombres" required>
             </div>
 
             <div class="mb-2">
-                <input type="text" class="form-control rounded-pill" placeholder="Ingrese Sus Apellidos" required>
+                <input type="text" name="apellidos" class="form-control rounded-pill" placeholder="Ingrese Sus Apellidos" required>
             </div>
 
             <div class="mb-2">
-                <select class="form-select rounded-pill text-secondary" required>
+                <select name="tipo_documento" class="form-select rounded-pill text-secondary" required>
                     <option value="" selected disabled>Tipo De Documento</option>
-                    <option>Cédula de Ciudadanía</option>
-                    <option>Tarjeta de Identidad</option>
-                    <option>Pasaporte</option>
-                   
+                    <option value="CC">Cédula de Ciudadanía</option>
+                    <option value="TI">Tarjeta de Identidad</option>
+                    <option value="Pasaporte">Pasaporte</option>
                 </select>
             </div>
 
             <div class="mb-2">
-                <input type="number" class="form-control rounded-pill" placeholder="Numero De Documento" required min="1">
+                <input type="number" name="numero_documento" class="form-control rounded-pill" placeholder="Numero De Documento" required min="1">
             </div>
 
             <div class="mb-2">
-                <input type="email" class="form-control rounded-pill" placeholder="Ingrese Correo" required>
+                <input type="email" name="correo" class="form-control rounded-pill" placeholder="Ingrese Correo" required>
             </div>
 
             <div class="mb-2">
-                <input type="password" id="pass1" class="form-control rounded-pill" placeholder="Crea Contraseña" required minlength="6">
+                <input type="password" id="pass1" name="password" class="form-control rounded-pill" placeholder="Crea Contraseña" required minlength="6">
             </div>
 
             <div class="mb-3">
@@ -143,16 +137,19 @@ style="background: url('{% static 'img/Fondo.jpg' %}') no-repeat center center f
         });
 
         formulario.addEventListener('submit', function(event) {
+            // Detenemos el envío automático temporalmente para validar las contraseñas
             event.preventDefault();
 
             const pass1 = document.getElementById('pass1').value;
             const pass2 = document.getElementById('pass2').value;
 
             if (pass1 !== pass2) {
+                // Si no coinciden, mostramos el error y no enviamos nada
                 mensajeError.classList.remove('d-none');
             } else {
+                // CORRECCIÓN 3: Si coinciden, ocultamos el error y ENVIAMOS el formulario a Django
                 mensajeError.classList.add('d-none');
-               window.location.href = '/principal/';
+                formulario.submit(); 
             }
         });
     </script>
