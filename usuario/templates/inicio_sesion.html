@@ -106,8 +106,8 @@
       <a href="#" class="nav-item-custom active-tab">Iniciar Sesión</a>
       <a href="#" class="nav-item-custom">Regístrate</a>
     </div>
-      <form action="{% url 'inicio_sesion' %}" method="POST">
-        {% csrf_token %}
+     <form action="{% url 'login' %}" method="POST">
+    {% csrf_token %}
 
 
       <div class="text-start mb-3">
