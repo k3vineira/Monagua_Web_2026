@@ -13,17 +13,17 @@
             --verde-monagua: #406d46;
             --verde-hover: #2e4f32;
         }
-        
+
         .btn-custom-green {
             background-color: var(--verde-monagua);
             color: white;
         }
-        
+
         .btn-custom-green:hover {
             background-color: var(--verde-hover);
             color: white;
         }
-        
+
         .text-custom-green {
             color: var(--verde-monagua) !important;
         }
@@ -84,9 +84,7 @@
             <a href="#" class="auth-nav-item active">Regístrate</a>
         </div>
 
-        <form id="formularioRegistro">
-
-            <form method="POST">
+        <form id="formularioRegistro" method="POST">
             {% csrf_token %}
 
             <div class="row g-2 mb-2">
@@ -101,10 +99,9 @@
             <div class="mb-2">
                 <select name="tipo_documento" class="form-select rounded-pill border-secondary-subtle py-2 shadow-sm text-secondary" required>
                     <option value="" selected disabled>Tipo De Documento</option>
-                    <option>Cédula de Ciudadanía</option>
-                    <option>Tarjeta de Identidad</option>
-                    <option>Pasaporte</option>
-                   
+                    <option value="CC">Cédula de Ciudadanía</option>
+                    <option value="TI">Tarjeta de Identidad</option>
+                    <option value="Pasaporte">Pasaporte</option>
                 </select>
             </div>
 
@@ -166,7 +163,7 @@
                 mensajeError.classList.remove('d-none');
             } else {
                 mensajeError.classList.add('d-none');
-               window.location.href = '/principal/';
+                formulario.submit(); 
             }
         });
     </script>
