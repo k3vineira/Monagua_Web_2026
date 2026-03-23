@@ -105,7 +105,7 @@
 
     <div class="nav-tabs-custom">
       <a href="#" class="nav-item-custom active-tab">Iniciar Sesión</a>
-      <a href="#" class="nav-item-custom">Regístrate</a>
+      <a href="{% url 'registro' %}" class="nav-item-custom">Regístrate</a>
     </div>
      <form action="{% url 'login' %}" method="POST">
     {% csrf_token %}
@@ -156,7 +156,7 @@
 
     <p class="small text-muted">
       ¿No tienes una cuenta?
-      <a href="#" class="fw-bold text-dark text-decoration-none">Regístrate Ahora</a>
+      <a href="{% url 'registro' %}" class="fw-bold text-dark text-decoration-none">Regístrate Ahora</a>
     </p>
   </div>
 </body>
