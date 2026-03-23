@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'reservas',
     'inicio.apps.InicioConfig',
     'usuario',
-    'registro',
+
     
     
     
