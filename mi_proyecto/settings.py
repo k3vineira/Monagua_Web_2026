@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'reservas',
     'inicio.apps.InicioConfig',
     'usuario',
-    'perfil',
+    'perfil', 
 
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
