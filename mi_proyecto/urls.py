@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-
+ 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('inicio.urls')),       # Maneja el home
@@ -13,6 +13,9 @@ urlpatterns = [
     # IMPORTANTE: El 'name' debe ser 'login' para que tus templates funcionen
     path('login/', auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    
+    # pefil de usuario
+    path('perfil/', include('perfil.urls')),
     
     # Recuperación de contraseña (Password Reset)
     path('recuperar-password/', auth_views.PasswordResetView.as_view(template_name='recuperar.html'), name='password_reset'),
