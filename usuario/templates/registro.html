@@ -62,15 +62,17 @@
     </style>
 </head>
 
-<body class="d-flex flex-column justify-content-center align-items-center vh-100 overflow-hidden"
-    style="background: url('{% static 'img/Fondo.jpg' %}') no-repeat center center fixed; background-size: cover;">
-    
-    <div id="tarjetaRegistro" 
-         class="card p-4 rounded-4 border-0 shadow-lg bg-white w-100" 
-         style="max-width: 420px;">
+<body class="d-flex flex-column justify-content-center align-items-center min-vh-100 py-5 px-3"
+      style="background: url('{% static 'img/Fondo.jpg' %}') no-repeat center center fixed; background-size: cover;">
+
+     <div id="tarjetaRegistro" 
+         class="card p-5 mx-auto rounded-4 border-0 shadow-lg bg-white w-100" 
+         style="max-width: 580px;">
+        
+
 
         <div class="text-center mb-4">
-            <img src="{% static 'img/Logo.png' %}" class="img-fluid w-50 h-auto mb-2" style="max-height: 60px; object-fit: contain;">
+            <img src="{% static 'img/Logo.png' %}" class="img-fluid w-50 h-auto mb-2" style="max-height: 100px; object-fit: contain;">
             <h4 class="fw-bold text-dark mb-1">Bienvenido</h4>
             <small class="text-muted d-block">Ingresa tus datos para acceder a tu experiencia.</small>
         </div>
@@ -105,6 +107,13 @@
                 <input type="number" name="numero_documento" class="form-control rounded-pill border-secondary-subtle py-2 shadow-sm" placeholder="Número de Documento" required>
             </div>
 
+            <div class="mb-2">
+                <input type="tel" name="telefono" class="form-control rounded-pill border-secondary-subtle py-2 shadow-sm" placeholder="Número de Teléfono" required>
+            </div>
+
+            <div class="mb-2">
+                <input type="text" name="residencia" class="form-control rounded-pill border-secondary-subtle py-2 shadow-sm" placeholder="Lugar de Residencia" required>
+            </div>
             <div class="mb-2">
                 <input type="email" name="correo" class="form-control rounded-pill border-secondary-subtle py-2 shadow-sm" placeholder="Correo Electrónico" required>
             </div>
