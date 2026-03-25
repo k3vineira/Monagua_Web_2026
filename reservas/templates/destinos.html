@@ -59,9 +59,13 @@
         {% for destino in destinos %}
         <div class="col-md-6 col-lg-4">
             <div class="card h-100 shadow-sm border-0">
-                <div class="ratio ratio-4x3">
-                    <img src="{% static destino.ruta_imagen %}" class="card-img-top object-fit-cover" alt="{{ destino.nombre }}">
-                </div>
+               <div class="ratio ratio-4x3">
+           {% if destino.imagen %}
+             <img src="{{ destino.imagen.url }}" class="card-img-top object-fit-cover" alt="{{ destino.nombre }}">
+        {% else %}
+            <img src="{% static 'img/Lagunanegra.png' %}" class="card-img-top object-fit-cover" alt="Imagen por defecto">
+           {% endif %}
+         </div>
                 <div class="card-body text-center d-flex flex-column">
                     <h5 class="fw-bold">{{ destino.nombre }}</h5>
                     <p class="small text-muted flex-grow-1">{{ destino.descripcion }}</p>
