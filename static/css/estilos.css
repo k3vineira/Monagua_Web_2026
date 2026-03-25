@@ -188,3 +188,68 @@ body {
     color: #1a1c20;
     box-shadow: 0 4px 15px rgba(31, 218, 255, 0.689);
 }
+
+/* 2. ESTILOS DE LA SECCIÓN DE RESERVA */
+ .titulo-principal {
+        color: #1a251e;
+        letter-spacing: 1px;
+        margin-bottom: 2rem;
+    }
+
+  
+    .img-full {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        min-height: 400px;
+    }
+
+    /* 3. Estilos del Formulario de Reserva */
+    .card-reserva {
+        border-radius: 15px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .header-reserva {
+        color: #1a251e;
+        font-size: 1.5rem;
+    }
+
+    .subtitulo-formulario {
+        color: #3B643F;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    /* 4. Inputs y Botón */
+    .form-control-sm {
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        padding: 0.5rem;
+    }
+
+    .form-control-sm:focus {
+        border-color: #3B643F;
+        box-shadow: 0 0 0 0.25rem rgba(59, 100, 63, 0.1);
+    }
+
+    .btn-confirmar {
+        background-color: #3B643F;
+        color: white;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-confirmar:hover {
+        background-color: #2c4a2f;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .link-verde {
+        color: #3B643F;
+        font-weight: 600;
+    }
