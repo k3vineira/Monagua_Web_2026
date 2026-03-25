@@ -18,7 +18,7 @@ class ActividadesForm(ModelForm):
 
     class Meta:
         model = Actividades
-        fields = '__all__'
+        fields = ['categoria', 'nombre', 'descripcion', 'duracion', 'nivel_dificultad']
 class ActividadesEditarForm(ModelForm):
     class Meta:
         model = Actividades

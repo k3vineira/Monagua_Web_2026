@@ -14,14 +14,13 @@ class Categoria(models.Model):
 
 class Actividades(models.Model):
     NIVEL_CHOICES = [
-        ('Extrema', 'Extrema'),
-        ('Aventurera', 'Aventurera'),
-        ('Pacífica', 'Pacífica'),
+        ('Alta', 'Alta'),
+        ('Media', 'Media'),
+        ('Baja', 'Baja'),
     ]
     nombre = models.CharField(max_length=100, verbose_name='Nombre de la Actividad')
     descripcion = models.TextField(verbose_name='Descripción')
     duracion = models.CharField(max_length=50, verbose_name='Duración')
-    precio = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Precio')
     nivel_dificultad = models.CharField(max_length=10, choices=NIVEL_CHOICES, verbose_name='Nivel de Dificultad')
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='actividades', verbose_name='Categoría')
 
@@ -33,8 +32,10 @@ class Actividades(models.Model):
         return self.nombre
 
 class Paquete(models.Model):
+    imagen = models.ImageField(upload_to='destinos/', null=True, blank=True)
     nombre = models.CharField(max_length=100, verbose_name='Nombre del Paquete')
     descripcion = models.TextField(verbose_name='Descripción')
+    precio = models.IntegerField(verbose_name='Precio Total')
     actividades = models.ManyToManyField(Actividades, related_name='paquetes', verbose_name='Actividades Incluidas')
 
     class Meta:

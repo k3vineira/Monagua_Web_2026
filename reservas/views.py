@@ -22,7 +22,7 @@ def crear_categoria(request):
         if form.is_valid():
             categoria = form.save()
             messages.success(request, f"Categoría '{categoria.nombre}' creada correctamente.")
-            return redirect('categorias:inicio_categoria')
+            return redirect('crear_categoria')
         else:
             messages.error(request, "Error al crear la categoría. Por favor verifica los datos.")
     else:
@@ -44,7 +44,7 @@ def editar_categoria(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {categoria.nombre} actualizados correctamente.")
-            return redirect('categorias:inicio_categoria')
+            return redirect('crear_categoria')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
@@ -64,7 +64,7 @@ def crear_actividad(request):
         if form.is_valid():
             actividad = form.save()
             messages.success(request, f"Actividad '{actividad.nombre}' creada correctamente.")
-            return redirect('actividades:inicio_actividad')
+            return redirect('crear_actividad')
         else:
             messages.error(request, "Error al crear la actividad. Por favor verifica los datos.")
     else:
@@ -84,7 +84,7 @@ def editar_actividad(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {actividad.nombre} actualizados correctamente.")
-            return redirect('actividades:inicio_actividad')
+            return redirect('crear_actividad')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
@@ -104,7 +104,7 @@ def crear_paquete(request):
         if form.is_valid():
             paquete = form.save()
             messages.success(request, f"Paquete '{paquete.nombre}' creado correctamente.")
-            return redirect('paquetes:inicio_paquete')
+            return redirect('crear_paquete')
         else:
             messages.error(request, "Error al crear el paquete. Por favor verifica los datos.")
     else:
@@ -124,7 +124,7 @@ def editar_paquete(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {paquete.nombre} actualizados correctamente.")
-            return redirect('paquetes:inicio_paquete')
+            return redirect('crear_paquete')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
@@ -143,7 +143,7 @@ def crear_promocion(request):
         if form.is_valid():
             promocion = form.save()
             messages.success(request, f"Promoción '{promocion.nombre}' creada correctamente.")
-            return redirect('promociones:inicio_promocion')
+            return redirect('crear_promocion')
         else:
             messages.error(request, "Error al crear la promoción. Por favor verifica los datos.")
     else:
@@ -163,7 +163,7 @@ def editar_promocion(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {promocion.nombre} actualizados correctamente.")
-            return redirect('promociones:inicio_promocion')
+            return redirect('crear_promocion')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
@@ -181,7 +181,7 @@ def crear_reserva(request):
         if form.is_valid():
             reserva = form.save()
             messages.success(request, f"Reserva para '{reserva.nombre}' creada correctamente.")
-            return redirect('reservas:inicio_reserva')
+            return redirect('crear_reserva')
         else:
             messages.error(request, "Error al crear la reserva. Por favor verifica los datos.")
     else:
@@ -201,7 +201,7 @@ def editar_reserva(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {reserva.nombre} actualizados correctamente.")
-            return redirect('reservas:inicio_reserva')
+            return redirect('crear_reserva')
         else:
             messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
@@ -212,3 +212,20 @@ def editar_reserva(request, pk):
         'titulo': f'Editar a {reserva.nombre}',
     }
     return render(request, 'reservas/agregar_reserva.html', context)
+
+
+def destinos_view(request):
+    query = request.GET.get('q') # Captura lo que el usuario escribe en el buscador
+    
+    if query:
+        # Si hay búsqueda, filtramos los destinos por nombre
+        resultados = Paquete.objects.filter(nombre__icontains=query)
+    else:
+        # Si no hay búsqueda (o entran por primera vez), mostramos todos
+        resultados = Paquete.objects.all()
+    
+    # IMPORTANTE: Pasamos 'destinos' para el ciclo {% for %} del HTML
+    return render(request, 'destinos.html', {
+        'destinos': resultados, 
+        'query': query
+    })
