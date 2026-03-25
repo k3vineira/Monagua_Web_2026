@@ -14,7 +14,6 @@
             --verde-hover: #2e4f32;
         }
 
-        /* Evita el scroll en el cuerpo de la página */
         body {
             overflow: hidden;
             background: url('{% static "img/Fondo.jpg" %}') no-repeat center center fixed;
@@ -24,6 +23,7 @@
         .btn-custom-green {
             background-color: var(--verde-monagua);
             color: white;
+            transition: all 0.3s ease;
         }
 
         .btn-custom-green:hover {
@@ -50,9 +50,8 @@
             border-bottom-color: #212529; 
         }
 
-        /* Línea divisoria central negra del boceto */
         .divider-vertical {
-            border-right: 2px solid #adb5bd;
+            border-right: 2px solid #dee2e6;
             height: 100%;
         }
 
@@ -66,7 +65,6 @@
             width: 95%;
         }
 
-        /* Ajuste para pantallas pequeñas (laptops) */
         @media (max-height: 720px) {
             .card { padding: 1.5rem !important; }
             img { max-height: 60px !important; }
@@ -114,7 +112,13 @@
                         <input type="number" name="numero_documento" class="form-control rounded-pill border-secondary-subtle shadow-sm" placeholder="Número de Documento" required>
                     </div>
                     <div class="mb-2">
-                        <input type="tel" name="telefono" class="form-control rounded-pill border-secondary-subtle shadow-sm" placeholder="Número de Teléfono" required>
+                        <input type="text" 
+                               name="telefono" 
+                               class="form-control rounded-pill border-secondary-subtle shadow-sm" 
+                               placeholder="Número de Teléfono" 
+                               required 
+                               maxlength="10"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     </div>
                 </div>
 
