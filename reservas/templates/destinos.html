@@ -46,10 +46,17 @@
     <h1 class="display-4 fw-bold text-success text-uppercase">Aventúrate con nosotros</h1>
     <p class="text-muted mb-4">Encuentra la aventura perfecta en Monagua.</p>
     
-    <form method="GET" action="{% url 'destinos' %}" class="mx-auto" style="max-width: 600px;">
+    <form method="GET" action="{% url 'destinos' %}" class="mx-auto" style="max-width: 800px;">
         <div class="input-group shadow-sm">
-            <input type="text" name="q" class="form-control" placeholder="¿A dónde quieres ir?" value="{{ request.GET.q }}">
+            <input type="text" name="q" class="form-control w-50" placeholder="¿A dónde quieres ir?" value="{{ request.GET.q }}">
+            
+            <span class="input-group-text">$</span>
+            <input type="number" name="precio_max" class="form-control" placeholder="Precio máximo" value="{{ request.GET.precio_max }}">
+            
             <button class="btn btn-success px-4" type="submit">BUSCAR</button>
+        </div>
+        <div class="mt-2">
+            <a href="{% url 'destinos' %}" class="text-decoration-none small text-muted">Limpiar filtros</a>
         </div>
     </form>
 </section>

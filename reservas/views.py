@@ -214,10 +214,19 @@ def editar_reserva(request, pk):
 
 # Función para mostrar los destinos con búsqueda
 def destinos(request):
-    busqueda = request.GET.get('q', '').strip()
-    if busqueda:
-        destinos_list = Paquete.objects.filter(nombre__icontains=busqueda)
-    else:
-        destinos_list = Paquete.objects.all()
+    # Empezamos con todos los paquetes
+    destinos_list = Paquete.objects.all()
 
+    # Capturamos los datos del formulario
+    busqueda = request.GET.get('q', '').strip()
+    precio_max = request.GET.get('precio_max')
+
+    # Filtro 1: Por nombre (si existe)
+    if busqueda:
+        destinos_list = destinos_list.filter(nombre__icontains=busqueda)
+
+    # Filtro 2: Por precio máximo (si existe)
+    if precio_max:
+        destinos_list = destinos_list.filter(precio__lte=precio_max)
+    
     return render(request, 'destinos.html', {'destinos': destinos_list})
