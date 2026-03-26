@@ -10,8 +10,7 @@ def blog_view(request):
     return render(request, 'blog.html')
 
 
-def reservas_view(request): 
-    return render(request,'reservas.html') 
+ 
 
 
 #categorias
@@ -230,3 +229,19 @@ def destinos(request):
         destinos_list = destinos_list.filter(precio__lte=precio_max)
     
     return render(request, 'destinos.html', {'destinos': destinos_list})
+
+# Función para mostrar el detalle de un paquete específico
+def reservas_view(request):
+    # Aquí es donde capturas el número 1 de la URL
+    paquete_id = request.GET.get('paquete_id') 
+    paquete_seleccionado = None
+    
+    if paquete_id:
+        # Buscas el paquete real en tu modelo Paquete
+        paquete_seleccionado = get_object_or_404(Paquete, id=paquete_id)
+    
+    context = {
+        'paquete': paquete_seleccionado,
+    }
+ 
+    return render(request, 'reservas.html', context)
