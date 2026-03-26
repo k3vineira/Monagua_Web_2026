@@ -4,10 +4,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-=)waxxpy_x*!ho&hhf-vpc06@h!hhub0^!w^+bp9*e)11_*i!x'
 
@@ -33,9 +31,9 @@ INSTALLED_APPS = [
     'reservas',
     'inicio.apps.InicioConfig',
     'usuario',
-    'perfil', 
-    'pago',
-
+'perfil',
+'pago',
+'gestion_admin',
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
