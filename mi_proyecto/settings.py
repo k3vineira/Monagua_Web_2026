@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'inicio.apps.InicioConfig',
     'usuario',
     'perfil', 
+    'pago',
 
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
