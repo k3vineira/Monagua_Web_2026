@@ -35,3 +35,5 @@ def registro_view(request):
 
     # Si el método es GET (simplemente entró a la página), mostramos el formulario
     return render(request, 'registro.html') # Asegúrate de poner la ruta correcta de tu template
+def terminos_condiciones(request):
+    return render(request, 'terminos.html')
