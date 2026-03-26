@@ -4,8 +4,7 @@ from django.contrib import messages
 from .models import Actividades, Categoria, Paquete, Promocion, Reserva
 from .forms import CategoriaForm, CategoriaEditarForm, ActividadesForm, ActividadesEditarForm, PaqueteForm, PaqueteEditarForm, PromocionForm, PromocionEditarForm, ReservaForm, ReservaEditarForm
 
-def destinos_view(request):
-    return render(request, 'destinos.html')
+
 
 def blog_view(request):
     return render(request, 'blog.html')
@@ -213,19 +212,12 @@ def editar_reserva(request, pk):
     }
     return render(request, 'reservas/agregar_reserva.html', context)
 
-
-def destinos_view(request):
-    query = request.GET.get('q') # Captura lo que el usuario escribe en el buscador
-    
-    if query:
-        # Si hay búsqueda, filtramos los destinos por nombre
-        resultados = Paquete.objects.filter(nombre__icontains=query)
+# Función para mostrar los destinos con búsqueda
+def destinos(request):
+    busqueda = request.GET.get('q', '').strip()
+    if busqueda:
+        destinos_list = Paquete.objects.filter(nombre__icontains=busqueda)
     else:
-        # Si no hay búsqueda (o entran por primera vez), mostramos todos
-        resultados = Paquete.objects.all()
-    
-    # IMPORTANTE: Pasamos 'destinos' para el ciclo {% for %} del HTML
-    return render(request, 'destinos.html', {
-        'destinos': resultados, 
-        'query': query
-    })
+        destinos_list = Paquete.objects.all()
+
+    return render(request, 'destinos.html', {'destinos': destinos_list})

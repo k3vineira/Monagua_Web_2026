@@ -42,17 +42,18 @@
             <span class="visually-hidden">Siguiente</span>
         </button>
     </div>
-
-    <section class="text-center py-5 container">
-        <h1 class="display-4 fw-bold text-success">AVENTÚRATE CON NOSOTROS</h1>
-        <p class="text-muted mb-4">Encuentra la aventura perfecta en Monagua.</p>
-        <div class="input-group mb-3 mx-auto shadow-sm" style="max-width: 600px;">
-            <form method="GET" action="{% url 'destinos' %}" class="input-group mb-3 mx-auto shadow-sm" style="max-width: 600px;">
-            <input type="text" class="form-control" placeholder="¿A dónde quieres ir?">
+<section class="text-center py-5 container">
+    <h1 class="display-4 fw-bold text-success text-uppercase">Aventúrate con nosotros</h1>
+    <p class="text-muted mb-4">Encuentra la aventura perfecta en Monagua.</p>
+    
+    <form method="GET" action="{% url 'destinos' %}" class="mx-auto" style="max-width: 600px;">
+        <div class="input-group shadow-sm">
+            <input type="text" name="q" class="form-control" placeholder="¿A dónde quieres ir?" value="{{ request.GET.q }}">
             <button class="btn btn-success px-4" type="submit">BUSCAR</button>
-            </form>
         </div>
-    </section>
+    </form>
+</section>
+
 <section class="container mb-5">
     <div class="row g-4">
         
