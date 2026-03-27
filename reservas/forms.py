@@ -1,17 +1,16 @@
 from django import forms
 from django.forms import ModelForm
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from .models import Categoria, Actividades, Paquete, Promocion, Reserva 
+from .models import Categoria, Actividades, Paquete, Promocion, Reserva
 
 class CategoriaForm(ModelForm):
-
     class Meta:
         model = Categoria
         fields = '__all__'
+
 class CategoriaEditarForm(ModelForm):
     class Meta:
         model = Categoria
-        
         fields = '__all__'
 
 class ActividadesForm(ModelForm):

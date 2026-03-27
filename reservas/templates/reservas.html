@@ -13,19 +13,9 @@
     <div class="col-md-5">
       <div class="h-100 shadow-sm rounded-4 overflow-hidden border bg-light d-flex align-items-center justify-content-center">
         {% if paquete and paquete.imagen %}
-          <img
-            src="{{ paquete.imagen.url }}"
-            class="img-full"
-            style="object-fit: cover; width: 100%; height: 100%; min-height: 400px;"
-            alt="{{ paquete.nombre }}"
-          />
+          <img src="{{ paquete.imagen.url }}" class="img-full" style="object-fit: cover; width: 100%; height: 100%; min-height: 400px;" alt="{{ paquete.nombre }}" />
         {% else %}
-          <img
-            src="{% static 'img/paramo.png' %}"
-            class="img-full"
-            style="object-fit: cover; width: 100%; height: 100%; min-height: 400px;"
-            alt="Paisaje por defecto"
-          />
+          <img src="{% static 'img/paramo.png' %}" class="img-full" style="object-fit: cover; width: 100%; height: 100%; min-height: 400px;" alt="Paisaje por defecto" />
         {% endif %}
       </div>
     </div>
@@ -39,8 +29,10 @@
           {% endif %}
         </div>
         <div class="card-body p-4 pt-0">
-          <form action="" method="post">
-            {% csrf_token %} <div class="mb-3">
+          
+          <form action="{% url 'pago' %}" method="GET">
+            
+            <div class="mb-3">
               <label class="form-label fw-bold subtitulo-formulario">Información Personal</label>
               <div class="row g-2">
                 <div class="col-6">
@@ -74,10 +66,6 @@
               </div>
             </div>
 
-            {% if paquete %}
-              <input type="hidden" name="paquete_id" value="{{ paquete.id }}">
-            {% endif %}
-
             <div class="mb-3">
               <textarea name="comentarios" class="form-control form-control-sm" rows="2" placeholder="Comentarios..."></textarea>
             </div>
@@ -90,11 +78,12 @@
             </div>
 
             <div class="d-grid">
-              <button class="btn btn-confirmar py-2 fw-bold" type="submit">
-                Confirmar Reserva
-              </button>
+                <button class="btn btn-confirmar py-2 fw-bold w-100" type="submit">
+                    Reservar ahora
+                </button>
             </div>
           </form>
+
         </div>
       </div>
     </div>

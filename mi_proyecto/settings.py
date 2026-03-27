@@ -130,3 +130,8 @@ LOGIN_URL = '/login/'
 
 # Manda los correos a la consola en vez de usar internet (Solo para desarrollo)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]

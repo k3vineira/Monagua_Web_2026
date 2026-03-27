@@ -12,7 +12,7 @@ urlpatterns = [
     path('reservas/', include('reservas.urls')),
     path('usuario/', include('usuario.urls')),
     path('reservas/', include('reservas.urls')),# Maneja destinos, blog y reservas
-    path('pago/', include('pago.urls')),
+   path('pago/', include('pago.urls')),
     
    # Autenticación (Login / Logout)
     # IMPORTANTE: El 'name' debe ser 'login' para que tus templates funcionen

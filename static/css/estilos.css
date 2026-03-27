@@ -253,3 +253,62 @@ body {
         color: #3B643F;
         font-weight: 600;
     }
+    /*Estilos de pago
+            /* --- Variables --- */
+    :root {
+    --primary-monagua: #ec5b13;
+    --fondo-sidebar: #151b2b;
+    --borde-gris: #e2e8f0;
+}
+
+/* --- Utilidades --- */
+.text-primary-monagua { color: var(--primary-monagua) !important; }
+.btn-primary-monagua-lleno {
+    background-color: var(--primary-monagua);
+    border: none;
+    color: white;
+    transition: opacity 0.2s;
+}
+.btn-primary-monagua-lleno:hover {
+    opacity: 0.9;
+    color: white;
+}
+
+/* --- Estilos de Pestañas (Tabs) --- */
+.nav-tabs .nav-link {
+    border: none;
+    color: #64748b;
+    border-bottom: 2px solid transparent;
+}
+.nav-tabs .nav-link.active {
+    background-color: transparent !important;
+    color: var(--primary-monagua) !important;
+    border-bottom-color: var(--primary-monagua) !important;
+}
+
+/* --- Formulario --- */
+.form-control:focus {
+    border-color: var(--primary-monagua);
+    box-shadow: 0 0 0 0.25rem rgba(236, 91, 19, 0.1);
+}
+
+.alerta-seguridad {
+    background-color: rgba(236, 91, 19, 0.05);
+    border-color: rgba(236, 91, 19, 0.1) !important;
+}
+
+/* --- Resumen --- */
+.fw-black { font-weight: 900; }
+
+.resumen-compra {
+    border-color: var(--borde-gris) !important;
+}
+
+/* --- Ajuste Sidebar (Mantenemos tu arreglo anterior) --- */
+.barra-lateral { width: 260px; min-width: 260px; min-height: 100vh; background-color: var(--fondo-sidebar); position: sticky; top: 0; }
+.enlace-menu { text-decoration: none; color: #9ca3af; padding: 12px 15px; border-radius: 10px; margin: 0 10px 5px; }
+.enlace-menu.activo { background-color: var(--primary-monagua); color: white !important; }
+.icono-menu { width: 30px; text-align: center; margin-right: 10px; }
+
+
+    

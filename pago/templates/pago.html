@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Eliminamos cualquier animación previa del botón */
+    .btn-confirmar-fijo {
+        background-color: #ff6b00 !important; /* El naranja de Monagua */
+        color: white !important;
+        border: none !important;
+        transition: none !important; /* Quita animaciones */
+        transform: none !important;
+    }
+
+    /* Estilo para que los campos de Django se vean como Bootstrap */
+    .form-django-custom input, 
+    .form-django-custom select, 
+    .form-django-custom textarea {
+        display: block;
+        width: 100%;
+        padding: 0.6rem 0.75rem;
+        font-size: 0.9rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        background-color: #fff;
+    }
+
+    /* Quita el borde azul por defecto al hacer clic */
+    .form-django-custom input:focus {
+        outline: none;
+        border-color: #ff6b00;
+        box-shadow: 0 0 0 0.2rem rgba(255, 107, 0, 0.1);
+    }
+</style>
+
+<div class="contenedor-principal d-flex bg-light" style="min-height: 100vh;">
+    
+    <aside class="barra-lateral d-flex flex-column text-white shadow">
+        <div class="cabecera-logo p-4 mb-2">
+            <h3 class="m-0 fw-bold fs-4">Monagua<span class="text-primary-monagua">Admin</span></h3>
+        </div>
+        <nav class="menu-navegacion d-flex flex-column px-3 gap-2">
+            <a href="#" class="enlace-menu d-flex align-items-center"><i class="bi bi-calendar-check icono-menu"></i><span class="texto-menu">Horarios</span></a>
+            <a href="#" class="enlace-menu d-flex align-items-center"><i class="bi bi-people icono-menu"></i><span class="texto-menu">Empleados</span></a>
+            <a href="#" class="enlace-menu d-flex align-items-center"><i class="bi bi-receipt icono-menu"></i><span class="texto-menu">Facturación</span></a>
+            <a href="#" class="enlace-menu activo d-flex align-items-center"><i class="bi bi-shield-check icono-menu"></i><span class="texto-menu">Pago Seguro</span></a>
+        </nav>
+    </aside>
+
+    <main class="area-contenido w-100">
+        <header class="barra-superior bg-white px-4 py-3 border-bottom shadow-sm">
+            <h2 class="h4 fw-bold m-0 text-dark text-center">Finalizar Reserva</h2>
+        </header>
+
+        <div class="container py-5">
+            <div class="row g-4 justify-content-center">
+                
+                <div class="col-lg-6 col-md-8">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-header bg-white border-0 pt-4 text-center">
+                            <h5 class="fw-bold m-0 text-uppercase" style="letter-spacing: 1px;">Transferencia Bancaria</h5>
+                            <p class="text-muted small">Nequi o Daviplata</p>
+                        </div>
+
+                        <div class="card-body p-4 p-md-5 pt-0">
+                            <form method="POST" enctype="multipart/form-data" class="form-django-custom">
+                                {% csrf_token %}
+                                
+                                <div class="row g-3">
+                                    {% for field in form %}
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold small text-secondary mb-1">{{ field.label }}</label>
+                                            {{ field }}
+                                            {% if field.errors %}
+                                                <div class="text-danger small mt-1">{{ field.errors }}</div>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+
+                                    <div class="col-12 mt-4">
+                                        <div class="alert alert-light border-0 bg-light text-center py-2 rounded-3">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle me-1"></i> Verifica los datos antes de enviar
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-confirmar-fijo w-100 py-3 fw-bold rounded-3 shadow-sm">
+                                            CONFIRMAR Y ENVIAR PAGO
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-4 mt-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="fw-bold mb-0">Total a pagar</h6>
+                                    <small class="text-muted small">Páramo de Ocetá</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="h4 fw-bold text-primary-monagua m-0">$3.058,30</span>
+                                    <small class="d-block text-muted" style="font-size: 0.6rem;">COP</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
