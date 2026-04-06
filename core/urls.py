@@ -9,14 +9,13 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('inicio.urls')),       # Maneja el home
-    path('reservas/', include('reservas.urls')),
     path('usuario/', include('usuario.urls')),
-    path('reservas/', include('reservas.urls')),# Maneja destinos, blog y reservas
+    path('reservas/', include('reservas.urls')), # Eliminada duplicidad
    path('pago/', include('pago.urls')),
     
    # Autenticación (Login / Logout)
-    # IMPORTANTE: El 'name' debe ser 'login' para que tus templates funcionen
-    path('login/', auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login'),
+    # Cambiamos el nombre aquí si vas a usar tu propia vista en usuario/urls.py
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login_django'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     
     # pefil de usuario

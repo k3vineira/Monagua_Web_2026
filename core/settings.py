@@ -31,10 +31,13 @@ INSTALLED_APPS = [
     'reservas',
     'inicio.apps.InicioConfig',
     'usuario',
-'perfil',
-'pago',
-'gestion_admin',
+    'perfil',
+    'pago',
+    'gestion_admin',
 ]
+
+AUTH_USER_MODEL = 'usuario.Usuario'
+
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
@@ -130,8 +133,3 @@ LOGIN_URL = '/login/'
 
 # Manda los correos a la consola en vez de usar internet (Solo para desarrollo)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]

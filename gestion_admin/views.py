@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, Count
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .models import Tour, Reserva
+
+User = get_user_model()
 
 @staff_member_required
 def dashboard_administrador(request):
@@ -27,18 +29,4 @@ def dashboard_administrador(request):
         'tours_populares': tours_populares,
         'total_reservas': total_reservas,
     }
-def dashboard_administrador(request):
-    
-    # 1. Creas el diccionario 'context' con los datos que tu HTML necesita
-    context = {
-        'total_ventas': 12500.50,       # Dato de prueba
-        'total_usuarios': 342,          # Dato de prueba
-        'total_reservas': 89,           # Dato de prueba
-        'tours_populares': [            # Lista de prueba para tu tabla
-            {'nombre': 'Tour Guatapé', 'precio': 120.00, 'numero_reservas': 45},
-            {'nombre': 'City Tour Medellín', 'precio': 50.00, 'numero_reservas': 30},
-        ]
-    }
-
-    # 2. Ahora sí puedes pasar 'context' al render sin que dé error
-    return render(request, 'panel.html', context)# <--- Aquí ocurre el error porque 'context' no existe
+    return render(request, 'panel.html', contexto)
