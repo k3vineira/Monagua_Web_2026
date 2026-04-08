@@ -13,7 +13,10 @@ urlpatterns = [
     path('', include('inicio.urls')),
     path('reservas/', include('reservas.urls')), # <--- Esto conecta con el código de arriba
     path('usuario/', include('usuario.urls')),
-    path('pago/', include('pago.urls')),
+    path('reservas/', include('reservas.urls')), # Eliminada duplicidad
+   path('pago/', include('pago.urls')),
+    
+    # pefil de usuario
     path('perfil/', include('perfil.urls')),
     
     # 3. Autenticación y Gestión

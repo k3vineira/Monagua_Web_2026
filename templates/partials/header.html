@@ -14,29 +14,33 @@
 
 <ul class="nav mx-auto gap-3 me-1 ">
   <li class="nav-item">
-    <a class="nav-link fs-5 active " aria-current="page" href="#">Inicio</a>
+    <a class="nav-link fs-6 active " aria-current="page" href="#">Inicio</a>
   </li>
   <li class="nav-item">
-  <a class="nav-link fs-5" href="{% url 'destinos' %}">Destinos</a>
+  <a class="nav-link fs-6" href="{% url 'destinos' %}">Destinos</a>
 </li>
   <li class="nav-item">
-    <a class="nav-link fs-5" href="#">Experiencias</a>
+    <a class="nav-link fs-6" href="#">Experiencias</a>
   </li>
     <li class="nav-item">
-    <a class="nav-link fs-5" href="#">Nosotros</a>
+    <a class="nav-link fs-6" href="#">Nosotros</a>
   </li>
     <li class="nav-item">
-    <a class="nav-link fs-5" href="#">Contacto</a>
+    <a class="nav-link fs-6" href="#">Contacto</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link fs-5" href="{% url 'blog' %}">Blog</a>
+    <a class="nav-link fs-6" href="{% url 'blog' %}">Blog</a>
   </li>
 </ul>
 
 <div class="d-flex ms-auto gap-3 me-5">
-  <a href="{% url 'login' %}" class="btn btn-outline-success me-2 px-4 py-2">Iniciar sesión</a>
-  <button class="btn btn-lg btn-outline-secondary " type="button">Reserva ahora</button>
+  <a href="{% url 'login' %}" class="btn btn-sm btn-outline-success me-2 px-3 py-1">Iniciar sesión</a>
+  <button class="btn btn-sm btn-outline-secondary " type="button">Reserva ahora</button>
+  <a class="btn btn-success btn-lg rounded-pill shadow-sm fas fa-user-circle me-2" href="{% url 'perfil:ver_perfil' %}" type="button"></a>
+
+
 </div>
 
       </nav>
     </header>
+    
