@@ -1,247 +1,174 @@
-from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Actividades, Categoria, Paquete, Promocion, Reserva
-from .forms import CategoriaForm, CategoriaEditarForm, ActividadesForm, ActividadesEditarForm, PaqueteForm, PaqueteEditarForm, PromocionForm, PromocionEditarForm, ReservaForm, ReservaEditarForm
+from .forms import (
+    CategoriaForm, CategoriaEditarForm, 
+    ActividadesForm, ActividadesEditarForm, 
+    PaqueteForm, PaqueteEditarForm, 
+    PromocionForm, PromocionEditarForm, 
+    ReservaForm, ReservaEditarForm
+)
 
-
+# --- VISTAS GENERALES ---
 
 def blog_view(request):
+    """ Muestra la página del blog """
     return render(request, 'blog.html')
 
+def destinos(request):
+    """ 
+    Función principal para mostrar los paquetes turísticos.
+    Filtra por nombre (q) y por precio máximo.
+    """
+    destinos_list = Paquete.objects.all()
 
- 
+    # Captura de datos del buscador
+    busqueda = request.GET.get('q', '').strip()
+    precio_max = request.GET.get('precio_max')
 
+    if busqueda:
+        destinos_list = destinos_list.filter(nombre__icontains=busqueda)
 
-#categorias
-def crear_categoria(request):
-    if request.method == 'POST':
-        form = CategoriaForm(request.POST)
-        if form.is_valid():
-            categoria = form.save()
-            messages.success(request, f"Categoría '{categoria.nombre}' creada correctamente.")
-            return redirect('crear_categoria')
-        else:
-            messages.error(request, "Error al crear la categoría. Por favor verifica los datos.")
-    else:
-        form = CategoriaForm()
-
-    context = {
-        'form': form,
-        'titulo': 'Crear Nueva Categoría',
+    if precio_max:
+        destinos_list = destinos_list.filter(precio__lte=precio_max)
     
-    }
-    return render(request, 'categorias/agregar_categoria.html', context)
+    # Este diccionario {'destinos': destinos_list} es lo que lee el {% for %}
+    return render(request, 'destinos.html', {'destinos': destinos_list})
 
-
-def editar_categoria(request, pk):
-    categoria = get_object_or_404(Categoria, pk=pk)
-
-    if request.method == 'POST':
-        form = CategoriaEditarForm(request.POST, instance=categoria)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f"Datos de {categoria.nombre} actualizados correctamente.")
-            return redirect('crear_categoria')
-        else:
-            messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
-    else:
-        form = CategoriaEditarForm(instance=categoria)
-
-    context = {
-        'form': form,
-        'titulo': f'Editar a {categoria.nombre}',
+def reservas_view(request):
+    """ Detalle de un paquete para el formulario de reserva """
+    paquete_id = request.GET.get('paquete_id') 
+    paquete_seleccionado = None
     
-    }
-    return render(request, 'categorias/agregar_categoria.html', context)
+    if paquete_id:
+        paquete_seleccionado = get_object_or_404(Paquete, id=paquete_id)
+    
+    return render(request, 'reservas.html', {'paquete': paquete_seleccionado})
 
-#actividades
-def crear_actividad(request):
-    if request.method == 'POST':
-        form = ActividadesForm(request.POST)
-        if form.is_valid():
-            actividad = form.save()
-            messages.success(request, f"Actividad '{actividad.nombre}' creada correctamente.")
-            return redirect('crear_actividad')
-        else:
-            messages.error(request, "Error al crear la actividad. Por favor verifica los datos.")
-    else:
-        form = ActividadesForm()
+# --- CRUD DE PAQUETES (MONAGUA) ---
 
-    context = {
-        'form': form,
-        'titulo': 'Crear Nueva Actividad',
-  
-    }
-    return render(request, 'actividades/agregar_actividad.html', context)
-def editar_actividad(request, pk):
-    actividad = get_object_or_404(Actividades, pk=pk)
-
-    if request.method == 'POST':
-        form = ActividadesEditarForm(request.POST, instance=actividad)
-        if form.is_valid():
-            form.save()
-            messages.success(request, f"Datos de {actividad.nombre} actualizados correctamente.")
-            return redirect('crear_actividad')
-        else:
-            messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
-    else:
-        form = ActividadesEditarForm(instance=actividad)
-
-    context = {
-        'form': form,
-        'titulo': f'Editar a {actividad.nombre}',
-     
-    }
-    return render(request, 'actividades/agregar_actividad.html', context)
-
-#paquetes
 def crear_paquete(request):
+    """ Crea un nuevo destino turístico """
     if request.method == 'POST':
-        form = PaqueteForm(request.POST)
+        # Importante: request.FILES es necesario para las fotos de los destinos
+        form = PaqueteForm(request.POST, request.FILES)
         if form.is_valid():
             paquete = form.save()
             messages.success(request, f"Paquete '{paquete.nombre}' creado correctamente.")
             return redirect('crear_paquete')
         else:
-            messages.error(request, "Error al crear el paquete. Por favor verifica los datos.")
+            messages.error(request, "Error al crear el paquete. Verifica los datos.")
     else:
         form = PaqueteForm()
+    return render(request, 'paquetes/agregar_paquete.html', {'form': form, 'titulo': 'Crear Nuevo Paquete'})
 
-    context = {
-        'form': form,
-        'titulo': 'Crear Nuevo Paquete',
-     
-    }
-    return render(request, 'paquetes/agregar_paquete.html', context)
 def editar_paquete(request, pk):
+    """ Edita un destino existente """
     paquete = get_object_or_404(Paquete, pk=pk)
-
     if request.method == 'POST':
-        form = PaqueteEditarForm(request.POST, instance=paquete)
+        form = PaqueteEditarForm(request.POST, request.FILES, instance=paquete)
         if form.is_valid():
             form.save()
-            messages.success(request, f"Datos de {paquete.nombre} actualizados correctamente.")
+            messages.success(request, f"Datos de {paquete.nombre} actualizados.")
             return redirect('crear_paquete')
-        else:
-            messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
         form = PaqueteEditarForm(instance=paquete)
+    return render(request, 'paquetes/agregar_paquete.html', {'form': form, 'titulo': f'Editar {paquete.nombre}'})
 
-    context = {
-        'form': form,
-        'titulo': f'Editar a {paquete.nombre}',
-    }
-    return render(request, 'paquetes/agregar_paquete.html', context)
+# --- CRUD DE CATEGORÍAS ---
 
-#promociones
-def crear_promocion(request):
+def crear_categoria(request):
     if request.method == 'POST':
-        form = PromocionForm(request.POST)
+        form = CategoriaForm(request.POST)
         if form.is_valid():
-            promocion = form.save()
-            messages.success(request, f"Promoción '{promocion.nombre}' creada correctamente.")
-            return redirect('crear_promocion')
-        else:
-            messages.error(request, "Error al crear la promoción. Por favor verifica los datos.")
+            categoria = form.save()
+            messages.success(request, f"Categoría '{categoria.nombre}' creada.")
+            return redirect('crear_categoria')
     else:
-        form = PromocionForm()
+        form = CategoriaForm()
+    return render(request, 'categorias/agregar_categoria.html', {'form': form, 'titulo': 'Crear Categoría'})
 
-    context = {
-        'form': form,
-        'titulo': 'Crear Nueva Promoción',
-    }
-    return render(request, 'promociones/agregar_promocion.html', context)
-
-def editar_promocion(request, pk):
-    promocion = get_object_or_404(Promocion, pk=pk)
-
+def editar_categoria(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
     if request.method == 'POST':
-        form = PromocionEditarForm(request.POST, instance=promocion)
+        form = CategoriaEditarForm(request.POST, instance=categoria)
         if form.is_valid():
             form.save()
-            messages.success(request, f"Datos de {promocion.nombre} actualizados correctamente.")
-            return redirect('crear_promocion')
-        else:
-            messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
+            messages.success(request, f"Categoría {categoria.nombre} actualizada.")
+            return redirect('crear_categoria')
     else:
-        form = PromocionEditarForm(instance=promocion)
+        form = CategoriaEditarForm(instance=categoria)
+    return render(request, 'categorias/agregar_categoria.html', {'form': form, 'titulo': f'Editar {categoria.nombre}'})
 
-    context = {
-        'form': form,
-        'titulo': f'Editar a {promocion.nombre}',
-    }
-    return render(request, 'promociones/agregar_promocion.html', context)
-#reservas
+# --- CRUD DE ACTIVIDADES ---
+
+def crear_actividad(request):
+    if request.method == 'POST':
+        form = ActividadesForm(request.POST)
+        if form.is_valid():
+            actividad = form.save()
+            messages.success(request, f"Actividad '{actividad.nombre}' creada.")
+            return redirect('crear_actividad')
+    else:
+        form = ActividadesForm()
+    return render(request, 'actividades/agregar_actividad.html', {'form': form, 'titulo': 'Crear Actividad'})
+
+def editar_actividad(request, pk):
+    actividad = get_object_or_404(Actividades, pk=pk)
+    if request.method == 'POST':
+        form = ActividadesEditarForm(request.POST, instance=actividad)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Actividad {actividad.nombre} actualizada.")
+            return redirect('crear_actividad')
+    else:
+        form = ActividadesEditarForm(instance=actividad)
+    return render(request, 'actividades/agregar_actividad.html', {'form': form, 'titulo': f'Editar {actividad.nombre}'})
+
+# --- CRUD DE RESERVAS ---
+
 def crear_reserva(request):
     if request.method == 'POST':
         form = ReservaForm(request.POST)
         if form.is_valid():
             reserva = form.save()
-            messages.success(request, f"Reserva para '{reserva.nombre}' creada correctamente.")
+            messages.success(request, f"Reserva para '{reserva.nombre}' creada.")
             return redirect('crear_reserva')
-        else:
-            messages.error(request, "Error al crear la reserva. Por favor verifica los datos.")
     else:
         form = ReservaForm()
-
-    context = {
-        'form': form,
-        'titulo': 'Crear Nueva Reserva',
-    }
-    return render(request, 'reservas/agregar_reserva.html', context)
+    return render(request, 'reservas/agregar_reserva.html', {'form': form, 'titulo': 'Crear Reserva'})
 
 def editar_reserva(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
-
     if request.method == 'POST':
         form = ReservaEditarForm(request.POST, instance=reserva)
         if form.is_valid():
             form.save()
-            messages.success(request, f"Datos de {reserva.nombre} actualizados correctamente.")
+            messages.success(request, f"Reserva de {reserva.nombre} actualizada.")
             return redirect('crear_reserva')
-        else:
-            messages.error(request, "Error al actualizar. Revisa los campos marcados en rojo.")
     else:
         form = ReservaEditarForm(instance=reserva)
+    return render(request, 'reservas/agregar_reserva.html', {'form': form, 'titulo': f'Editar Reserva'})
+# --- PROMOCIONES ---
+def crear_promocion(request):
+    if request.method == 'POST':
+        form = PromocionForm(request.POST)
+        if form.is_valid():
+            promocion = form.save()
+            messages.success(request, f"Promoción '{promocion.nombre}' creada.")
+            return redirect('crear_promocion')
+    else:
+        form = PromocionForm()
+    return render(request, 'promociones/agregar_promocion.html', {'form': form, 'titulo': 'Crear Promoción'})
 
-    context = {
-        'form': form,
-        'titulo': f'Editar a {reserva.nombre}',
-    }
-    return render(request, 'reservas/agregar_reserva.html', context)
-
-# Función para mostrar los destinos con búsqueda
-def destinos(request):
-    # Empezamos con todos los paquetes
-    destinos_list = Paquete.objects.all()
-
-    # Capturamos los datos del formulario
-    busqueda = request.GET.get('q', '').strip()
-    precio_max = request.GET.get('precio_max')
-
-    # Filtro 1: Por nombre (si existe)
-    if busqueda:
-        destinos_list = destinos_list.filter(nombre__icontains=busqueda)
-
-    # Filtro 2: Por precio máximo (si existe)
-    if precio_max:
-        destinos_list = destinos_list.filter(precio__lte=precio_max)
-    
-    return render(request, 'destinos.html', {'destinos': destinos_list})
-
-# Función para mostrar el detalle de un paquete específico
-def reservas_view(request):
-    # Aquí es donde capturas el número 1 de la URL
-    paquete_id = request.GET.get('paquete_id') 
-    paquete_seleccionado = None
-    
-    if paquete_id:
-        # Buscas el paquete real en tu modelo Paquete
-        paquete_seleccionado = get_object_or_404(Paquete, id=paquete_id)
-    
-    context = {
-        'paquete': paquete_seleccionado,
-    }
- 
-    return render(request, 'reservas.html', context)
+def editar_promocion(request, pk):
+    promocion = get_object_or_404(Promocion, pk=pk)
+    if request.method == 'POST':
+        form = PromocionEditarForm(request.POST, instance=promocion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Promoción {promocion.nombre} actualizada.")
+            return redirect('crear_promocion')
+    else:
+        form = PromocionEditarForm(instance=promocion)
+    return render(request, 'promociones/agregar_promocion.html', {'form': form, 'titulo': f'Editar {promocion.nombre}'})
