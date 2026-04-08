@@ -3,6 +3,13 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Usuario, PerfilTurista  # Importamos tu modelo personalizado
+from django.contrib.auth.decorators import login_required
+
+
+@login_required # Esto asegura que solo entren usuarios logueados
+def dashboard_view(request):
+    # Pasamos el usuario a la plantilla (aunque Django lo hace por defecto)
+    return render(request, 'dashboard.html')
 
 def registro_view(request):
     if request.method == 'POST':
@@ -68,7 +75,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('inicio')  # Redirige a la página principal
+                return redirect('/')  # Redirige a la raíz del sitio
         else:
             messages.error(request, "Correo o contraseña incorrectos.")
     else:

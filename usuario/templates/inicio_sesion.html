@@ -112,6 +112,15 @@
     </div>
      <form action="{% url 'login' %}" method="POST">
     {% csrf_token %}
+    {% if form.errors %}
+        <div class="alert alert-danger py-2 small text-center" role="alert">
+          Correo o contraseña incorrectos. Por favor, intenta de nuevo.
+        </div>
+      {% endif %}
+      {% if next %}
+        <input type="hidden" name="next" value="{{ next }}" />
+      {% endif %}
+    
 
 
       <div class="text-start mb-3">

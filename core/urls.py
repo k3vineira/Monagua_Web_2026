@@ -13,11 +13,6 @@ urlpatterns = [
     path('reservas/', include('reservas.urls')), # Eliminada duplicidad
    path('pago/', include('pago.urls')),
     
-   # Autenticación (Login / Logout)
-    # Cambiamos el nombre aquí si vas a usar tu propia vista en usuario/urls.py
-    path('accounts/login/', auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login_django'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
-    
     # pefil de usuario
     path('perfil/', include('perfil.urls')),
     

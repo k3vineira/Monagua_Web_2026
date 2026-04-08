@@ -129,7 +129,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_REDIRECT_URL = '/' 
 
 # A dónde enviar a los intrusos que no han iniciado sesión
-LOGIN_URL = '/login/'
+LOGIN_URL = 'login'
 
 # Manda los correos a la consola en vez de usar internet (Solo para desarrollo)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
