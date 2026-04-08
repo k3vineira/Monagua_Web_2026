@@ -16,10 +16,6 @@ def blog_view(request):
     return render(request, 'blog.html')
 
 def destinos(request):
-    """ 
-    Función principal para mostrar los paquetes turísticos.
-    Filtra por nombre (q) y por precio máximo.
-    """
     destinos_list = Paquete.objects.all()
 
     # Captura de datos del buscador
