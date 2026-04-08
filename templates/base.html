@@ -77,6 +77,33 @@
         }
     });
 </script>
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+    {% if user.is_authenticated %}
+        <div class="dropdown">
+            <a class="btn btn-outline-light dropdown-toggle border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle me-1"></i> 
+                Hola, <strong>{{ user.first_name|default:user.username }}</strong>
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                <li><h6 class="dropdown-header">Rol: 
+                    {% if user.es_guia %} Guía Turístico {% else %} Explorador (Turista) {% endif %}
+                </h6></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'dashboard' %}">Mi Panel</a></li>
+                <li>
+                    <form action="{% url 'logout' %}" method="post" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item text-danger">Cerrar Sesión</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-sm btn-outline-light me-2">Iniciar Sesión</a>
+        <a href="{% url 'registro' %}" class="btn btn-sm btn-brand">Registrarse</a>
+    {% endif %}
+</div>
     
 
     
