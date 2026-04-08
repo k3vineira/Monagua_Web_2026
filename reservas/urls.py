@@ -10,4 +10,5 @@ urlpatterns = [
     path('promociones/crear/', views.crear_promocion, name='crear_promocion'),
     path('paquetes/crear/', views.crear_paquete, name='crear_paquete'),
     path('reservas/crear/', views.crear_reserva, name='crear_reserva'),
+    path('pqrs/crear/', views.crear_pqrs, name='crear_pqrs'),
 ]

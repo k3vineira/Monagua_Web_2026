@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Actividades, Categoria, Paquete, Promocion, Reserva
+from .models import Actividades, Categoria, Paquete, Promocion, Reserva, PQRS
 from .forms import (
     CategoriaForm, CategoriaEditarForm, 
     ActividadesForm, ActividadesEditarForm, 
     PaqueteForm, PaqueteEditarForm, 
     PromocionForm, PromocionEditarForm, 
-    ReservaForm, ReservaEditarForm
+    ReservaForm, ReservaEditarForm,
+    PQRSForm, PQRSEditarForm
 )
 
 # --- VISTAS GENERALES ---
@@ -168,3 +169,27 @@ def editar_promocion(request, pk):
     else:
         form = PromocionEditarForm(instance=promocion)
     return render(request, 'promociones/agregar_promocion.html', {'form': form, 'titulo': f'Editar {promocion.nombre}'})
+
+def crear_pqrs(request):
+    """ Vista para mostrar el formulario de PQRS """
+    if request.method == 'POST':
+        form = PQRSForm(request.POST)
+        if form.is_valid():
+            pqrs = form.save()
+            messages.success(request, f"PQRS '{pqrs.nombre}' enviada.")
+            return redirect('pqrs')
+    else:
+        form = PQRSForm()
+    return render(request, 'pqrs.html', {'form': form, 'titulo': 'Contáctanos - PQRS'})
+
+def editar_pqrs(request, pk):
+    pqrs = get_object_or_404(PQRS, pk=pk)
+    if request.method == 'POST':
+        form = PQRSEditarForm(request.POST, instance=pqrs)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"PQRS de {pqrs.nombre} actualizada.")
+            return redirect('pqrs')
+    else:
+        form = PQRSEditarForm(instance=pqrs)
+    return render(request, 'pqrs.html', {'form': form, 'titulo': f'Editar PQRS de {pqrs.nombre}'})
