@@ -15,6 +15,10 @@ from .forms import (
 def blog_view(request):
     """ Muestra la página del blog """
     return render(request, 'blog.html')
+def promociones_view(request):
+    """ Muestra la página de promociones """
+    promociones_list = Promocion.objects.all()
+    return render(request, 'promociones.html', {'promociones': promociones_list})
 
 def destinos(request):
     destinos_list = Paquete.objects.all()
@@ -41,6 +45,7 @@ def reservas_view(request):
         paquete_seleccionado = get_object_or_404(Paquete, id=paquete_id)
     
     return render(request, 'reservas.html', {'paquete': paquete_seleccionado})
+
 
 # --- CRUD DE PAQUETES (MONAGUA) ---
 
@@ -149,14 +154,24 @@ def editar_reserva(request, pk):
 # --- PROMOCIONES ---
 def crear_promocion(request):
     if request.method == 'POST':
-        form = PromocionForm(request.POST)
+        # Importante: si usas imágenes en las promociones, agrega request.FILES
+        form = PromocionForm(request.POST, request.FILES) 
         if form.is_valid():
             promocion = form.save()
-            messages.success(request, f"Promoción '{promocion.nombre}' creada.")
+            messages.success(request, f"Promoción '{promocion.nombre}' creada correctamente.")
             return redirect('crear_promocion')
     else:
         form = PromocionForm()
-    return render(request, 'promociones/agregar_promocion.html', {'form': form, 'titulo': 'Crear Promoción'})
+
+    # Traemos todas las promociones de la base de datos para el carrusel
+    todas_las_promociones = Promocion.objects.all() 
+
+    # Renderizamos una sola vez con todos los datos necesarios
+    return render(request, 'promociones/agregar_promocion.html', {
+        'form': form, 
+        'titulo': 'Crear Promoción',
+        'promociones': todas_las_promociones
+    })
 
 def editar_promocion(request, pk):
     promocion = get_object_or_404(Promocion, pk=pk)
