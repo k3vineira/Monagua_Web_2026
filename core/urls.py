@@ -3,8 +3,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
-from gestion_admin import views as views_gestion
-
+from panel import views as views_gestion
+from . import views
+ 
 urlpatterns = [
     # 1. Admin de Django
     path('admin/', admin.site.urls),
@@ -29,6 +30,11 @@ urlpatterns = [
     path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_sent.html'), name='password_reset_done'),
     path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_form.html'), name='password_reset_confirm'),
     path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_done.html'), name='password_reset_complete'),
+        
+  
+   path('admin/', admin.site.urls),
+    # Cambia la línea 29 por esta:
+    path('panel/', views_gestion.dashboard_administrador, name='panel'),
 ]
 
 # 5. Archivos estáticos y media (Solo en desarrollo)
