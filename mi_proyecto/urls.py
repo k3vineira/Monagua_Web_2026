@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from gestion_admin import views as views_gestion
+from panel import views as views_gestion
 from . import views
  
 urlpatterns = [
@@ -28,5 +28,5 @@ urlpatterns = [
   
    path('admin/', admin.site.urls),
     # Cambia la línea 29 por esta:
-    path('gestion-admin/', views_gestion.dashboard_administrador, name='gestion_admin'),
+    path('panel/', views_gestion.dashboard_administrador, name='panel'),
 ]
