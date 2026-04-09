@@ -1,0 +1,961 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Guías | Monagua</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --verde-deep:   #1a251e;
+            --verde-main:   #2c6e3c;
+            --verde-mid:    #406d46;
+            --verde-light:  #d1e7dd;
+            --verde-accent: #4caf70;
+            --bg-page:      #f0f4f1;
+            --sidebar-w:    240px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-page);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--verde-deep) 0%, #1f3326 60%, #162b1e 100%);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            padding: 0 0 1rem;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1.4rem 1.4rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-brand img {
+            height: 42px; width: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--verde-accent);
+            object-fit: cover;
+        }
+
+        .sidebar-brand .brand-name {
+            font-size: 1rem; font-weight: 700;
+            color: #fff; letter-spacing: 1px; line-height: 1.2;
+        }
+
+        .sidebar-brand .brand-sub {
+            font-size: 0.65rem; color: var(--verde-accent);
+            font-weight: 500; letter-spacing: 2px; text-transform: uppercase;
+        }
+
+        .sidebar-section {
+            font-size: 0.6rem; font-weight: 600;
+            letter-spacing: 2px; color: rgba(255,255,255,0.3);
+            text-transform: uppercase; padding: 1rem 1.4rem 0.4rem;
+        }
+
+        .sidebar-link {
+            display: flex; align-items: center; gap: 12px;
+            padding: 0.65rem 1.4rem;
+            color: rgba(255,255,255,0.6); text-decoration: none;
+            font-size: 0.85rem; font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: all 0.2s; margin: 1px 0;
+        }
+
+        .sidebar-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.06);
+            border-left-color: var(--verde-accent);
+        }
+
+        .sidebar-link.active {
+            color: #fff;
+            background: rgba(76,175,112,0.15);
+            border-left-color: var(--verde-accent);
+        }
+
+        .sidebar-link i { font-size: 1rem; min-width: 20px; }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1rem 1.4rem 0;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .admin-avatar { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+
+        .avatar-circle {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: var(--verde-accent);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.8rem; color: #fff; flex-shrink: 0;
+        }
+
+        .admin-name { font-size: 0.8rem; color: #fff; font-weight: 500; }
+        .admin-role { font-size: 0.65rem; color: rgba(255,255,255,0.4); }
+
+        .btn-logout {
+            display: flex; align-items: center; gap: 8px;
+            width: 100%;
+            background: rgba(220,53,69,0.15);
+            border: 1px solid rgba(220,53,69,0.3);
+            color: #f87171; border-radius: 8px;
+            padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 500;
+            cursor: pointer; transition: all 0.2s; text-decoration: none;
+        }
+
+        .btn-logout:hover { background: rgba(220,53,69,0.25); color: #fca5a5; }
+
+        /* ─── MAIN CONTENT ─── */
+        .main-content { margin-left: var(--sidebar-w); min-height: 100vh; padding: 2rem; }
+
+        /* ─── TOP BAR ─── */
+        .topbar {
+            display: flex; align-items: center;
+            justify-content: space-between; margin-bottom: 2rem;
+        }
+
+        .topbar-title h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem; color: var(--verde-deep); margin: 0;
+        }
+
+        .topbar-title p { color: #6c757d; font-size: 0.82rem; margin: 2px 0 0; }
+
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+        .date-badge {
+            background: #fff; border: 1px solid #dee2e6; border-radius: 8px;
+            padding: 0.4rem 0.9rem; font-size: 0.78rem; color: #555;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .btn-primary-custom {
+            background: var(--verde-main); color: #fff; border: none;
+            border-radius: 8px; padding: 0.45rem 1.1rem;
+            font-size: 0.82rem; font-weight: 500;
+            display: flex; align-items: center; gap: 6px;
+            cursor: pointer; transition: background 0.2s; text-decoration: none;
+        }
+
+        .btn-primary-custom:hover { background: var(--verde-mid); color: #fff; }
+
+        /* ─── KPI CARDS ─── */
+        .kpi-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 1rem; margin-bottom: 1.5rem;
+        }
+
+        .kpi-card {
+            background: #fff; border-radius: 14px;
+            padding: 1.25rem 1.25rem 1rem; border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: relative; overflow: hidden;
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.09); }
+
+        .kpi-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0;
+            height: 3px; border-radius: 14px 14px 0 0;
+        }
+
+        .kpi-card.green::before  { background: var(--verde-accent); }
+        .kpi-card.blue::before   { background: #3b82f6; }
+        .kpi-card.amber::before  { background: #f59e0b; }
+        .kpi-card.rose::before   { background: #f43f5e; }
+
+        .kpi-icon {
+            width: 44px; height: 44px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; margin-bottom: 0.9rem;
+        }
+
+        .kpi-icon.green  { background: #d1fae5; color: #059669; }
+        .kpi-icon.blue   { background: #dbeafe; color: #2563eb; }
+        .kpi-icon.amber  { background: #fef3c7; color: #d97706; }
+        .kpi-icon.rose   { background: #ffe4e6; color: #e11d48; }
+
+        .kpi-label { font-size: 0.72rem; color: #888; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .kpi-value { font-size: 1.6rem; font-weight: 700; color: var(--verde-deep); line-height: 1; margin-bottom: 6px; }
+        .kpi-sub   { font-size: 0.72rem; color: #aaa; display: flex; align-items: center; gap: 4px; }
+        .kpi-sub.up   { color: #10b981; }
+        .kpi-sub.down { color: #f43f5e; }
+
+        /* ─── SEARCH & FILTER BAR ─── */
+        .filter-bar {
+            background: #fff; border-radius: 14px;
+            padding: 1rem 1.25rem; margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        }
+
+        .filter-bar .search-wrap {
+            position: relative; flex: 1; min-width: 220px;
+        }
+
+        .filter-bar .search-wrap i {
+            position: absolute; left: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: #aaa; font-size: 0.9rem;
+        }
+
+        .filter-bar input[type="text"] {
+            width: 100%; border: 1px solid #e5e7eb; border-radius: 8px;
+            padding: 0.45rem 0.9rem 0.45rem 2.2rem;
+            font-size: 0.82rem; color: #444; font-family: 'Poppins', sans-serif;
+            outline: none; transition: border-color 0.2s;
+        }
+
+        .filter-bar input[type="text"]:focus { border-color: var(--verde-accent); }
+
+        .filter-bar select {
+            border: 1px solid #e5e7eb; border-radius: 8px;
+            padding: 0.45rem 0.9rem; font-size: 0.82rem;
+            color: #444; font-family: 'Poppins', sans-serif;
+            outline: none; background: #fff; cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .filter-bar select:focus { border-color: var(--verde-accent); }
+
+        /* ─── GUIDES TABLE ─── */
+        .table-card {
+            background: #fff; border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow: hidden; margin-bottom: 1.5rem;
+        }
+
+        .table-card-header {
+            background: linear-gradient(135deg, var(--verde-deep) 0%, var(--verde-main) 100%);
+            padding: 1rem 1.25rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .table-card-header h5 {
+            color: #fff; font-size: 0.9rem; font-weight: 600; margin: 0;
+        }
+
+        .table thead th {
+            font-size: 0.72rem; text-transform: uppercase;
+            letter-spacing: 0.5px; color: #888; font-weight: 600;
+            border-bottom: 1px solid #f0f0f0; padding: 0.75rem 1rem;
+            background: #fafafa;
+        }
+
+        .table tbody td {
+            font-size: 0.82rem; color: #444;
+            padding: 0.9rem 1rem; vertical-align: middle;
+            border-bottom: 1px solid #f8f8f8;
+        }
+
+        .table tbody tr:last-child td { border-bottom: none; }
+
+        .table tbody tr:hover td { background: #f9fdfb; }
+
+        .guide-avatar {
+            width: 38px; height: 38px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 700; color: #fff; flex-shrink: 0;
+        }
+
+        .guide-name { font-weight: 600; color: var(--verde-deep); font-size: 0.85rem; }
+        .guide-email { font-size: 0.72rem; color: #aaa; }
+
+        .badge-especialidad {
+            font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; font-weight: 500;
+        }
+
+        .badge-activo   { background: #d1fae5; color: #065f46; }
+        .badge-inactivo { background: #fee2e2; color: #991b1b; }
+        .badge-pendiente { background: #fef3c7; color: #92400e; }
+
+        .badge-esp-montaña   { background: #dbeafe; color: #1e40af; }
+        .badge-esp-flora     { background: #d1fae5; color: #065f46; }
+        .badge-esp-cultura   { background: #ede9fe; color: #5b21b6; }
+        .badge-esp-aventura  { background: #fef3c7; color: #92400e; }
+        .badge-esp-avifauna  { background: #e0f2fe; color: #075985; }
+        .badge-esp-historia  { background: #fce7f3; color: #9d174d; }
+
+        .btn-action {
+            border: none; border-radius: 7px; padding: 5px 9px;
+            font-size: 0.75rem; cursor: pointer; transition: all 0.18s;
+            display: inline-flex; align-items: center; gap: 4px; font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-edit  { background: #dbeafe; color: #1d4ed8; }
+        .btn-edit:hover  { background: #bfdbfe; }
+        .btn-deact { background: #fef3c7; color: #b45309; }
+        .btn-deact:hover { background: #fde68a; }
+        .btn-act   { background: #d1fae5; color: #065f46; }
+        .btn-act:hover   { background: #a7f3d0; }
+        .btn-del   { background: #fee2e2; color: #b91c1c; }
+        .btn-del:hover   { background: #fecaca; }
+
+        /* ─── MODAL ─── */
+        .modal-content {
+            border-radius: 16px; border: none;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--verde-deep) 0%, var(--verde-main) 100%);
+            border-radius: 16px 16px 0 0; padding: 1.25rem 1.5rem;
+            border-bottom: none;
+        }
+
+        .modal-header .modal-title { color: #fff; font-size: 1rem; font-weight: 600; }
+        .modal-header .btn-close { filter: invert(1) brightness(2); opacity: 0.8; }
+
+        .modal-body { padding: 1.5rem; }
+        .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #f0f0f0; }
+
+        .form-label {
+            font-size: 0.78rem; font-weight: 600; color: #555;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #e5e7eb; border-radius: 8px;
+            font-size: 0.85rem; color: #333; font-family: 'Poppins', sans-serif;
+            padding: 0.5rem 0.85rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--verde-accent);
+            box-shadow: 0 0 0 3px rgba(76,175,112,0.15);
+        }
+
+        .form-section-title {
+            font-size: 0.72rem; font-weight: 600; color: var(--verde-main);
+            text-transform: uppercase; letter-spacing: 1px;
+            padding-bottom: 8px; border-bottom: 1px solid var(--verde-light);
+            margin: 1.25rem 0 0.9rem; display: flex; align-items: center; gap: 6px;
+        }
+
+        .btn-save {
+            background: var(--verde-main); color: #fff; border: none;
+            border-radius: 8px; padding: 0.55rem 1.4rem;
+            font-size: 0.85rem; font-weight: 500; cursor: pointer;
+            transition: background 0.2s; font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-save:hover { background: var(--verde-mid); }
+
+        .btn-cancel {
+            background: #f3f4f6; color: #555; border: 1px solid #e5e7eb;
+            border-radius: 8px; padding: 0.55rem 1.2rem;
+            font-size: 0.85rem; font-weight: 500; cursor: pointer;
+            transition: all 0.2s; font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-cancel:hover { background: #e5e7eb; }
+
+        /* ─── PAGINATION ─── */
+        .pagination-wrap {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.9rem 1.25rem; border-top: 1px solid #f0f0f0;
+        }
+
+        .pagination-info { font-size: 0.78rem; color: #aaa; }
+
+        .pagination .page-link {
+            font-size: 0.78rem; color: var(--verde-main);
+            border-color: #e5e7eb; border-radius: 7px !important;
+            margin: 0 2px; padding: 5px 11px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--verde-main); border-color: var(--verde-main); color: #fff;
+        }
+
+        /* ─── EMPTY STATE ─── */
+        .empty-state {
+            text-align: center; padding: 4rem 2rem;
+        }
+
+        .empty-state i { font-size: 3rem; color: #d1d5db; display: block; margin-bottom: 1rem; }
+        .empty-state p { color: #9ca3af; font-size: 0.88rem; margin: 0; }
+
+        /* ─── TOAST ─── */
+        .toast-container { z-index: 9999; }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .kpi-card   { animation: fadeUp 0.4s ease both; }
+        .kpi-card:nth-child(1) { animation-delay: 0.05s; }
+        .kpi-card:nth-child(2) { animation-delay: 0.10s; }
+        .kpi-card:nth-child(3) { animation-delay: 0.15s; }
+        .kpi-card:nth-child(4) { animation-delay: 0.20s; }
+        .filter-bar  { animation: fadeUp 0.4s 0.22s ease both; }
+        .table-card  { animation: fadeUp 0.4s 0.30s ease both; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1100px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .kpi-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* Disponibilidad indicator */
+        .disponibilidad-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            display: inline-block; margin-right: 5px;
+        }
+        .disp-disponible  { background: #10b981; }
+        .disp-ocupado     { background: #f59e0b; }
+        .disp-inactivo    { background: #9ca3af; }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <img src="{% static 'img/logo_monagua.png' %}" alt="Logo">
+        <div>
+            <div class="brand-name">MONAGUA</div>
+            <div class="brand-sub">Admin Panel</div>
+        </div>
+    </div>
+
+    <div class="sidebar-section">Principal</div>
+    <a href="{% url 'dashboard' %}" class="sidebar-link">
+        <i class="bi bi-grid-1x2-fill"></i> Dashboard
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-graph-up-arrow"></i> Estadísticas
+    </a>
+
+    <div class="sidebar-section">Gestión</div>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-map-fill"></i> Tours
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-people-fill"></i> Usuarios
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-calendar-check-fill"></i> Reservas
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-cash-stack"></i> Pagos
+    </a>
+    <a href="#" class="sidebar-link active">
+        <i class="bi bi-person-badge-fill"></i> Guías
+    </a>
+
+    <div class="sidebar-section">Sistema</div>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-bell-fill"></i> Notificaciones
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-gear-fill"></i> Configuración
+    </a>
+
+    <div class="sidebar-footer">
+        <div class="admin-avatar">
+            <div class="avatar-circle">A</div>
+            <div>
+                <div class="admin-name">Administrador</div>
+                <div class="admin-role">Super Admin</div>
+            </div>
+        </div>
+        <a href="#" class="btn-logout">
+            <i class="bi bi-power"></i> Cerrar Sesión
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-content">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+        <div class="topbar-title">
+            <h2>Gestión de Guías</h2>
+            <p>Registra, edita y administra el personal de guías locales.</p>
+        </div>
+        <div class="topbar-right">
+            <div class="date-badge">
+                <i class="bi bi-calendar3" style="color: var(--verde-main);"></i>
+                <span id="currentDate">—</span>
+            </div>
+            <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalGuia" onclick="abrirModalNuevo()">
+                <i class="bi bi-plus-circle-fill"></i> Nuevo Guía
+            </button>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card green">
+            <div class="kpi-icon green"><i class="bi bi-person-check-fill"></i></div>
+            <div class="kpi-label">Guías Activos</div>
+            <div class="kpi-value" id="kpiActivos">{{ total_guias_activos|default:"0" }}</div>
+            <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> Disponibles para asignar</div>
+        </div>
+        <div class="kpi-card blue">
+            <div class="kpi-icon blue"><i class="bi bi-person-lines-fill"></i></div>
+            <div class="kpi-label">Total Guías</div>
+            <div class="kpi-value" id="kpiTotal">{{ total_guias|default:"0" }}</div>
+            <div class="kpi-sub up"><i class="bi bi-person-fill"></i> Registros en el sistema</div>
+        </div>
+        <div class="kpi-card amber">
+            <div class="kpi-icon amber"><i class="bi bi-clipboard2-check-fill"></i></div>
+            <div class="kpi-label">Asignados a Tours</div>
+            <div class="kpi-value" id="kpiAsignados">{{ guias_asignados|default:"0" }}</div>
+            <div class="kpi-sub up"><i class="bi bi-map-fill"></i> En servicios activos</div>
+        </div>
+        <div class="kpi-card rose">
+            <div class="kpi-icon rose"><i class="bi bi-person-x-fill"></i></div>
+            <div class="kpi-label">Guías Inactivos</div>
+            <div class="kpi-value" id="kpiInactivos">{{ total_guias_inactivos|default:"0" }}</div>
+            <div class="kpi-sub down"><i class="bi bi-dash-circle"></i> Dados de baja</div>
+        </div>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="filter-bar">
+        <div class="search-wrap">
+            <i class="bi bi-search"></i>
+            <input type="text" id="inputBuscar" placeholder="Buscar por nombre, especialidad o contacto…" oninput="filtrarTabla()">
+        </div>
+        <select id="filtroEstado" onchange="filtrarTabla()">
+            <option value="">Todos los estados</option>
+            <option value="Activo">Activos</option>
+            <option value="Inactivo">Inactivos</option>
+        </select>
+        <select id="filtroEspecialidad" onchange="filtrarTabla()">
+            <option value="">Todas las especialidades</option>
+            <option value="Alta Montaña">Alta Montaña</option>
+            <option value="Flora y Fauna">Flora y Fauna</option>
+            <option value="Cultura Local">Cultura Local</option>
+            <option value="Turismo de Aventura">Turismo de Aventura</option>
+            <option value="Avifauna">Avifauna</option>
+            <option value="Historia y Patrimonio">Historia y Patrimonio</option>
+        </select>
+        <select id="filtroDisponibilidad" onchange="filtrarTabla()">
+            <option value="">Toda disponibilidad</option>
+            <option value="Disponible">Disponible</option>
+            <option value="Ocupado">Ocupado</option>
+        </select>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <h5><i class="bi bi-person-badge-fill me-2"></i>Listado de Guías</h5>
+            <span style="font-size:0.72rem; color:rgba(255,255,255,0.5);" id="contadorGuias">{{ guias|length|default:"0" }} registros</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0" id="tablaGuias">
+                <thead>
+                    <tr>
+                        <th style="width:50px;">#</th>
+                        <th>Guía</th>
+                        <th>Especialidad</th>
+                        <th>Contacto</th>
+                        <th>Disponibilidad</th>
+                        <th>Tours asignados</th>
+                        <th>Estado</th>
+                        <th style="width:160px; text-align:center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyGuias">
+                    {% for guia in guias %}
+                    <tr data-estado="{{ guia.estado }}" data-especialidad="{{ guia.especialidad }}" data-disponibilidad="{{ guia.disponibilidad }}">
+                        <td>
+                            <span style="font-size:0.75rem; color:#bbb; font-weight:600;">{{ forloop.counter }}</span>
+                        </td>
+                        <td>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <div class="guide-avatar" style="background: {{ guia.color_avatar|default:'#2c6e3c' }};">
+                                    {{ guia.nombre|slice:":1" }}{{ guia.apellido|slice:":1" }}
+                                </div>
+                                <div>
+                                    <div class="guide-name">{{ guia.nombre }} {{ guia.apellido }}</div>
+                                    <div class="guide-email">{{ guia.correo }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-especialidad
+                                {% if guia.especialidad == 'Alta Montaña' %}badge-esp-montaña
+                                {% elif guia.especialidad == 'Flora y Fauna' %}badge-esp-flora
+                                {% elif guia.especialidad == 'Cultura Local' %}badge-esp-cultura
+                                {% elif guia.especialidad == 'Turismo de Aventura' %}badge-esp-aventura
+                                {% elif guia.especialidad == 'Avifauna' %}badge-esp-avifauna
+                                {% else %}badge-esp-historia{% endif %}">
+                                {{ guia.especialidad }}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="font-size:0.82rem; color:#444;">
+                                <i class="bi bi-telephone-fill" style="color:var(--verde-accent); font-size:0.75rem; margin-right:4px;"></i>
+                                {{ guia.telefono }}
+                            </div>
+                        </td>
+                        <td>
+                            <span>
+                                <span class="disponibilidad-dot
+                                    {% if guia.disponibilidad == 'Disponible' %}disp-disponible
+                                    {% elif guia.disponibilidad == 'Ocupado' %}disp-ocupado
+                                    {% else %}disp-inactivo{% endif %}">
+                                </span>
+                                {{ guia.disponibilidad }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge rounded-pill" style="background:#d1fae5; color:#065f46; font-size:0.78rem; padding:4px 10px;">
+                                {{ guia.num_tours|default:"0" }} <i class="bi bi-map ms-1"></i>
+                            </span>
+                        </td>
+                        <td>
+                            {% if guia.estado == 'Activo' %}
+                            <span class="badge-especialidad badge-activo">
+                                <i class="bi bi-circle-fill me-1" style="font-size:0.45rem;"></i>Activo
+                            </span>
+                            {% else %}
+                            <span class="badge-especialidad badge-inactivo">
+                                <i class="bi bi-circle-fill me-1" style="font-size:0.45rem;"></i>Inactivo
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align:center;">
+                            <div style="display:flex; gap:5px; justify-content:center;">
+                                <button class="btn-action btn-edit" onclick="abrirModalEditar({{ guia.id }})" title="Editar">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                                {% if guia.estado == 'Activo' %}
+                                <button class="btn-action btn-deact" onclick="confirmarBaja({{ guia.id }}, '{{ guia.nombre }} {{ guia.apellido }}')" title="Dar de baja">
+                                    <i class="bi bi-person-dash-fill"></i>
+                                </button>
+                                {% else %}
+                                <button class="btn-action btn-act" onclick="confirmarReactivar({{ guia.id }}, '{{ guia.nombre }} {{ guia.apellido }}')" title="Reactivar">
+                                    <i class="bi bi-person-check-fill"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="bi bi-person-badge"></i>
+                                <p>Aún no hay guías registrados.<br>Haz clic en <strong>Nuevo Guía</strong> para comenzar.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination-wrap">
+            <span class="pagination-info">Mostrando <strong id="visiblesCount">{{ guias|length|default:"0" }}</strong> guías</span>
+            <nav>
+                <ul class="pagination mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#">«</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled"><a class="page-link" href="#">»</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+</div><!-- /main-content -->
+
+
+<!-- ─── MODAL REGISTRO / EDICIÓN ─── -->
+<div class="modal fade" id="modalGuia" tabindex="-1" aria-labelledby="modalGuiaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalGuiaLabel">
+                    <i class="bi bi-person-badge-fill me-2"></i>
+                    <span id="modalTitulo">Registrar Nuevo Guía</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formGuia" method="POST" action="{% url 'guias_guardar' %}">
+                {% csrf_token %}
+                <input type="hidden" name="guia_id" id="inputGuiaId">
+                <div class="modal-body">
+
+                    <div class="form-section-title">
+                        <i class="bi bi-person-fill"></i> Información Personal
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre *</label>
+                            <input type="text" class="form-control" name="nombre" id="inputNombre" placeholder="Ej. Carlos" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Apellido *</label>
+                            <input type="text" class="form-control" name="apellido" id="inputApellido" placeholder="Ej. Suárez" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Correo Electrónico *</label>
+                            <input type="email" class="form-control" name="correo" id="inputCorreo" placeholder="guia@email.com" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Teléfono *</label>
+                            <input type="tel" class="form-control" name="telefono" id="inputTelefono" placeholder="+57 300 000 0000" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Número de Documento</label>
+                            <input type="text" class="form-control" name="documento" id="inputDocumento" placeholder="CC / Pasaporte">
+                        </div>
+                    </div>
+
+                    <div class="form-section-title" style="margin-top:1.5rem;">
+                        <i class="bi bi-award-fill"></i> Perfil Profesional
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Especialidad *</label>
+                            <select class="form-select" name="especialidad" id="inputEspecialidad" required>
+                                <option value="">Seleccionar…</option>
+                                <option value="Alta Montaña">Alta Montaña</option>
+                                <option value="Flora y Fauna">Flora y Fauna</option>
+                                <option value="Cultura Local">Cultura Local</option>
+                                <option value="Turismo de Aventura">Turismo de Aventura</option>
+                                <option value="Avifauna">Avifauna</option>
+                                <option value="Historia y Patrimonio">Historia y Patrimonio</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Disponibilidad *</label>
+                            <select class="form-select" name="disponibilidad" id="inputDisponibilidad" required>
+                                <option value="Disponible">Disponible</option>
+                                <option value="Ocupado">Ocupado</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Años de Experiencia</label>
+                            <input type="number" class="form-control" name="experiencia" id="inputExperiencia" min="0" max="50" placeholder="Ej. 5">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Idiomas que habla</label>
+                            <input type="text" class="form-control" name="idiomas" id="inputIdiomas" placeholder="Ej. Español, Inglés">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Certificaciones / Formación</label>
+                            <textarea class="form-control" name="certificaciones" id="inputCertificaciones" rows="2"
+                                      placeholder="Ej. Certificado en primeros auxilios, Guía certificado COTELCO…"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label">Notas adicionales</label>
+                            <textarea class="form-control" name="notas" id="inputNotas" rows="2"
+                                      placeholder="Información extra relevante para la asignación de tours…"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-floppy-fill me-1"></i>
+                        <span id="btnGuardarTexto">Guardar Guía</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ─── MODAL CONFIRMAR BAJA ─── -->
+<div class="modal fade" id="modalBaja" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #7f1d1d 0%, #b91c1c 100%);">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Baja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="padding:1.5rem; text-align:center;">
+                <div style="width:56px;height:56px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                    <i class="bi bi-person-x-fill" style="font-size:1.5rem;color:#b91c1c;"></i>
+                </div>
+                <p style="font-size:0.9rem;color:#333;margin:0;">
+                    ¿Estás seguro de que deseas marcar como <strong>Inactivo</strong> al guía<br>
+                    <strong id="nombreGuiaBaja" style="color:#b91c1c;"></strong>?
+                </p>
+                <p style="font-size:0.78rem;color:#aaa;margin-top:8px;">
+                    El guía dejará de aparecer en futuras asignaciones, pero su historial se conservará.
+                </p>
+            </div>
+            <div class="modal-footer" style="justify-content:center; gap:10px;">
+                <button class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formBaja" method="POST" action="{% url 'guias_baja' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="guia_id" id="inputBajaId">
+                    <button type="submit" class="btn-save" style="background:#b91c1c;">
+                        <i class="bi bi-person-dash-fill me-1"></i> Dar de Baja
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── MODAL CONFIRMAR REACTIVACIÓN ─── -->
+<div class="modal fade" id="modalReactivar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-person-check-fill me-2"></i>Reactivar Guía</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="padding:1.5rem; text-align:center;">
+                <div style="width:56px;height:56px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+                    <i class="bi bi-person-check-fill" style="font-size:1.5rem;color:#065f46;"></i>
+                </div>
+                <p style="font-size:0.9rem;color:#333;margin:0;">
+                    ¿Deseas reactivar al guía<br>
+                    <strong id="nombreGuiaReactivar" style="color:var(--verde-main);"></strong>?
+                </p>
+                <p style="font-size:0.78rem;color:#aaa;margin-top:8px;">
+                    Volverá a aparecer como opción disponible para asignar a nuevos tours.
+                </p>
+            </div>
+            <div class="modal-footer" style="justify-content:center; gap:10px;">
+                <button class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formReactivar" method="POST" action="{% url 'guias_reactivar' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="guia_id" id="inputReactivarId">
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-person-check-fill me-1"></i> Reactivar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast notificación -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastMsg" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastBody">Acción completada con éxito.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Fecha actual
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-CO', {
+        weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+    });
+
+    // ── Abrir modal para NUEVO guía ──
+    function abrirModalNuevo() {
+        document.getElementById('modalTitulo').textContent = 'Registrar Nuevo Guía';
+        document.getElementById('btnGuardarTexto').textContent = 'Guardar Guía';
+        document.getElementById('inputGuiaId').value = '';
+        document.getElementById('formGuia').reset();
+    }
+
+    // ── Abrir modal para EDITAR (stub: llenar con fetch si se usa AJAX) ──
+    function abrirModalEditar(id) {
+        document.getElementById('modalTitulo').textContent = 'Editar Guía';
+        document.getElementById('btnGuardarTexto').textContent = 'Actualizar Guía';
+        document.getElementById('inputGuiaId').value = id;
+
+        // Si se trabaja con AJAX, aquí se hace fetch('/guias/detalle/' + id)
+        // y se rellenan los campos del formulario.
+        // Por ahora se abre el modal vacío para que el template lo maneje vía Django.
+
+        const modal = new bootstrap.Modal(document.getElementById('modalGuia'));
+        modal.show();
+    }
+
+    // ── Confirmar baja ──
+    function confirmarBaja(id, nombre) {
+        document.getElementById('inputBajaId').value = id;
+        document.getElementById('nombreGuiaBaja').textContent = nombre;
+        new bootstrap.Modal(document.getElementById('modalBaja')).show();
+    }
+
+    // ── Confirmar reactivar ──
+    function confirmarReactivar(id, nombre) {
+        document.getElementById('inputReactivarId').value = id;
+        document.getElementById('nombreGuiaReactivar').textContent = nombre;
+        new bootstrap.Modal(document.getElementById('modalReactivar')).show();
+    }
+
+    // ── Filtrado en tiempo real ──
+    function filtrarTabla() {
+        const buscar       = document.getElementById('inputBuscar').value.toLowerCase();
+        const estado       = document.getElementById('filtroEstado').value;
+        const especialidad = document.getElementById('filtroEspecialidad').value;
+        const disponib     = document.getElementById('filtroDisponibilidad').value;
+
+        const filas = document.querySelectorAll('#tbodyGuias tr[data-estado]');
+        let visibles = 0;
+
+        filas.forEach(fila => {
+            const texto   = fila.textContent.toLowerCase();
+            const okBuscar = !buscar || texto.includes(buscar);
+            const okEstado = !estado || fila.dataset.estado === estado;
+            const okEsp    = !especialidad || fila.dataset.especialidad === especialidad;
+            const okDisp   = !disponib || fila.dataset.disponibilidad === disponib;
+
+            const mostrar = okBuscar && okEstado && okEsp && okDisp;
+            fila.style.display = mostrar ? '' : 'none';
+            if (mostrar) visibles++;
+        });
+
+        document.getElementById('visiblesCount').textContent = visibles;
+        document.getElementById('contadorGuias').textContent = visibles + ' registros';
+    }
+
+    // ── Toast de mensajes Django (si se pasa ?msg=ok) ──
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('msg') === 'creado') mostrarToast('Guía registrado exitosamente.', '#059669');
+    if (params.get('msg') === 'editado') mostrarToast('Guía actualizado correctamente.', '#2563eb');
+    if (params.get('msg') === 'baja') mostrarToast('Guía marcado como Inactivo.', '#b91c1c');
+    if (params.get('msg') === 'reactivado') mostrarToast('Guía reactivado correctamente.', '#059669');
+
+    function mostrarToast(mensaje, color) {
+        const toast = document.getElementById('toastMsg');
+        toast.style.background = color;
+        document.getElementById('toastBody').textContent = mensaje;
+        new bootstrap.Toast(toast, { delay: 4000 }).show();
+    }
+</script>
+</body>
+</html>
