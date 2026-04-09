@@ -81,3 +81,26 @@ class Reserva(models.Model):
 
     def __str__(self):
         return f"Reserva {self.id} - {self.nombre_cliente}"
+
+class PQRS(models.Model):
+     TIPO_CHOICES = [
+        ('Peticion', 'Petición'),
+        ('Queja', 'Queja'),
+        ('Reclamo', 'Reclamo'),
+        ('Sugerencia', 'Sugerencia'),
+     ] 
+     nombre_solicitante = models.CharField(max_length=150, verbose_name='Nombre del Solicitante')
+     documento = models.CharField(max_length=20, verbose_name='Número de Documento')
+     email = models.EmailField(verbose_name='Correo Electrónico')
+     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, verbose_name='Tipo de PQRS')
+     asunto = models.CharField(max_length=200, verbose_name='Asunto')
+     descripcion = models.TextField(verbose_name='Descripción')
+     evidencia = models.FileField(upload_to='pqrs/', null=True, blank=True, verbose_name='Adjuntar Evidencia')
+
+     class Meta:
+        verbose_name = 'PQRS'
+        verbose_name_plural = 'PQRS'
+
+     def __str__(self):
+        return f"{self.tipo} - {self.nombre_solicitante}"
+    
