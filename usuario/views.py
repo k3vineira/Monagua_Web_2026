@@ -11,6 +11,12 @@ def dashboard_view(request):
     # Pasamos el usuario a la plantilla (aunque Django lo hace por defecto)
     return render(request, 'dashboard.html')
 
+
+def perfil_usuario_view(request):
+    # Pasamos el usuario a la plantilla
+    return render(request, 'perfil.html')
+
+
 def registro_view(request):
     if request.method == 'POST':
         # 1. Capturamos los datos del POST (Coinciden con los 'name' de tu HTML)

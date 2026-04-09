@@ -50,121 +50,72 @@
                 </div>
             </header>
 
-            <div class="contenedor-perfil p-4 p-md-5">
+            div class="contenedor-perfil p-4 p-md-5">
+    
+    <div class="cabecera-usuario d-flex justify-content-between align-items-center mb-5">
+        <div class="d-flex align-items-center gap-4">
+            <div class="contenedor-avatar position-relative">
+                <!-- Por ahora usamos tu imagen estática, luego podemos agregar un ImageField al Modelo -->
+                <img src="{% static 'img/yo.jpeg' %}" alt="{{ user.first_name }}" class="rounded-circle border border-4 border-white shadow-sm" width="120" height="120">
+                <span class="insignia-verificado position-absolute bottom-0 end-0 bg-success text-white rounded-circle p-1"><i class="bi bi-check-circle-fill"></i></span>
+            </div>
+            <div class="info-usuario">
+                <!-- Etiqueta dinámica según el rol -->
+                {% if user.es_guia %}
+                    <span class="badge bg-primary text-light mb-2">GUÍA TURÍSTICO</span>
+                {% else %}
+                    <span class="badge bg-danger text-light mb-2">VIAJERO</span>
+                {% endif %}
                 
-                <div class="cabecera-usuario d-flex justify-content-between align-items-center mb-5">
-                    <div class="d-flex align-items-center gap-4">
-                        <div class="contenedor-avatar position-relative">
-                            <img src="{% static 'img/yo.jpeg' %}" alt="Mateo Valenzuela" class="rounded-circle border border-4 border-white shadow-sm" width="120" height="120">
-                            <span class="insignia-verificado position-absolute bottom-0 end-0 bg-success text-white rounded-circle p-1"><i class="bi bi-check-circle-fill"></i></span>
-                        </div>
-                        <div class="info-usuario">
-                            <span class="badge bg-danger text-light mb-2">VIAJERO</span>
-                            <h1 class="fw-bold mb-1">Kevin Neira</h1>
-                            <p class="text-muted mb-0"><i class="bi bi-geo-alt me-1"></i> Boyacá, Colombia • Miembro desde 2026</p>
-                        </div>
-                    </div>
-                    <button class="btn btn-success px-4 py-2 rounded-pill d-flex align-items-center gap-2">
-                        <i class="bi bi-pencil"></i> Editar Perfil
-                    </button>
-                </div>
+                <!-- Nombre y Apellido dinámicos -->
+                <h1 class="fw-bold mb-1">{{ user.first_name }} {{ user.last_name }}</h1>
+                
+                <!-- Residencia y Año de registro dinámicos -->
+                <p class="text-muted mb-0">
+                    <i class="bi bi-geo-alt me-1"></i> {{ user.residencia|default:"Ubicación pendiente" }} • Miembro desde {{ user.date_joined|date:"Y" }}
+                </p>
+            </div>
+        </div>
+        <button class="btn btn-success px-4 py-2 rounded-pill d-flex align-items-center gap-2">
+            <i class="bi bi-pencil"></i> Editar Perfil
+        </button>
+    </div>
 
-                <div class="row g-4">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card tarjeta-datos border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="card-title fw-bold mb-4 d-flex align-items-center gap-2">
+                        <i class="bi bi-person-fill text-secondary"></i> Información Personal
+                    </h5>
                     
-                    <div class="col-lg-8">
-                        
-                        <div class="card tarjeta-datos border-0 shadow-sm rounded-4 mb-4">
-                            <div class="card-body p-4">
-                                <h5 class="card-title fw-bold mb-4 d-flex align-items-center gap-2">
-                                    <i class="bi bi-person-fill text-secondary"></i> Información Personal
-                                </h5>
-                                
-                                <div class="row g-4">
-                                    <div class="col-md-6">
-                                        <label class="text-muted text-uppercase form-label label-pequeno">Nombre Completo</label>
-                                        <p class="fw-medium mb-0 fs-5">Kevin Neira</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="text-muted text-uppercase form-label label-pequeno">Correo Electrónico</label>
-                                        <p class="fw-medium mb-0 fs-5">neirak424@gmail.com</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="text-muted text-uppercase form-label label-pequeno">Teléfono</label>
-                                        <p class="fw-medium mb-0 fs-5">+57 302 778 7544</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="text-muted text-uppercase form-label label-pequeno">Idioma Preferido</label>
-                                        <div class="d-flex gap-2 mt-1">
-                                            <span class="badge bg-light text-dark border px-3 py-2">Español</span>
-                                            <span class="badge bg-light text-muted border px-3 py-2">English</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="text-muted text-uppercase form-label label-pequeno">Miniatura de Perfil</label>
-                                        <div class="d-flex align-items-center gap-3 mt-1 p-2 border rounded bg-light">
-                                            <img src="{% static 'img/yo.jpeg' %}" class="rounded-circle" width="40" height="40">
-                                            <div>
-                                                <p class="mb-0 fw-medium small">kevin_portrait_v2.jpg</p>
-                                                <small class="text-muted">1.2 MB • JPG</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="text-muted text-uppercase form-label label-pequeno">Nombre Completo</label>
+                            <p class="fw-medium mb-0 fs-5">{{ user.first_name }} {{ user.last_name }}</p>
                         </div>
-
-                        <div class="card tarjeta-promocion border-0 rounded-4 text-white overflow-hidden">
-                            <div class="card-body p-5 d-flex flex-column justify-content-center h-100 capa-oscura">
-                                <h3 class="fst-italic fw-bold mb-3">Next Expedition?</h3>
-                                <p class="mb-4 w-75">Tu perfil de Viajero te otorga acceso a curadurías exclusivas en el Sudeste Asiático este otoño.</p>
-                                <a href="#" class="text-white text-decoration-none fw-bold d-flex align-items-center gap-2">
-                                    Explorar Colecciones <i class="bi bi-arrow-right"></i>
-                                </a>
-                            </div>
+                        <div class="col-md-6">
+                            <label class="text-muted text-uppercase form-label label-pequeno">Correo Electrónico</label>
+                            <p class="fw-medium mb-0 fs-5">{{ user.email }}</p>
                         </div>
-
-                    </div>
-
-                    <div class="col-lg-4">
-                        
-                        <div class="card tarjeta-estadisticas border-0 shadow-sm rounded-4 mb-4 bg-light">
-                            <div class="card-body p-4">
-                                <h6 class="text-uppercase text-muted fw-bold mb-4">Estadísticas</h6>
-                                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                                    <span class="text-muted">Viajes Completados</span>
-                                    <span class="fw-bold fs-5 text-dark">12</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                                    <span class="text-muted">Países Visitados</span>
-                                    <span class="fw-bold fs-5 text-dark">8</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-muted">Reseñas Escritas</span>
-                                    <span class="fw-bold fs-5 text-dark">24</span>
-                                </div>
-                            </div>
+                        <div class="col-md-6">
+                            <label class="text-muted text-uppercase form-label label-pequeno">Teléfono</label>
+                            <p class="fw-medium mb-0 fs-5">{{ user.telefono|default:"No registrado" }}</p>
                         </div>
-
-                        <div class="card tarjeta-intereses border-0 shadow-sm rounded-4 mb-4">
-                            <div class="card-body p-4">
-                                <h6 class="text-uppercase text-muted fw-bold mb-3">Intereses</h6>
-                                <div class="d-flex flex-wrap gap-2 ">
-                                    <span class="badge rounded-pill bg-primary bg-opacity-75 text-light px-3 py-2">Senderismo</span>
-                                    <span class="badge rounded-pill bg-primary bg-opacity-75 text-light px-3 py-2">Fotografía</span>
-                                    <span class="badge rounded-pill bg-warning bg-opacity-75 text-black px-3 py-2">Gastronomía</span>
-                                    <span class="badge rounded-pill bg-danger bg-opacity-75 text-light px-3 py-2">Buceo</span>
-                                    <span class="badge rounded-pill bg-warning bg-opacity-75 text-black px-3 py-2">Historia</span>
-                                    <span class="badge rounded-pill bg-primary bg-opacity-75 text-light px-3 py-2">Historia</span>
-                                    <span class="badge rounded-pill bg-primary bg-opacity-75 text-light px-3 py-2">Historia</span>
-                                </div>
-                            </div>
+                        <div class="col-md-6">
+                            <label class="text-muted text-uppercase form-label label-pequeno">Tipo de Documento</label>
+                            <p class="fw-medium mb-0 fs-5">{{ user.tipo_documento|default:"-" }} {{ user.numero_documento|default:"" }}</p>
                         </div>
-
-                        
-
+                        <!-- ... (resto de tus campos estáticos como Idiomas o Miniatura) ... -->
                     </div>
                 </div>
             </div>
+            
+            <!-- ... (Tu tarjeta de promoción Next Expedition se queda igual) ... -->
+        </div>
+        <!-- ... (Tu columna de Estadísticas e Intereses se queda igual por ahora) ... -->
+    </div>
+</div>
         </main>
     </div>
 </div>
