@@ -35,10 +35,12 @@ urlpatterns = [
    path('admin/', admin.site.urls),
     # Cambia la línea 29 por esta:
     path('panel/', views_gestion.dashboard_administrador, name='panel'),
+
+
+    # Gestión de guías
+    path('panel/guias/', views_gestion.gestion_guias, name='gestion_guias'),
+    path('panel/guias/guardar/', views_gestion.guias_guardar, name='guias_guardar'),
+    path('panel/guias/baja/', views_gestion.guias_baja, name='guias_baja'),
+    path('panel/guias/reactivar/', views_gestion.guias_reactivar, name='guias_reactivar'),
 ]
 
-# 5. Archivos estáticos y media (Solo en desarrollo)
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    
