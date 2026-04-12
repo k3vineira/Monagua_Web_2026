@@ -26,7 +26,6 @@ urlpatterns = [
     path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_done.html'), name='password_reset_complete'),
         
   
-   path('admin/', admin.site.urls),
     # Cambia la línea 29 por esta:
     path('panel/', views_gestion.dashboard_administrador, name='panel'),
 

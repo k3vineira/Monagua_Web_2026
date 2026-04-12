@@ -49,7 +49,7 @@ def gestion_guias(request):
         'total_guias_inactivos': total_guias_inactivos,
         'guias_asignados': guias_asignados,
     }
-    return render(request, 'guias_admin.html', context)
+    return render(request, 'guias.html', context)
 
 
 @staff_member_required

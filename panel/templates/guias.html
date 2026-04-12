@@ -437,6 +437,143 @@
         .disp-disponible  { background: #10b981; }
         .disp-ocupado     { background: #f59e0b; }
         .disp-inactivo    { background: #9ca3af; }
+
+        /* ─── ACCESSIBILITY WIDGET ─── */
+        #a11y-btn {
+            position: fixed;
+            right: 1.2rem;
+            bottom: 1.5rem;
+            z-index: 9998;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: var(--verde-main);
+            border: 2px solid #fff;
+            color: #fff;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, transform 0.2s;
+        }
+        #a11y-btn:hover { background: var(--verde-mid); transform: scale(1.08); }
+
+        #a11y-panel {
+            position: fixed;
+            right: 1.2rem;
+            bottom: 5rem;
+            z-index: 9997;
+            width: 280px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        #a11y-panel.open { display: flex; animation: fadeUp 0.22s ease both; }
+
+        .a11y-header {
+            background: linear-gradient(135deg, var(--verde-deep) 0%, var(--verde-main) 100%);
+            padding: 0.85rem 1rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .a11y-header span { color: #fff; font-size: 0.82rem; font-weight: 600; }
+        .a11y-header button {
+            background: none; border: none; color: rgba(255,255,255,0.7);
+            font-size: 1rem; cursor: pointer; padding: 0; line-height: 1;
+        }
+        .a11y-header button:hover { color: #fff; }
+
+        .a11y-section {
+            padding: 0.75rem 1rem 0.25rem;
+            font-size: 0.68rem; font-weight: 600;
+            color: #aaa; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .a11y-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0.55rem 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 0.8rem; color: #333;
+        }
+        .a11y-row:last-of-type { border-bottom: none; }
+
+        .a11y-row .a11y-label { display: flex; align-items: center; gap: 8px; }
+        .a11y-row .a11y-label i { color: var(--verde-main); font-size: 0.95rem; }
+
+        .a11y-toggle {
+            position: relative; width: 40px; height: 22px; flex-shrink: 0;
+        }
+        .a11y-toggle input { opacity: 0; width: 0; height: 0; }
+        .a11y-slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #d1d5db; border-radius: 22px; transition: 0.25s;
+        }
+        .a11y-slider:before {
+            content: ''; position: absolute;
+            width: 16px; height: 16px; left: 3px; bottom: 3px;
+            background: #fff; border-radius: 50%; transition: 0.25s;
+        }
+        .a11y-toggle input:checked + .a11y-slider { background: var(--verde-main); }
+        .a11y-toggle input:checked + .a11y-slider:before { transform: translateX(18px); }
+
+        .a11y-font-ctrl { display: flex; align-items: center; gap: 6px; }
+        .a11y-font-ctrl button {
+            width: 26px; height: 26px; border-radius: 6px;
+            border: 1px solid #e5e7eb; background: #f9fafb;
+            font-size: 0.8rem; cursor: pointer; color: #444;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        .a11y-font-ctrl button:hover { background: var(--verde-light); color: var(--verde-main); }
+        .a11y-font-ctrl span {
+            font-size: 0.75rem; color: #888; min-width: 34px; text-align: center;
+        }
+
+        .lang-btn-group { display: flex; gap: 6px; }
+        .lang-btn {
+            flex: 1; padding: 5px 0; border-radius: 7px;
+            font-size: 0.75rem; font-weight: 500; cursor: pointer;
+            border: 1.5px solid #e5e7eb; background: #f9fafb;
+            color: #555; transition: all 0.18s; font-family: 'Poppins', sans-serif;
+            text-align: center;
+        }
+        .lang-btn:hover { border-color: var(--verde-accent); color: var(--verde-main); }
+        .lang-btn.active {
+            background: var(--verde-light); border-color: var(--verde-main);
+            color: var(--verde-main); font-weight: 600;
+        }
+
+        .a11y-reset {
+            margin: 0.5rem 1rem 0.75rem;
+            width: calc(100% - 2rem);
+            padding: 0.45rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            background: #f3f4f6; color: #666;
+            font-size: 0.75rem; cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.15s;
+        }
+        .a11y-reset:hover { background: #e5e7eb; color: #333; }
+
+        /* ─── ALTO CONTRASTE ─── */
+        body.alto-contraste {
+            filter: contrast(1.45) saturate(0.7);
+        }
+
+        /* ─── SUBRAYAR LINKS ─── */
+        body.subrayar-links a { text-decoration: underline !important; }
+
+        /* ─── CURSOR GRANDE ─── */
+        body.cursor-grande,
+        body.cursor-grande * {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6 2 L6 26 L12 20 L17 30 L20 29 L15 19 L23 19 Z' fill='%232c6e3c' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E") 6 2, auto !important;
+        }
     </style>
 </head>
 <body>
@@ -452,7 +589,7 @@
     </div>
 
     <div class="sidebar-section">Principal</div>
-    <a href="{% url 'dashboard' %}" class="sidebar-link">
+    <a href="{% url 'panel' %}" class="sidebar-link">
         <i class="bi bi-grid-1x2-fill"></i> Dashboard
     </a>
     <a href="#" class="sidebar-link">
@@ -504,16 +641,16 @@
     <!-- Top Bar -->
     <div class="topbar">
         <div class="topbar-title">
-            <h2>Gestión de Guías</h2>
-            <p>Registra, edita y administra el personal de guías locales.</p>
+            <h2 id="page-h2">Gestión de Guías</h2>
+            <p id="page-sub">Registra, edita y administra el personal de guías locales.</p>
         </div>
         <div class="topbar-right">
             <div class="date-badge">
                 <i class="bi bi-calendar3" style="color: var(--verde-main);"></i>
                 <span id="currentDate">—</span>
             </div>
-            <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#modalGuia" onclick="abrirModalNuevo()">
-                <i class="bi bi-plus-circle-fill"></i> Nuevo Guía
+            <button class="btn-primary-custom" id="btn-nuevo-guia" data-bs-toggle="modal" data-bs-target="#modalGuia" onclick="abrirModalNuevo()">
+                <i class="bi bi-plus-circle-fill"></i> <span id="lbl-btn-nuevo">Nuevo Guía</span>
             </button>
         </div>
     </div>
@@ -522,27 +659,27 @@
     <div class="kpi-grid">
         <div class="kpi-card green">
             <div class="kpi-icon green"><i class="bi bi-person-check-fill"></i></div>
-            <div class="kpi-label">Guías Activos</div>
+            <div class="kpi-label" id="kpi-lbl-activos">Guías Activos</div>
             <div class="kpi-value" id="kpiActivos">{{ total_guias_activos|default:"0" }}</div>
-            <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> Disponibles para asignar</div>
+            <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> <span id="kpi-sub-activos">Disponibles para asignar</span></div>
         </div>
         <div class="kpi-card blue">
             <div class="kpi-icon blue"><i class="bi bi-person-lines-fill"></i></div>
-            <div class="kpi-label">Total Guías</div>
+            <div class="kpi-label" id="kpi-lbl-total">Total Guías</div>
             <div class="kpi-value" id="kpiTotal">{{ total_guias|default:"0" }}</div>
-            <div class="kpi-sub up"><i class="bi bi-person-fill"></i> Registros en el sistema</div>
+            <div class="kpi-sub up"><i class="bi bi-person-fill"></i> <span id="kpi-sub-total">Registros en el sistema</span></div>
         </div>
         <div class="kpi-card amber">
             <div class="kpi-icon amber"><i class="bi bi-clipboard2-check-fill"></i></div>
-            <div class="kpi-label">Asignados a Tours</div>
+            <div class="kpi-label" id="kpi-lbl-asig">Asignados a Tours</div>
             <div class="kpi-value" id="kpiAsignados">{{ guias_asignados|default:"0" }}</div>
-            <div class="kpi-sub up"><i class="bi bi-map-fill"></i> En servicios activos</div>
+            <div class="kpi-sub up"><i class="bi bi-map-fill"></i> <span id="kpi-sub-asig">En servicios activos</span></div>
         </div>
         <div class="kpi-card rose">
             <div class="kpi-icon rose"><i class="bi bi-person-x-fill"></i></div>
-            <div class="kpi-label">Guías Inactivos</div>
+            <div class="kpi-label" id="kpi-lbl-inact">Guías Inactivos</div>
             <div class="kpi-value" id="kpiInactivos">{{ total_guias_inactivos|default:"0" }}</div>
-            <div class="kpi-sub down"><i class="bi bi-dash-circle"></i> Dados de baja</div>
+            <div class="kpi-sub down"><i class="bi bi-dash-circle"></i> <span id="kpi-sub-inact">Dados de baja</span></div>
         </div>
     </div>
 
@@ -553,12 +690,12 @@
             <input type="text" id="inputBuscar" placeholder="Buscar por nombre, especialidad o contacto…" oninput="filtrarTabla()">
         </div>
         <select id="filtroEstado" onchange="filtrarTabla()">
-            <option value="">Todos los estados</option>
-            <option value="Activo">Activos</option>
-            <option value="Inactivo">Inactivos</option>
+            <option value="" id="opt-todos-estados">Todos los estados</option>
+            <option value="Activo" id="opt-activos">Activos</option>
+            <option value="Inactivo" id="opt-inactivos">Inactivos</option>
         </select>
         <select id="filtroEspecialidad" onchange="filtrarTabla()">
-            <option value="">Todas las especialidades</option>
+            <option value="" id="opt-todas-esp">Todas las especialidades</option>
             <option value="Alta Montaña">Alta Montaña</option>
             <option value="Flora y Fauna">Flora y Fauna</option>
             <option value="Cultura Local">Cultura Local</option>
@@ -567,7 +704,7 @@
             <option value="Historia y Patrimonio">Historia y Patrimonio</option>
         </select>
         <select id="filtroDisponibilidad" onchange="filtrarTabla()">
-            <option value="">Toda disponibilidad</option>
+            <option value="" id="opt-toda-disp">Toda disponibilidad</option>
             <option value="Disponible">Disponible</option>
             <option value="Ocupado">Ocupado</option>
         </select>
@@ -576,7 +713,7 @@
     <!-- Table -->
     <div class="table-card">
         <div class="table-card-header">
-            <h5><i class="bi bi-person-badge-fill me-2"></i>Listado de Guías</h5>
+            <h5 id="titulo-tabla"><i class="bi bi-person-badge-fill me-2"></i>Listado de Guías</h5>
             <span style="font-size:0.72rem; color:rgba(255,255,255,0.5);" id="contadorGuias">{{ guias|length|default:"0" }} registros</span>
         </div>
         <div class="table-responsive">
@@ -584,13 +721,13 @@
                 <thead>
                     <tr>
                         <th style="width:50px;">#</th>
-                        <th>Guía</th>
-                        <th>Especialidad</th>
-                        <th>Contacto</th>
-                        <th>Disponibilidad</th>
-                        <th>Tours asignados</th>
-                        <th>Estado</th>
-                        <th style="width:160px; text-align:center;">Acciones</th>
+                        <th id="th-guia">Guía</th>
+                        <th id="th-esp">Especialidad</th>
+                        <th id="th-contacto">Contacto</th>
+                        <th id="th-disp">Disponibilidad</th>
+                        <th id="th-tours">Tours asignados</th>
+                        <th id="th-estado">Estado</th>
+                        <th id="th-acciones" style="width:160px; text-align:center;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyGuias">
@@ -684,7 +821,7 @@
             </table>
         </div>
         <div class="pagination-wrap">
-            <span class="pagination-info">Mostrando <strong id="visiblesCount">{{ guias|length|default:"0" }}</strong> guías</span>
+            <span class="pagination-info">Mostrando <strong id="visiblesCount">{{ guias|length|default:"0" }}</strong> <span id="lbl-guias-pag">guías</span></span>
             <nav>
                 <ul class="pagination mb-0">
                     <li class="page-item disabled"><a class="page-link" href="#">«</a></li>
@@ -714,40 +851,40 @@
                 <input type="hidden" name="guia_id" id="inputGuiaId">
                 <div class="modal-body">
 
-                    <div class="form-section-title">
+                    <div class="form-section-title" id="sec-info-personal">
                         <i class="bi bi-person-fill"></i> Información Personal
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Nombre *</label>
+                            <label class="form-label" id="lbl-nombre">Nombre *</label>
                             <input type="text" class="form-control" name="nombre" id="inputNombre" placeholder="Ej. Carlos" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Apellido *</label>
+                            <label class="form-label" id="lbl-apellido">Apellido *</label>
                             <input type="text" class="form-control" name="apellido" id="inputApellido" placeholder="Ej. Suárez" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Correo Electrónico *</label>
+                            <label class="form-label" id="lbl-correo">Correo Electrónico *</label>
                             <input type="email" class="form-control" name="correo" id="inputCorreo" placeholder="guia@email.com" required>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Teléfono *</label>
+                            <label class="form-label" id="lbl-telefono">Teléfono *</label>
                             <input type="tel" class="form-control" name="telefono" id="inputTelefono" placeholder="+57 300 000 0000" required>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label">Número de Documento</label>
+                            <label class="form-label" id="lbl-documento">Número de Documento</label>
                             <input type="text" class="form-control" name="documento" id="inputDocumento" placeholder="CC / Pasaporte">
                         </div>
                     </div>
 
-                    <div class="form-section-title" style="margin-top:1.5rem;">
+                    <div class="form-section-title" id="sec-perfil" style="margin-top:1.5rem;">
                         <i class="bi bi-award-fill"></i> Perfil Profesional
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Especialidad *</label>
+                            <label class="form-label" id="lbl-especialidad">Especialidad *</label>
                             <select class="form-select" name="especialidad" id="inputEspecialidad" required>
-                                <option value="">Seleccionar…</option>
+                                <option value="" id="opt-select-esp">Seleccionar…</option>
                                 <option value="Alta Montaña">Alta Montaña</option>
                                 <option value="Flora y Fauna">Flora y Fauna</option>
                                 <option value="Cultura Local">Cultura Local</option>
@@ -757,27 +894,27 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Disponibilidad *</label>
+                            <label class="form-label" id="lbl-disponibilidad">Disponibilidad *</label>
                             <select class="form-select" name="disponibilidad" id="inputDisponibilidad" required>
-                                <option value="Disponible">Disponible</option>
-                                <option value="Ocupado">Ocupado</option>
+                                <option value="Disponible" id="opt-disponible">Disponible</option>
+                                <option value="Ocupado" id="opt-ocupado">Ocupado</option>
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Años de Experiencia</label>
+                            <label class="form-label" id="lbl-experiencia">Años de Experiencia</label>
                             <input type="number" class="form-control" name="experiencia" id="inputExperiencia" min="0" max="50" placeholder="Ej. 5">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Idiomas que habla</label>
+                            <label class="form-label" id="lbl-idiomas">Idiomas que habla</label>
                             <input type="text" class="form-control" name="idiomas" id="inputIdiomas" placeholder="Ej. Español, Inglés">
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label">Certificaciones / Formación</label>
+                            <label class="form-label" id="lbl-certificaciones">Certificaciones / Formación</label>
                             <textarea class="form-control" name="certificaciones" id="inputCertificaciones" rows="2"
                                       placeholder="Ej. Certificado en primeros auxilios, Guía certificado COTELCO…"></textarea>
                         </div>
                         <div class="col-md-12">
-                            <label class="form-label">Notas adicionales</label>
+                            <label class="form-label" id="lbl-notas">Notas adicionales</label>
                             <textarea class="form-control" name="notas" id="inputNotas" rows="2"
                                       placeholder="Información extra relevante para la asignación de tours…"></textarea>
                         </div>
@@ -785,7 +922,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn-cancel" data-bs-dismiss="modal" id="btn-cancelar-modal">Cancelar</button>
                     <button type="submit" class="btn-save">
                         <i class="bi bi-floppy-fill me-1"></i>
                         <span id="btnGuardarTexto">Guardar Guía</span>
@@ -801,28 +938,28 @@
     <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
         <div class="modal-content">
             <div class="modal-header" style="background: linear-gradient(135deg, #7f1d1d 0%, #b91c1c 100%);">
-                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Baja</h5>
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill me-2"></i><span id="modal-baja-titulo">Confirmar Baja</span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" style="padding:1.5rem; text-align:center;">
                 <div style="width:56px;height:56px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
                     <i class="bi bi-person-x-fill" style="font-size:1.5rem;color:#b91c1c;"></i>
                 </div>
-                <p style="font-size:0.9rem;color:#333;margin:0;">
+                <p style="font-size:0.9rem;color:#333;margin:0;" id="modal-baja-msg">
                     ¿Estás seguro de que deseas marcar como <strong>Inactivo</strong> al guía<br>
                     <strong id="nombreGuiaBaja" style="color:#b91c1c;"></strong>?
                 </p>
-                <p style="font-size:0.78rem;color:#aaa;margin-top:8px;">
+                <p style="font-size:0.78rem;color:#aaa;margin-top:8px;" id="modal-baja-sub">
                     El guía dejará de aparecer en futuras asignaciones, pero su historial se conservará.
                 </p>
             </div>
             <div class="modal-footer" style="justify-content:center; gap:10px;">
-                <button class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn-cancel" data-bs-dismiss="modal" id="btn-cancelar-baja">Cancelar</button>
                 <form id="formBaja" method="POST" action="{% url 'guias_baja' %}" style="display:inline;">
                     {% csrf_token %}
                     <input type="hidden" name="guia_id" id="inputBajaId">
-                    <button type="submit" class="btn-save" style="background:#b91c1c;">
-                        <i class="bi bi-person-dash-fill me-1"></i> Dar de Baja
+                    <button type="submit" class="btn-save" style="background:#b91c1c;" id="btn-confirmar-baja">
+                        <i class="bi bi-person-dash-fill me-1"></i> <span id="lbl-dar-baja">Dar de Baja</span>
                     </button>
                 </form>
             </div>
@@ -835,28 +972,28 @@
     <div class="modal-dialog modal-dialog-centered" style="max-width:420px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-person-check-fill me-2"></i>Reactivar Guía</h5>
+                <h5 class="modal-title"><i class="bi bi-person-check-fill me-2"></i><span id="modal-react-titulo">Reactivar Guía</span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" style="padding:1.5rem; text-align:center;">
                 <div style="width:56px;height:56px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
                     <i class="bi bi-person-check-fill" style="font-size:1.5rem;color:#065f46;"></i>
                 </div>
-                <p style="font-size:0.9rem;color:#333;margin:0;">
+                <p style="font-size:0.9rem;color:#333;margin:0;" id="modal-react-msg">
                     ¿Deseas reactivar al guía<br>
                     <strong id="nombreGuiaReactivar" style="color:var(--verde-main);"></strong>?
                 </p>
-                <p style="font-size:0.78rem;color:#aaa;margin-top:8px;">
+                <p style="font-size:0.78rem;color:#aaa;margin-top:8px;" id="modal-react-sub">
                     Volverá a aparecer como opción disponible para asignar a nuevos tours.
                 </p>
             </div>
             <div class="modal-footer" style="justify-content:center; gap:10px;">
-                <button class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn-cancel" data-bs-dismiss="modal" id="btn-cancelar-react">Cancelar</button>
                 <form id="formReactivar" method="POST" action="{% url 'guias_reactivar' %}" style="display:inline;">
                     {% csrf_token %}
                     <input type="hidden" name="guia_id" id="inputReactivarId">
-                    <button type="submit" class="btn-save">
-                        <i class="bi bi-person-check-fill me-1"></i> Reactivar
+                    <button type="submit" class="btn-save" id="btn-confirmar-react">
+                        <i class="bi bi-person-check-fill me-1"></i> <span id="lbl-reactivar">Reactivar</span>
                     </button>
                 </form>
             </div>
@@ -865,7 +1002,7 @@
 </div>
 
 <!-- Toast notificación -->
-<div class="toast-container position-fixed bottom-0 end-0 p-3">
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="margin-bottom: 4.5rem;">
     <div id="toastMsg" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body" id="toastBody">Acción completada con éxito.</div>
@@ -874,31 +1011,93 @@
     </div>
 </div>
 
+<!-- ─── WIDGET DE ACCESIBILIDAD ─── -->
+<button id="a11y-btn" title="Accesibilidad / Accessibility" aria-label="Abrir panel de accesibilidad" onclick="toggleA11yPanel()">
+    <i class="bi bi-universal-access"></i>
+</button>
+
+<div id="a11y-panel" role="dialog" aria-label="Panel de accesibilidad">
+    <div class="a11y-header">
+        <span><i class="bi bi-universal-access me-2"></i><span id="a11y-titulo">Accesibilidad</span></span>
+        <button onclick="toggleA11yPanel()" aria-label="Cerrar panel"><i class="bi bi-x-lg"></i></button>
+    </div>
+
+    <!-- IDIOMA -->
+    <div class="a11y-section" id="lbl-idioma">Idioma / Language</div>
+    <div class="a11y-row" style="padding-bottom:0.75rem;">
+        <div class="lang-btn-group" style="width:100%;">
+            <button class="lang-btn active" id="btn-es" onclick="setLang('es')">🇨🇴 Español</button>
+            <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇺🇸 English</button>
+        </div>
+    </div>
+
+    <!-- TEXTO -->
+    <div class="a11y-section" id="lbl-texto">Tamaño de texto</div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-fonts"></i> <span id="lbl-tamano">Tamaño</span></div>
+        <div class="a11y-font-ctrl">
+            <button onclick="cambiarFuente(-1)" aria-label="Reducir texto"><i class="bi bi-dash"></i></button>
+            <span id="fontPct">100%</span>
+            <button onclick="cambiarFuente(1)" aria-label="Aumentar texto"><i class="bi bi-plus"></i></button>
+        </div>
+    </div>
+
+    <!-- VISUAL -->
+    <div class="a11y-section" id="lbl-visual">Visual</div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-circle-half"></i> <span id="lbl-contraste">Alto contraste</span></div>
+        <label class="a11y-toggle">
+            <input type="checkbox" id="togContraste" onchange="toggleClase('alto-contraste', this.checked)">
+            <span class="a11y-slider"></span>
+        </label>
+    </div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-link-45deg"></i> <span id="lbl-links">Subrayar enlaces</span></div>
+        <label class="a11y-toggle">
+            <input type="checkbox" id="togLinks" onchange="toggleClase('subrayar-links', this.checked)">
+            <span class="a11y-slider"></span>
+        </label>
+    </div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-cursor-fill"></i> <span id="lbl-cursor">Cursor grande</span></div>
+        <label class="a11y-toggle">
+            <input type="checkbox" id="togCursor" onchange="toggleClase('cursor-grande', this.checked)">
+            <span class="a11y-slider"></span>
+        </label>
+    </div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-pause-circle"></i> <span id="lbl-anim">Reducir animaciones</span></div>
+        <label class="a11y-toggle">
+            <input type="checkbox" id="togAnim" onchange="toggleAnimaciones(this.checked)">
+            <span class="a11y-slider"></span>
+        </label>
+    </div>
+
+    <button class="a11y-reset" id="btn-reset" onclick="resetA11y()">
+        <i class="bi bi-arrow-counterclockwise me-1"></i> <span id="lbl-reset">Restablecer todo</span>
+    </button>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Fecha actual
+    // ── Fecha actual ──
     document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-CO', {
         weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
     });
 
     // ── Abrir modal para NUEVO guía ──
     function abrirModalNuevo() {
-        document.getElementById('modalTitulo').textContent = 'Registrar Nuevo Guía';
-        document.getElementById('btnGuardarTexto').textContent = 'Guardar Guía';
+        document.getElementById('modalTitulo').textContent = currentLang === 'en' ? 'Register New Guide' : 'Registrar Nuevo Guía';
+        document.getElementById('btnGuardarTexto').textContent = currentLang === 'en' ? 'Save Guide' : 'Guardar Guía';
         document.getElementById('inputGuiaId').value = '';
         document.getElementById('formGuia').reset();
     }
 
-    // ── Abrir modal para EDITAR (stub: llenar con fetch si se usa AJAX) ──
+    // ── Abrir modal para EDITAR ──
     function abrirModalEditar(id) {
-        document.getElementById('modalTitulo').textContent = 'Editar Guía';
-        document.getElementById('btnGuardarTexto').textContent = 'Actualizar Guía';
+        document.getElementById('modalTitulo').textContent = currentLang === 'en' ? 'Edit Guide' : 'Editar Guía';
+        document.getElementById('btnGuardarTexto').textContent = currentLang === 'en' ? 'Update Guide' : 'Actualizar Guía';
         document.getElementById('inputGuiaId').value = id;
-
-        // Si se trabaja con AJAX, aquí se hace fetch('/guias/detalle/' + id)
-        // y se rellenan los campos del formulario.
-        // Por ahora se abre el modal vacío para que el template lo maneje vía Django.
-
         const modal = new bootstrap.Modal(document.getElementById('modalGuia'));
         modal.show();
     }
@@ -928,7 +1127,7 @@
         let visibles = 0;
 
         filas.forEach(fila => {
-            const texto   = fila.textContent.toLowerCase();
+            const texto    = fila.textContent.toLowerCase();
             const okBuscar = !buscar || texto.includes(buscar);
             const okEstado = !estado || fila.dataset.estado === estado;
             const okEsp    = !especialidad || fila.dataset.especialidad === especialidad;
@@ -940,15 +1139,15 @@
         });
 
         document.getElementById('visiblesCount').textContent = visibles;
-        document.getElementById('contadorGuias').textContent = visibles + ' registros';
+        document.getElementById('contadorGuias').textContent = visibles + (currentLang === 'en' ? ' records' : ' registros');
     }
 
-    // ── Toast de mensajes Django (si se pasa ?msg=ok) ──
+    // ── Toast de mensajes Django ──
     const params = new URLSearchParams(window.location.search);
-    if (params.get('msg') === 'creado') mostrarToast('Guía registrado exitosamente.', '#059669');
-    if (params.get('msg') === 'editado') mostrarToast('Guía actualizado correctamente.', '#2563eb');
-    if (params.get('msg') === 'baja') mostrarToast('Guía marcado como Inactivo.', '#b91c1c');
-    if (params.get('msg') === 'reactivado') mostrarToast('Guía reactivado correctamente.', '#059669');
+    if (params.get('msg') === 'creado')     mostrarToast(currentLang === 'en' ? 'Guide registered successfully.' : 'Guía registrado exitosamente.', '#059669');
+    if (params.get('msg') === 'editado')    mostrarToast(currentLang === 'en' ? 'Guide updated correctly.' : 'Guía actualizado correctamente.', '#2563eb');
+    if (params.get('msg') === 'baja')       mostrarToast(currentLang === 'en' ? 'Guide marked as Inactive.' : 'Guía marcado como Inactivo.', '#b91c1c');
+    if (params.get('msg') === 'reactivado') mostrarToast(currentLang === 'en' ? 'Guide reactivated correctly.' : 'Guía reactivado correctamente.', '#059669');
 
     function mostrarToast(mensaje, color) {
         const toast = document.getElementById('toastMsg');
@@ -956,6 +1155,348 @@
         document.getElementById('toastBody').textContent = mensaje;
         new bootstrap.Toast(toast, { delay: 4000 }).show();
     }
+
+
+    /* ════════════════════════════════════════
+       WIDGET DE ACCESIBILIDAD
+    ════════════════════════════════════════ */
+    (function () {
+
+        const t = {
+            es: {
+                titulo: 'Accesibilidad',
+                idiomaLbl: 'Idioma / Language',
+                textoLbl: 'Tamaño de texto',
+                tamanoLbl: 'Tamaño',
+                visualLbl: 'Visual',
+                contrasteLbl: 'Alto contraste',
+                linksLbl: 'Subrayar enlaces',
+                cursorLbl: 'Cursor grande',
+                animLbl: 'Reducir animaciones',
+                resetLbl: 'Restablecer todo',
+                pageTitle: 'Gestión de Guías | Monagua',
+                h2: 'Gestión de Guías',
+                sub: 'Registra, edita y administra el personal de guías locales.',
+                btnNuevo: 'Nuevo Guía',
+                kpiActivos: 'Guías Activos',
+                kpiActiSub: 'Disponibles para asignar',
+                kpiTotal: 'Total Guías',
+                kpiTotalSub: 'Registros en el sistema',
+                kpiAsig: 'Asignados a Tours',
+                kpiAsigSub: 'En servicios activos',
+                kpiInact: 'Guías Inactivos',
+                kpiInactSub: 'Dados de baja',
+                searchPh: 'Buscar por nombre, especialidad o contacto…',
+                optTodosEst: 'Todos los estados',
+                optActivos: 'Activos',
+                optInactivos: 'Inactivos',
+                optTodasEsp: 'Todas las especialidades',
+                optTodaDisp: 'Toda disponibilidad',
+                thGuia: 'Guía',
+                thEsp: 'Especialidad',
+                thContacto: 'Contacto',
+                thDisp: 'Disponibilidad',
+                thTours: 'Tours asignados',
+                thEstado: 'Estado',
+                thAcciones: 'Acciones',
+                tituloTabla: 'Listado de Guías',
+                modalTitulo: 'Registrar Nuevo Guía',
+                secInfoPer: 'Información Personal',
+                secPerfil: 'Perfil Profesional',
+                lblNombre: 'Nombre *',
+                lblApellido: 'Apellido *',
+                lblCorreo: 'Correo Electrónico *',
+                lblTelefono: 'Teléfono *',
+                lblDocumento: 'Número de Documento',
+                lblEspecialidad: 'Especialidad *',
+                lblDisponibilidad: 'Disponibilidad *',
+                lblExperiencia: 'Años de Experiencia',
+                lblIdiomas: 'Idiomas que habla',
+                lblCertificaciones: 'Certificaciones / Formación',
+                lblNotas: 'Notas adicionales',
+                btnGuardar: 'Guardar Guía',
+                btnCancelar: 'Cancelar',
+                optSelectEsp: 'Seleccionar…',
+                optDisponible: 'Disponible',
+                optOcupado: 'Ocupado',
+                modalBajaTitulo: 'Confirmar Baja',
+                modalBajaMsg: '¿Estás seguro de que deseas marcar como <strong>Inactivo</strong> al guía',
+                modalBajaSub: 'El guía dejará de aparecer en futuras asignaciones, pero su historial se conservará.',
+                lblDarBaja: 'Dar de Baja',
+                modalReactTitulo: 'Reactivar Guía',
+                modalReactMsg: '¿Deseas reactivar al guía',
+                modalReactSub: 'Volverá a aparecer como opción disponible para asignar a nuevos tours.',
+                lblReactivar: 'Reactivar',
+                guiasPag: 'guías',
+                registros: 'registros',
+            },
+            en: {
+                titulo: 'Accessibility',
+                idiomaLbl: 'Language / Idioma',
+                textoLbl: 'Text size',
+                tamanoLbl: 'Size',
+                visualLbl: 'Visual',
+                contrasteLbl: 'High contrast',
+                linksLbl: 'Underline links',
+                cursorLbl: 'Large cursor',
+                animLbl: 'Reduce animations',
+                resetLbl: 'Reset all',
+                pageTitle: 'Guide Management | Monagua',
+                h2: 'Guide Management',
+                sub: 'Register, edit and manage local guide staff.',
+                btnNuevo: 'New Guide',
+                kpiActivos: 'Active Guides',
+                kpiActiSub: 'Available to assign',
+                kpiTotal: 'Total Guides',
+                kpiTotalSub: 'Records in the system',
+                kpiAsig: 'Assigned to Tours',
+                kpiAsigSub: 'In active services',
+                kpiInact: 'Inactive Guides',
+                kpiInactSub: 'Deactivated',
+                searchPh: 'Search by name, specialty or contact…',
+                optTodosEst: 'All statuses',
+                optActivos: 'Active',
+                optInactivos: 'Inactive',
+                optTodasEsp: 'All specialties',
+                optTodaDisp: 'All availability',
+                thGuia: 'Guide',
+                thEsp: 'Specialty',
+                thContacto: 'Contact',
+                thDisp: 'Availability',
+                thTours: 'Assigned tours',
+                thEstado: 'Status',
+                thAcciones: 'Actions',
+                tituloTabla: 'Guide List',
+                modalTitulo: 'Register New Guide',
+                secInfoPer: 'Personal Information',
+                secPerfil: 'Professional Profile',
+                lblNombre: 'First name *',
+                lblApellido: 'Last name *',
+                lblCorreo: 'Email address *',
+                lblTelefono: 'Phone *',
+                lblDocumento: 'Document number',
+                lblEspecialidad: 'Specialty *',
+                lblDisponibilidad: 'Availability *',
+                lblExperiencia: 'Years of experience',
+                lblIdiomas: 'Languages spoken',
+                lblCertificaciones: 'Certifications / Training',
+                lblNotas: 'Additional notes',
+                btnGuardar: 'Save Guide',
+                btnCancelar: 'Cancel',
+                optSelectEsp: 'Select…',
+                optDisponible: 'Available',
+                optOcupado: 'Busy',
+                modalBajaTitulo: 'Confirm Deactivation',
+                modalBajaMsg: 'Are you sure you want to mark as <strong>Inactive</strong> the guide',
+                modalBajaSub: 'The guide will no longer appear in future assignments, but their history will be preserved.',
+                lblDarBaja: 'Deactivate',
+                modalReactTitulo: 'Reactivate Guide',
+                modalReactMsg: 'Do you want to reactivate the guide',
+                modalReactSub: 'They will appear again as an available option to assign to new tours.',
+                lblReactivar: 'Reactivate',
+                guiasPag: 'guides',
+                registros: 'records',
+            }
+        };
+
+        let fontStep = parseInt(localStorage.getItem('a11y-font') || '0');
+        window.currentLang = localStorage.getItem('a11y-lang') || 'es';
+
+        /* ── Panel toggle ── */
+        window.toggleA11yPanel = function () {
+            document.getElementById('a11y-panel').classList.toggle('open');
+        };
+
+        /* ── Cambio de idioma ── */
+        window.setLang = function (lang) {
+            window.currentLang = lang;
+            localStorage.setItem('a11y-lang', lang);
+            applyLang(lang);
+            document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            // actualizar fecha con locale correcto
+            document.getElementById('currentDate').textContent = new Date().toLocaleDateString(
+                lang === 'en' ? 'en-US' : 'es-CO',
+                { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }
+            );
+        };
+
+        function applyLang(lang) {
+            const L = t[lang];
+
+            // Panel
+            document.getElementById('a11y-titulo').textContent   = L.titulo;
+            document.getElementById('lbl-idioma').textContent    = L.idiomaLbl;
+            document.getElementById('lbl-texto').textContent     = L.textoLbl;
+            document.getElementById('lbl-tamano').textContent    = L.tamanoLbl;
+            document.getElementById('lbl-visual').textContent    = L.visualLbl;
+            document.getElementById('lbl-contraste').textContent = L.contrasteLbl;
+            document.getElementById('lbl-links').textContent     = L.linksLbl;
+            document.getElementById('lbl-cursor').textContent    = L.cursorLbl;
+            document.getElementById('lbl-anim').textContent      = L.animLbl;
+            document.getElementById('lbl-reset').textContent     = L.resetLbl;
+
+            // Página
+            document.title = L.pageTitle;
+            document.getElementById('page-h2').textContent  = L.h2;
+            document.getElementById('page-sub').textContent = L.sub;
+            document.getElementById('lbl-btn-nuevo').textContent = L.btnNuevo;
+
+            // KPI
+            document.getElementById('kpi-lbl-activos').textContent  = L.kpiActivos;
+            document.getElementById('kpi-sub-activos').textContent  = L.kpiActiSub;
+            document.getElementById('kpi-lbl-total').textContent    = L.kpiTotal;
+            document.getElementById('kpi-sub-total').textContent    = L.kpiTotalSub;
+            document.getElementById('kpi-lbl-asig').textContent     = L.kpiAsig;
+            document.getElementById('kpi-sub-asig').textContent     = L.kpiAsigSub;
+            document.getElementById('kpi-lbl-inact').textContent    = L.kpiInact;
+            document.getElementById('kpi-sub-inact').textContent    = L.kpiInactSub;
+
+            // Filtros
+            document.getElementById('inputBuscar').placeholder       = L.searchPh;
+            document.getElementById('opt-todos-estados').textContent = L.optTodosEst;
+            document.getElementById('opt-activos').textContent       = L.optActivos;
+            document.getElementById('opt-inactivos').textContent     = L.optInactivos;
+            document.getElementById('opt-todas-esp').textContent     = L.optTodasEsp;
+            document.getElementById('opt-toda-disp').textContent     = L.optTodaDisp;
+
+            // Tabla
+            document.getElementById('th-guia').textContent     = L.thGuia;
+            document.getElementById('th-esp').textContent      = L.thEsp;
+            document.getElementById('th-contacto').textContent = L.thContacto;
+            document.getElementById('th-disp').textContent     = L.thDisp;
+            document.getElementById('th-tours').textContent    = L.thTours;
+            document.getElementById('th-estado').textContent   = L.thEstado;
+            document.getElementById('th-acciones').textContent = L.thAcciones;
+            document.getElementById('titulo-tabla').innerHTML  = `<i class="bi bi-person-badge-fill me-2"></i>${L.tituloTabla}`;
+            document.getElementById('lbl-guias-pag').textContent = L.guiasPag;
+
+            // Contador
+            const cnt = document.getElementById('contadorGuias');
+            const num = cnt.textContent.split(' ')[0];
+            cnt.textContent = num + ' ' + L.registros;
+
+            // Modal guardar
+            document.getElementById('modalTitulo').textContent       = L.modalTitulo;
+            document.getElementById('btnGuardarTexto').textContent   = L.btnGuardar;
+
+            // Secciones modal
+            document.getElementById('sec-info-personal').innerHTML = `<i class="bi bi-person-fill"></i> ${L.secInfoPer}`;
+            document.getElementById('sec-perfil').innerHTML         = `<i class="bi bi-award-fill"></i> ${L.secPerfil}`;
+
+            // Labels modal
+            document.getElementById('lbl-nombre').textContent           = L.lblNombre;
+            document.getElementById('lbl-apellido').textContent         = L.lblApellido;
+            document.getElementById('lbl-correo').textContent           = L.lblCorreo;
+            document.getElementById('lbl-telefono').textContent         = L.lblTelefono;
+            document.getElementById('lbl-documento').textContent        = L.lblDocumento;
+            document.getElementById('lbl-especialidad').textContent     = L.lblEspecialidad;
+            document.getElementById('lbl-disponibilidad').textContent   = L.lblDisponibilidad;
+            document.getElementById('lbl-experiencia').textContent      = L.lblExperiencia;
+            document.getElementById('lbl-idiomas').textContent          = L.lblIdiomas;
+            document.getElementById('lbl-certificaciones').textContent  = L.lblCertificaciones;
+            document.getElementById('lbl-notas').textContent            = L.lblNotas;
+
+            // Opciones select modal
+            document.getElementById('opt-select-esp').textContent = L.optSelectEsp;
+            document.getElementById('opt-disponible').textContent  = L.optDisponible;
+            document.getElementById('opt-ocupado').textContent     = L.optOcupado;
+
+            // Botones cancelar (todos)
+            document.querySelectorAll('.btn-cancel').forEach(b => b.textContent = L.btnCancelar);
+
+            // Modal baja
+            document.getElementById('modal-baja-titulo').textContent = L.modalBajaTitulo;
+            document.getElementById('modal-baja-sub').textContent    = L.modalBajaSub;
+            document.getElementById('lbl-dar-baja').textContent      = L.lblDarBaja;
+
+            // Modal reactivar
+            document.getElementById('modal-react-titulo').textContent = L.modalReactTitulo;
+            document.getElementById('modal-react-sub').textContent    = L.modalReactSub;
+            document.getElementById('lbl-reactivar').textContent      = L.lblReactivar;
+        }
+
+        /* ── Tamaño fuente ── */
+        window.cambiarFuente = function (dir) {
+            fontStep = Math.max(-3, Math.min(5, fontStep + dir));
+            localStorage.setItem('a11y-font', fontStep);
+            applyFontSize();
+        };
+
+        function applyFontSize() {
+            const pct = 100 + fontStep * 10;
+            document.documentElement.style.fontSize = pct + '%';
+            document.getElementById('fontPct').textContent = pct + '%';
+        }
+
+        /* ── Toggle clases body ── */
+        window.toggleClase = function (cls, val) {
+            document.body.classList.toggle(cls, val);
+            localStorage.setItem('a11y-' + cls, val ? '1' : '0');
+        };
+
+        /* ── Reducir animaciones ── */
+        window.toggleAnimaciones = function (val) {
+            if (val) {
+                const style = document.createElement('style');
+                style.id = 'a11y-no-anim';
+                style.textContent = '*, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }';
+                document.head.appendChild(style);
+            } else {
+                const el = document.getElementById('a11y-no-anim');
+                if (el) el.remove();
+            }
+            localStorage.setItem('a11y-anim', val ? '1' : '0');
+        };
+
+        /* ── Reset total ── */
+        window.resetA11y = function () {
+            fontStep = 0;
+            document.documentElement.style.fontSize = '';
+            document.getElementById('fontPct').textContent = '100%';
+            ['alto-contraste', 'subrayar-links', 'cursor-grande'].forEach(c => {
+                document.body.classList.remove(c);
+                localStorage.removeItem('a11y-' + c);
+            });
+            ['togContraste', 'togLinks', 'togCursor', 'togAnim'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.checked = false;
+            });
+            const noAnim = document.getElementById('a11y-no-anim');
+            if (noAnim) noAnim.remove();
+            localStorage.removeItem('a11y-font');
+            localStorage.removeItem('a11y-anim');
+        };
+
+        /* ── Restaurar preferencias al cargar ── */
+        function init() {
+            applyLang(window.currentLang);
+            document.getElementById('btn-es').classList.toggle('active', window.currentLang === 'es');
+            document.getElementById('btn-en').classList.toggle('active', window.currentLang === 'en');
+            applyFontSize();
+
+            const togMap = {
+                'alto-contraste':  'togContraste',
+                'subrayar-links':  'togLinks',
+                'cursor-grande':   'togCursor'
+            };
+            Object.entries(togMap).forEach(([cls, togId]) => {
+                if (localStorage.getItem('a11y-' + cls) === '1') {
+                    document.body.classList.add(cls);
+                    const el = document.getElementById(togId);
+                    if (el) el.checked = true;
+                }
+            });
+
+            if (localStorage.getItem('a11y-anim') === '1') {
+                toggleAnimaciones(true);
+                document.getElementById('togAnim').checked = true;
+            }
+        }
+
+        init();
+
+    })();
 </script>
 </body>
 </html>
