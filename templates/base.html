@@ -17,6 +17,13 @@
     <link rel="preload" as="image" href="{% static 'img/Fondo2.jpg' %}">
     <link rel="preload" as="image" href="{% static 'img/Fondo3.jpg' %}">
     <link rel="preload" as="image" href="{% static 'img/Fondo4.jpg' %}">
+
+
+    <link rel="icon" type="image/x-icon" href="{% static 'img/monagua_log.ico' %}">
+    
+    <title>{% block titulo %}Monagua{% endblock %}</title>
+
+    
 </head>
 <body>
 
@@ -24,7 +31,7 @@
 
     <div class="wrapper"> 
         <div class="content-wrapper">
-            <main class="container-fluid p-4 overflow-auto">
+            <main class="overflow-auto">
                 {% block content %}
                 {% endblock %}
             </main>
@@ -100,8 +107,8 @@
             </ul>
         </div>
     {% else %}
-        <a href="{% url 'login' %}" class="btn btn-sm btn-outline-light me-2">Iniciar Sesión</a>
-        <a href="{% url 'registro' %}" class="btn btn-sm btn-brand">Registrarse</a>
+        
+        
     {% endif %}
 </div>
     

@@ -1,12 +1,23 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Usuario, PerfilTurista
+from .models import Usuario, PerfilTurista, PerfilGuia
 
-# Eliminamos el registro simple para usar el personalizado más abajo
 admin.site.register(PerfilTurista)
+admin.site.register(PerfilGuia)
+
+class PerfilTuristaInline(admin.StackedInline):
+    model = PerfilTurista
+    can_delete = True
+    verbose_name_plural = 'Perfil de Turista'
+
+class PerfilGuiaInline(admin.StackedInline):
+    model = PerfilGuia
+    can_delete = True
+    verbose_name_plural = 'Perfil de Guía'
 
 class UsuarioAdmin(UserAdmin):
     model = Usuario
+    inlines = [PerfilTuristaInline, PerfilGuiaInline]
     # Agregamos tus campos personalizados a la lista del admin
     list_display = ['email', 'username', 'first_name', 'last_name', 'tipo_documento', 'es_turista', 'is_staff']
     

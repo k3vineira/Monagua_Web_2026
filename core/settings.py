@@ -31,8 +31,8 @@ INSTALLED_APPS = [
     'reservas',
     'inicio.apps.InicioConfig',
     'usuario',
-    'perfil', 
     'panel',
+    'pago',
 ]
 
 AUTH_USER_MODEL = 'usuario.Usuario'

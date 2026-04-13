@@ -1,22 +1,41 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Usuario, PerfilTurista  # Importamos tu modelo personalizado
 from django.contrib.auth.decorators import login_required
+from panel.models import Reserva
+from django.http import HttpResponse
+import io
+from reportlab.pdfgen import canvas
 
-
-@login_required # Esto asegura que solo entren usuarios logueados
+@login_required
 def dashboard_view(request):
     # Pasamos el usuario a la plantilla (aunque Django lo hace por defecto)
     return render(request, 'dashboard.html')
 
-
+@login_required
 def perfil_usuario_view(request):
-    # Pasamos el usuario a la plantilla
-    return render(request, 'perfil.html')
-
-
+    user = request.user
+    if request.method == 'POST':
+        # Caso 1: Actualización de Imagen de Perfil
+        if 'imagen_perfil' in request.FILES:
+            user.imagen_perfil = request.FILES['imagen_perfil']
+            user.save()
+            messages.success(request, "¡Foto de perfil actualizada correctamente!")
+        
+        # Caso 2: Actualización de Datos Personales
+        elif 'editar_perfil' in request.POST:
+            user.first_name = request.POST.get('first_name', user.first_name)
+            user.last_name = request.POST.get('last_name', user.last_name)
+            user.tipo_documento = request.POST.get('tipo_documento', user.tipo_documento)
+            user.telefono = request.POST.get('telefono', user.telefono)
+            user.residencia = request.POST.get('residencia', user.residencia)
+            user.save()
+            messages.success(request, "¡Perfil actualizado con éxito!")
+            
+        return redirect('detalles')
+    return render(request, 'detalles.html')
 def registro_view(request):
     if request.method == 'POST':
         # 1. Capturamos los datos del POST (Coinciden con los 'name' de tu HTML)
@@ -81,7 +100,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('/')  # Redirige a la raíz del sitio
+                return redirect('inicio_usuario') # Redirige al dashboard personal
         else:
             messages.error(request, "Correo o contraseña incorrectos.")
     else:
@@ -90,3 +109,45 @@ def login_view(request):
 
 def terminos_condiciones(request):
     return render(request, 'terminos.html')
+
+@login_required
+def mis_pagos_view(request):
+    """ Muestra el historial de reservas y pagos del usuario """
+    pagos = Reserva.objects.filter(usuario=request.user).order_by('-fecha_reserva')
+    return render(request, 'mis_pagos.html', {'pagos': pagos})
+
+@login_required
+def descargar_recibo_view(request, reserva_id):
+    """ Genera un PDF con el detalle del pago utilizando ReportLab """
+    reserva = get_object_or_404(Reserva, id=reserva_id, usuario=request.user)
+    
+    buffer = io.BytesIO()
+    p = canvas.Canvas(buffer)
+
+    # Diseño básico del recibo
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, 800, "MONAGUA - COMPROBANTE DE PAGO")
+    
+    p.setFont("Helvetica", 12)
+    p.drawString(100, 770, f"Referencia de Reserva: #MON-{reserva.id}")
+    p.drawString(100, 755, f"Fecha de Emisión: {reserva.fecha_reserva.strftime('%d/%m/%Y %H:%M')}")
+    p.line(100, 745, 500, 745)
+
+    p.drawString(100, 720, f"Cliente: {reserva.usuario.get_full_name() or reserva.usuario.username}")
+    
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(100, 680, "RESUMEN DEL TOUR:")
+    p.setFont("Helvetica", 12)
+    p.drawString(120, 660, f"Tour: {reserva.tour.nombre}")
+    p.drawString(120, 645, f"Destino: {reserva.tour.destino}")
+    p.drawString(120, 630, f"Estado: {reserva.get_estado_display()}")
+    
+    p.line(100, 610, 500, 610)
+    p.setFont("Helvetica-Bold", 14)
+    p.drawString(100, 590, f"VALOR PAGADO: ${reserva.total_pagado}")
+
+    p.showPage()
+    p.save()
+
+    buffer.seek(0)
+    return HttpResponse(buffer, content_type='application/pdf')
