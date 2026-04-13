@@ -91,4 +91,5 @@ class Guia(models.Model):
         return f"{self.nombre} {self.apellido} - {self.especialidad}"
 
     def num_tours(self):
-        return self.tours_asignados.count()
+        # Cuando tengas una relación Tour → Guia, ajusta el related_name aquí
+        return 0
