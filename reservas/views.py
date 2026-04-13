@@ -1,20 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import Actividades, Categoria, Paquete, Promocion, Reserva, PQRS
+from .models import Actividades, Categoria, Paquete, Promocion, Reserva, PQRS, Blog
 from .forms import (
     CategoriaForm, CategoriaEditarForm, 
     ActividadesForm, ActividadesEditarForm, 
     PaqueteForm, PaqueteEditarForm, 
     PromocionForm, PromocionEditarForm, 
     ReservaForm, ReservaEditarForm,
-    PQRSForm, PQRSEditarForm
+    PQRSForm, PQRSEditarForm,
+    blogForm, blogEditarForm
+
 )
 
 # --- VISTAS GENERALES ---
 
 def blog_view(request):
-    """ Muestra la página del blog """
-    return render(request, 'blog.html')
+    """ Muestra la página principal del blog con las entradas de la BD """
+    # Buscamos todos los objetos guardados en el modelo Blog
+    posts = Blog.objects.all().order_by('-id') 
+    
+    # IMPORTANTE: El nombre en el diccionario ('posts') debe ser igual al del for
+    return render(request, 'blog.html', {'posts': posts})
+
 def promociones_view(request):
     """ Muestra la página de promociones """
     promociones_list = Promocion.objects.all()
@@ -208,3 +215,33 @@ def editar_pqrs(request, pk):
     else:
         form = PQRSEditarForm(instance=pqrs)
     return render(request, 'pqrs.html', {'form': form, 'titulo': f'Editar PQRS de {pqrs.nombre}'})
+def crear_blog(request):
+    if request.method == 'POST':
+        form = blogForm(request.POST, request.FILES)
+        if form.is_valid():
+            blog = form.save()
+            messages.success(request, f"Entrada '{blog.titulo}' publicada con éxito.")
+            return redirect('crear_blog') # Redirige a la lista del blog
+    else:
+        form = blogForm()
+    
+    return render(request, 'admin/blog/agregar_blog.html', {
+        'form': form, 
+        'titulo': 'Nueva Entrada de Blog'
+    })
+
+def editar_blog(request, pk):
+    blog = get_object_or_404(Blog, pk=pk)
+    if request.method == 'POST':
+        form = blogEditarForm(request.POST, request.FILES, instance=blog)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Entrada '{blog.titulo}' actualizada.")
+            return redirect('blog_view')
+    else:
+        form = blogEditarForm(instance=blog)
+    
+    return render(request, 'admin/blog/agregar_blog.html', {
+        'form': form, 
+        'titulo': f'Editando: {blog.titulo}'
+    })

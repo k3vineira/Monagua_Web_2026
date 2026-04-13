@@ -12,4 +12,5 @@ urlpatterns = [
     path('paquetes/crear/', views.crear_paquete, name='crear_paquete'),
     path('reservas/crear/', views.crear_reserva, name='crear_reserva'),
     path('pqrs/crear/', views.crear_pqrs, name='crear_pqrs'),
+    path('blog/crear/', views.crear_blog, name='crear_blog'),
 ]

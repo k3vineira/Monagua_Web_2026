@@ -104,3 +104,15 @@ class PQRS(models.Model):
      def __str__(self):
         return f"{self.tipo} - {self.nombre_solicitante}"
     
+class Blog(models.Model):
+        titulo = models.CharField(max_length=200, verbose_name='Título del Blog')
+        contenido = models.TextField(verbose_name='Contenido del Blog')
+        imagen_destacada = models.ImageField(upload_to='blog/', null=True, blank=True, verbose_name='Imagen Destacada')
+
+        class Meta:
+            verbose_name = 'Blog'
+            verbose_name_plural = 'Blogs'
+
+        def __str__(self):
+            return self.titulo
+    
