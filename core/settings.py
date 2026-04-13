@@ -27,12 +27,12 @@ INSTALLED_APPS = [
     
     'crispy_forms', # pip install django-crispy-forms
     'crispy_bootstrap5', # pip install crispy-bootstrap5
-
     'reservas',
     'inicio.apps.InicioConfig',
     'usuario',
     'perfil', 
     'panel',
+    'pago.apps.PagoConfig'
 ]
 
 AUTH_USER_MODEL = 'usuario.Usuario'
