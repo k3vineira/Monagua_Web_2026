@@ -3,6 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, Count
 from django.contrib.auth import get_user_model
 from .models import Tour, Reserva
+from .models import Tour, Reserva, Guia
 
 User = get_user_model()
 
@@ -17,7 +18,7 @@ def dashboard_administrador(request):
 
     # 3. Tours más populares (Contamos cuántas reservas tiene cada tour y ordenamos de mayor a menor)
     tours_populares = Tour.objects.annotate(
-        numero_reservas=Count('reserva')
+        numero_reservas=Count('reservas')
     ).order_by('-numero_reservas')[:5] # Traemos solo el Top 5
 
     # 4. Total de reservas realizadas
