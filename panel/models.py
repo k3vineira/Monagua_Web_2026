@@ -113,7 +113,7 @@ class Guia(models.Model):
 
     def __str__(self):
         return f"{self.nombre} {self.apellido} - {self.especialidad}"
-
+    @property
     def num_tours(self):
         # Cuenta los tours que tienen este guía asignado
         return self.tours_asignados.count()
