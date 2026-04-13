@@ -1,5 +1,4 @@
 {% load static %}
-{% if user.is_authenticated %}
 {% block content %}
 <head>
     <title>Perfil - Monagua</title>
@@ -17,7 +16,7 @@
         
         <aside class=" col-md-2 barra-lateral bg-success border-end d-flex flex-column p-3 text-bg-danger p-3 ">
             <a href="#" class="d-flex align-items-center mb-4 text-decoration-none">
-                <img src="{% static '/img/logo_monagua.png' %}" alt="Monagua" width="64" height="64" class="me-2">
+                <img src="{% static 'img/logo_monagua.png' %}" alt="Monagua" width="64" height="64" class="me-2">
                 <span class="fs-3 fw-bold text-light">Monagua</span>
             </a>
             <nav class="nav flex-column gap-2 mb-auto ">
@@ -189,4 +188,3 @@
 </body>
 </html>
 {% endblock %}
-{% endif %}

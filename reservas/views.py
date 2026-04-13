@@ -15,6 +15,11 @@ from .forms import (
 def blog_view(request):
     """ Muestra la página del blog """
     return render(request, 'blog.html')
+
+def comentarios_view(request):
+    """ Muestra la página de reseñas y comentarios """
+    return render(request, 'comentarios.html')
+
 def promociones_view(request):
     """ Muestra la página de promociones """
     promociones_list = Promocion.objects.all()
