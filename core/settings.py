@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'usuario',
     'panel',
     'pago',
+    'Experiencia_soporte',
+    
 ]
 
 AUTH_USER_MODEL = 'usuario.Usuario'

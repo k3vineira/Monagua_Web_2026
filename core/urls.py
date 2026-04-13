@@ -17,6 +17,7 @@ urlpatterns = [
     path('', include('inicio.urls')),
     path('reservas/', include('reservas.urls')), # <--- Esto conecta con el código de arriba
     path('usuario/', include('usuario.urls')),
+    path('Experiencia_soporte/', include('Experiencia_soporte.urls')),
     path('pago/', include('pago.urls')),
     
     # 3. Autenticación y Gestión
