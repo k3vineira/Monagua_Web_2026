@@ -9,16 +9,15 @@ from . import views
 urlpatterns = [
     # 1. Admin de Django
     path('admin/', admin.site.urls),
+
+    # Dashboard de usuario logueado (desde core/views.py)
+    path('inicio-usuario/', views.inicio, name='inicio_usuario'),
     
     # 2. Tus aplicaciones
     path('', include('inicio.urls')),
     path('reservas/', include('reservas.urls')), # <--- Esto conecta con el código de arriba
     path('usuario/', include('usuario.urls')),
-    path('reservas/', include('reservas.urls')), # Eliminada duplicidad
-   path('pago/', include('pago.urls')),
-    
-    # pefil de usuario
-    path('perfil/', include('perfil.urls')),
+    path('pago/', include('pago.urls')),
     
     # 3. Autenticación y Gestión
     path('login/', auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login'),
@@ -32,7 +31,7 @@ urlpatterns = [
     path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_done.html'), name='password_reset_complete'),
         
   
-   path('admin/', admin.site.urls),
+
     # Cambia la línea 29 por esta:
     path('panel/', views_gestion.dashboard_administrador, name='panel'),
 ]

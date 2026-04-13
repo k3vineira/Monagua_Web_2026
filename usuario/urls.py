@@ -11,5 +11,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     
     path('terminos-y-condiciones/', views.terminos_condiciones, name="terminos"),
-    path('perfil/', views.perfil_usuario_view, name='perfil'),
+    path('perfil/', views.perfil_usuario_view, name='detalles'),
+    path('mis-pagos/', views.mis_pagos_view, name='mis_pagos'),
+    path('descargar-recibo/<int:reserva_id>/', views.descargar_recibo_view, name='descargar_recibo'),
 ]
