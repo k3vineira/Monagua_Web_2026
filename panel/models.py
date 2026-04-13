@@ -1,12 +1,26 @@
 from django.db import models
 from django.conf import settings
 
+
+# ══════════════════════════════════════════════
+#  TOUR
+# ══════════════════════════════════════════════
 class Tour(models.Model):
-    nombre = models.CharField(max_length=200, verbose_name="Nombre del Tour")
-    destino = models.CharField(max_length=150, default="Sogamoso, Boyacá", verbose_name="Lugar de Destino")
+    nombre        = models.CharField(max_length=200, verbose_name="Nombre del Tour")
+    destino       = models.CharField(max_length=150, default="Sogamoso, Boyacá", verbose_name="Lugar de Destino")
     duracion_dias = models.PositiveIntegerField(default=1, verbose_name="Duración (Días)")
-    precio = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Precio Base")
-    descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción del recorrido")
+    precio        = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Precio Base")
+    descripcion   = models.TextField(blank=True, null=True, verbose_name="Descripción del recorrido")
+
+    # Relación con Guia — un tour puede tener un guía asignado (opcional)
+    guia = models.ForeignKey(
+        'Guia',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tours_asignados',
+        verbose_name="Guía Asignado"
+    )
 
     class Meta:
         verbose_name = "Tour"
@@ -16,11 +30,14 @@ class Tour(models.Model):
         return f"{self.nombre} - {self.destino}"
 
 
+# ══════════════════════════════════════════════
+#  RESERVA
+# ══════════════════════════════════════════════
 class Reserva(models.Model):
     ESTADOS = (
-        ('PENDIENTE', 'Pendiente de Pago'),
+        ('PENDIENTE',  'Pendiente de Pago'),
         ('CONFIRMADA', 'Confirmada'),
-        ('CANCELADA', 'Cancelada'),
+        ('CANCELADA',  'Cancelada'),
     )
 
     usuario = models.ForeignKey(
@@ -28,11 +45,15 @@ class Reserva(models.Model):
         on_delete=models.CASCADE,
         related_name="reservas"
     )
-    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="reservas")
-    fecha_reserva = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Reserva")
-    cantidad_personas = models.PositiveIntegerField(default=1, verbose_name="Número de Personas")
-    total_pagado = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Total Pagado")
-    estado = models.CharField(max_length=20, choices=ESTADOS, default='PENDIENTE')
+    tour = models.ForeignKey(
+        Tour,
+        on_delete=models.CASCADE,
+        related_name="reservas"
+    )
+    fecha_reserva      = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Reserva")
+    cantidad_personas  = models.PositiveIntegerField(default=1, verbose_name="Número de Personas")
+    total_pagado       = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Total Pagado")
+    estado             = models.CharField(max_length=20, choices=ESTADOS, default='PENDIENTE')
 
     class Meta:
         verbose_name = "Reserva"
@@ -42,23 +63,26 @@ class Reserva(models.Model):
         return f"Reserva de {self.usuario} - {self.tour.nombre}"
 
 
+# ══════════════════════════════════════════════
+#  GUÍA
+# ══════════════════════════════════════════════
 class Guia(models.Model):
     ESPECIALIDADES = (
-        ('Alta Montaña', 'Alta Montaña'),
-        ('Flora y Fauna', 'Flora y Fauna'),
-        ('Cultura Local', 'Cultura Local'),
+        ('Alta Montaña',        'Alta Montaña'),
+        ('Flora y Fauna',       'Flora y Fauna'),
+        ('Cultura Local',       'Cultura Local'),
         ('Turismo de Aventura', 'Turismo de Aventura'),
-        ('Avifauna', 'Avifauna'),
+        ('Avifauna',            'Avifauna'),
         ('Historia y Patrimonio', 'Historia y Patrimonio'),
     )
 
     DISPONIBILIDADES = (
         ('Disponible', 'Disponible'),
-        ('Ocupado', 'Ocupado'),
+        ('Ocupado',    'Ocupado'),
     )
 
     ESTADOS = (
-        ('Activo', 'Activo'),
+        ('Activo',   'Activo'),
         ('Inactivo', 'Inactivo'),
     )
 
@@ -67,20 +91,20 @@ class Guia(models.Model):
         '#ec4899', '#06b6d4', '#10b981', '#f97316',
     ]
 
-    nombre = models.CharField(max_length=100, verbose_name="Nombre")
-    apellido = models.CharField(max_length=100, verbose_name="Apellido")
-    correo = models.EmailField(unique=True, verbose_name="Correo Electrónico")
-    telefono = models.CharField(max_length=20, verbose_name="Teléfono")
-    documento = models.CharField(max_length=30, blank=True, null=True, verbose_name="Número de Documento")
-    especialidad = models.CharField(max_length=50, choices=ESPECIALIDADES, verbose_name="Especialidad")
-    disponibilidad = models.CharField(max_length=20, choices=DISPONIBILIDADES, default='Disponible', verbose_name="Disponibilidad")
-    experiencia = models.PositiveIntegerField(default=0, verbose_name="Años de Experiencia")
-    idiomas = models.CharField(max_length=200, blank=True, null=True, verbose_name="Idiomas")
+    nombre          = models.CharField(max_length=100, verbose_name="Nombre")
+    apellido        = models.CharField(max_length=100, verbose_name="Apellido")
+    correo          = models.EmailField(unique=True, verbose_name="Correo Electrónico")
+    telefono        = models.CharField(max_length=20, verbose_name="Teléfono")
+    documento       = models.CharField(max_length=30, blank=True, null=True, verbose_name="Número de Documento")
+    especialidad    = models.CharField(max_length=50, choices=ESPECIALIDADES, verbose_name="Especialidad")
+    disponibilidad  = models.CharField(max_length=20, choices=DISPONIBILIDADES, default='Disponible', verbose_name="Disponibilidad")
+    experiencia     = models.PositiveIntegerField(default=0, verbose_name="Años de Experiencia")
+    idiomas         = models.CharField(max_length=200, blank=True, null=True, verbose_name="Idiomas")
     certificaciones = models.TextField(blank=True, null=True, verbose_name="Certificaciones")
-    notas = models.TextField(blank=True, null=True, verbose_name="Notas Adicionales")
-    estado = models.CharField(max_length=10, choices=ESTADOS, default='Activo', verbose_name="Estado")
-    color_avatar = models.CharField(max_length=10, default='#2c6e3c', verbose_name="Color Avatar")
-    fecha_registro = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
+    notas           = models.TextField(blank=True, null=True, verbose_name="Notas Adicionales")
+    estado          = models.CharField(max_length=10, choices=ESTADOS, default='Activo', verbose_name="Estado")
+    color_avatar    = models.CharField(max_length=10, default='#2c6e3c', verbose_name="Color Avatar")
+    fecha_registro  = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
 
     class Meta:
         verbose_name = "Guía"
@@ -91,4 +115,5 @@ class Guia(models.Model):
         return f"{self.nombre} {self.apellido} - {self.especialidad}"
 
     def num_tours(self):
+        # Cuenta los tours que tienen este guía asignado
         return self.tours_asignados.count()
