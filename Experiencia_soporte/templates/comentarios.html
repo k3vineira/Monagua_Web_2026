@@ -1,86 +1,57 @@
+{% extends "base.html" %}
 {% load static %}
+
+{% block extra_head %}
+<style>
+    :root {
+        --monagua-bg: #f8f9fa;
+        --monagua-primary: #3B643F;
+        --monagua-dark: #1a251e;
+    }
+    .sidebar-monagua {
+        width: 260px; 
+        background-color: var(--monagua-dark); 
+        z-index: 1040; 
+    }
+    .main-content { margin-left: 260px; }
+    .nav-item-custom {
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .nav-item-custom:hover {
+        color: #4ade80;
+        background: rgba(255,255,255,0.05);
+    }
+    .nav-item-active {
+        background-color: rgba(74, 175, 112, 0.15);
+        color: #fff;
+        font-weight: 600;
+        border-left: 3px solid #4ade80;
+    }
+    .btn-brand-monagua {
+        background-color: var(--monagua-primary);
+        color: white;
+        border-radius: 8px;
+        padding: 10px 24px;
+        border: none;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .img-hero-overlay {
+        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+    }
+    @media (max-width: 767.98px) { 
+        .main-content { margin-left: 0; padding-bottom: 80px; } 
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<head>
-    <title>Tour Cascadas Monagua | Reseñas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --monagua-bg: #f8f9fa;
-            --monagua-primary: #3B643F;
-            --monagua-primary-hover: #2c4a2f;
-            --monagua-dark: #1a251e;
-            --monagua-text: #333;
-            --monagua-muted: #6c757d;
-            --monagua-amber: #d97706;
-        }
-
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background-color: var(--monagua-bg); 
-            color: var(--monagua-text);
-        }
-        
-        .sidebar-monagua {
-            width: 260px; 
-            background-color: var(--monagua-dark); 
-            z-index: 1040; 
-        }
-
-        .main-content { margin-left: 260px; }
-        
-        .nav-item-custom {
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .nav-item-custom:hover {
-            color: #4ade80;
-            background: rgba(255,255,255,0.05);
-        }
-
-        .nav-item-active {
-            background-color: rgba(74, 175, 112, 0.15);
-            color: #fff;
-            font-weight: 600;
-            border-left: 3px solid #4ade80;
-        }
-
-        .btn-brand-monagua {
-            background-color: var(--monagua-primary);
-            color: white;
-            border-radius: 8px;
-            padding: 10px 24px;
-            border: none;
-            transition: 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-brand-monagua:hover {
-            background-color: var(--monagua-primary-hover);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-
-        .img-hero-overlay {
-            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
-        }
-        
-        @media (max-width: 767.98px) { 
-            .main-content { margin-left: 0; padding-bottom: 80px; } 
-        }
-    </style>
-</head>
-<body>
 <aside class="d-none d-md-flex flex-column position-fixed top-0 start-0 h-100 sidebar-monagua p-4">
     <div class="d-flex align-items-center mb-5 px-2">
-        <img src="{% static '/img/logo_monagua.png' %}" alt="Monagua" width="45" height="45" class="me-2">
-        <span class="fs-4 fw-bold text-light">Monagua</span>
+        <img src="{% static 'img/logo_monagua.png' %}" alt="Monagua" width="45" height="45" class="me-2">
     </div>
     
     <nav class="nav flex-column gap-2 flex-grow-1">
