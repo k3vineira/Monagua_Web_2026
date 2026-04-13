@@ -62,7 +62,7 @@ def crear_paquete(request):
             messages.error(request, "Error al crear el paquete. Verifica los datos.")
     else:
         form = PaqueteForm()
-    return render(request, 'paquetes/agregar_paquete.html', {'form': form, 'titulo': 'Crear Nuevo Paquete'})
+    return render(request, 'admin/paquetes/agregar_paquete.html', {'form': form, 'titulo': 'Crear Nuevo Paquete'})
 
 def editar_paquete(request, pk):
     """ Edita un destino existente """
@@ -75,7 +75,7 @@ def editar_paquete(request, pk):
             return redirect('crear_paquete')
     else:
         form = PaqueteEditarForm(instance=paquete)
-    return render(request, 'paquetes/agregar_paquete.html', {'form': form, 'titulo': f'Editar {paquete.nombre}'})
+    return render(request, 'admin/paquetes/agregar_paquete.html', {'form': form, 'titulo': f'Editar {paquete.nombre}'})
 
 # --- CRUD DE CATEGORÍAS ---
 
@@ -88,7 +88,7 @@ def crear_categoria(request):
             return redirect('crear_categoria')
     else:
         form = CategoriaForm()
-    return render(request, 'categorias/agregar_categoria.html', {'form': form, 'titulo': 'Crear Categoría'})
+    return render(request, 'admin/categorias/agregar_categoria.html', {'form': form, 'titulo': 'Crear Categoría'})
 
 def editar_categoria(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
@@ -100,7 +100,7 @@ def editar_categoria(request, pk):
             return redirect('crear_categoria')
     else:
         form = CategoriaEditarForm(instance=categoria)
-    return render(request, 'categorias/agregar_categoria.html', {'form': form, 'titulo': f'Editar {categoria.nombre}'})
+    return render(request, 'admin/categorias/agregar_categoria.html', {'form': form, 'titulo': f'Editar {categoria.nombre}'})
 
 # --- CRUD DE ACTIVIDADES ---
 
@@ -113,7 +113,7 @@ def crear_actividad(request):
             return redirect('crear_actividad')
     else:
         form = ActividadesForm()
-    return render(request, 'actividades/agregar_actividad.html', {'form': form, 'titulo': 'Crear Actividad'})
+    return render(request, 'admin/actividades/agregar_actividad.html', {'form': form, 'titulo': 'Crear Actividad'})
 
 def editar_actividad(request, pk):
     actividad = get_object_or_404(Actividades, pk=pk)
@@ -125,7 +125,7 @@ def editar_actividad(request, pk):
             return redirect('crear_actividad')
     else:
         form = ActividadesEditarForm(instance=actividad)
-    return render(request, 'actividades/agregar_actividad.html', {'form': form, 'titulo': f'Editar {actividad.nombre}'})
+    return render(request, 'admin/actividades/agregar_actividad.html', {'form': form, 'titulo': f'Editar {actividad.nombre}'})
 
 # --- CRUD DE RESERVAS ---
 
@@ -138,7 +138,7 @@ def crear_reserva(request):
             return redirect('crear_reserva')
     else:
         form = ReservaForm()
-    return render(request, 'reservas/agregar_reserva.html', {'form': form, 'titulo': 'Crear Reserva'})
+    return render(request, 'admin/reservas/agregar_reserva.html', {'form': form, 'titulo': 'Crear Reserva'})
 
 def editar_reserva(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
@@ -150,7 +150,7 @@ def editar_reserva(request, pk):
             return redirect('crear_reserva')
     else:
         form = ReservaEditarForm(instance=reserva)
-    return render(request, 'reservas/agregar_reserva.html', {'form': form, 'titulo': f'Editar Reserva'})
+    return render(request, 'admin/reservas/agregar_reserva.html', {'form': form, 'titulo': f'Editar Reserva'})
 # --- PROMOCIONES ---
 def crear_promocion(request):
     if request.method == 'POST':
@@ -167,7 +167,7 @@ def crear_promocion(request):
     todas_las_promociones = Promocion.objects.all() 
 
     # Renderizamos una sola vez con todos los datos necesarios
-    return render(request, 'promociones/agregar_promocion.html', {
+    return render(request, 'admin/promociones/agregar_promocion.html', {
         'form': form, 
         'titulo': 'Crear Promoción',
         'promociones': todas_las_promociones
@@ -183,7 +183,7 @@ def editar_promocion(request, pk):
             return redirect('crear_promocion')
     else:
         form = PromocionEditarForm(instance=promocion)
-    return render(request, 'promociones/agregar_promocion.html', {'form': form, 'titulo': f'Editar {promocion.nombre}'})
+    return render(request, 'admin/promociones/agregar_promocion.html', {'form': form, 'titulo': f'Editar {promocion.nombre}'})
 
 def crear_pqrs(request):
     """ Vista para mostrar el formulario de PQRS """
