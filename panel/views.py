@@ -54,14 +54,14 @@ def gestion_guias(request):
 @staff_member_required
 def guias_guardar(request):
     # logic to save guides
-    return render(request, 'gestion_guias.html')
+    return render(request, 'guias.html')
 
 @staff_member_required
 def guias_baja(request):
     # logic to deactivate guides
-    return render(request, 'gestion_guias.html')
+    return render(request, 'guias.html')
 
 @staff_member_required
 def guias_reactivar(request):
     # logic to reactivate guides
-    return render(request, 'gestion_guias.html')
+    return render(request, 'guias.html')
