@@ -14,14 +14,13 @@ class Categoria(models.Model):
 
 class Actividades(models.Model):
     NIVEL_CHOICES = [
-        ('Extrema', 'Extrema'),
-        ('Aventurera', 'Aventurera'),
-        ('Pacífica', 'Pacífica'),
+        ('Alta', 'Alta'),
+        ('Media', 'Media'),
+        ('Baja', 'Baja'),
     ]
     nombre = models.CharField(max_length=100, verbose_name='Nombre de la Actividad')
     descripcion = models.TextField(verbose_name='Descripción')
     duracion = models.CharField(max_length=50, verbose_name='Duración')
-    precio = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Precio')
     nivel_dificultad = models.CharField(max_length=10, choices=NIVEL_CHOICES, verbose_name='Nivel de Dificultad')
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='actividades', verbose_name='Categoría')
 
@@ -33,8 +32,10 @@ class Actividades(models.Model):
         return self.nombre
 
 class Paquete(models.Model):
+    imagen = models.ImageField(upload_to='destinos/', null=True, blank=True)
     nombre = models.CharField(max_length=100, verbose_name='Nombre del Paquete')
     descripcion = models.TextField(verbose_name='Descripción')
+    precio = models.IntegerField(verbose_name='Precio Total')
     actividades = models.ManyToManyField(Actividades, related_name='paquetes', verbose_name='Actividades Incluidas')
 
     class Meta:
@@ -80,3 +81,26 @@ class Reserva(models.Model):
 
     def __str__(self):
         return f"Reserva {self.id} - {self.nombre_cliente}"
+
+class PQRS(models.Model):
+     TIPO_CHOICES = [
+        ('Peticion', 'Petición'),
+        ('Queja', 'Queja'),
+        ('Reclamo', 'Reclamo'),
+        ('Sugerencia', 'Sugerencia'),
+     ] 
+     nombre_solicitante = models.CharField(max_length=150, verbose_name='Nombre del Solicitante')
+     documento = models.CharField(max_length=20, verbose_name='Número de Documento')
+     email = models.EmailField(verbose_name='Correo Electrónico')
+     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, verbose_name='Tipo de PQRS')
+     asunto = models.CharField(max_length=200, verbose_name='Asunto')
+     descripcion = models.TextField(verbose_name='Descripción')
+     evidencia = models.FileField(upload_to='pqrs/', null=True, blank=True, verbose_name='Adjuntar Evidencia')
+
+     class Meta:
+        verbose_name = 'PQRS'
+        verbose_name_plural = 'PQRS'
+
+     def __str__(self):
+        return f"{self.tipo} - {self.nombre_solicitante}"
+    

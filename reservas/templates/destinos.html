@@ -1,6 +1,9 @@
 {% extends "base.html" %}
-{%load static %}  
+{% load static %}
+
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <main>
     <div id="carouselDestinos" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
@@ -44,100 +47,60 @@
     </div>
 
     <section class="text-center py-5 container">
-        <h1 class="display-4 fw-bold text-success">AVENTÚRATE CON NOSOTROS</h1>
+        <h1 class="display-4 fw-bold text-success text-uppercase">Aventúrate con nosotros</h1>
         <p class="text-muted mb-4">Encuentra la aventura perfecta en Monagua.</p>
-        <div class="input-group mb-3 mx-auto shadow-sm" style="max-width: 600px;">
-            <input type="text" class="form-control" placeholder="¿A dónde quieres ir?">
-            <button class="btn btn-success px-4" type="button">BUSCAR</button>
-        </div>
+        
+        <form method="GET" action="{% url 'destinos' %}" class="mx-auto" style="max-width: 800px;">
+            <div class="input-group shadow-sm">
+                <input type="text" name="q" class="form-control w-50" placeholder="¿A dónde quieres ir?" value="{{ request.GET.q }}">
+                
+                <span class="input-group-text">$</span>
+                <input type="number" name="precio_max" class="form-control" placeholder="Precio máximo" value="{{ request.GET.precio_max }}">
+                
+                <button class="btn btn-success px-4" type="submit">BUSCAR</button>
+            </div>
+            <div class="mt-2">
+                <a href="{% url 'destinos' %}" class="text-decoration-none small text-muted">Limpiar filtros</a>
+            </div>
+        </form>
     </section>
 
     <section class="container mb-5">
         <div class="row g-4">
             
+            {% for destino in destinos %}
             <div class="col-md-6 col-lg-4">
                 <div class="card h-100 shadow-sm border-0">
                     <div class="ratio ratio-4x3">
-                        <img src="{% static 'img/Lagunanegra.png' %}" class="card-img-top object-fit-cover" alt="Laguna Negra">
+                        {% if destino.imagen %}
+                            <img src="{{ destino.imagen.url }}" class="card-img-top object-fit-cover" alt="{{ destino.nombre }}">
+                        {% else %}
+                            <img src="{% static 'img/Lagunanegra.png' %}" class="card-img-top object-fit-cover" alt="Imagen por defecto">
+                        {% endif %}
                     </div>
                     <div class="card-body text-center d-flex flex-column">
-                        <h5 class="fw-bold">Laguna Negra</h5>
-                        <p class="small text-muted flex-grow-1">Belleza misteriosa en las montañas sagradas de Mongua.</p>
-                        <h4 class="text-success fw-bold">$45.000</h4>
-                        <a href="{% url 'reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
-                    </div>
-                </div>
-            </div>
+                        <h5 class="fw-bold text-uppercase">{{ destino.nombre }}</h5>
+                        <p class="small text-muted flex-grow-1">{{ destino.descripcion }}</p>
+                        <h4 class="text-success fw-bold">${{ destino.precio }}</h4>
+                        
+                        <a href="{% url 'reservas' %}?paquete_id={{ destino.id }}" class="btn btn-success w-100 mb-2 shadow-sm">
+                            RESERVAR
+                        </a>
 
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="ratio ratio-4x3">
-                        <img src="{% static 'img/museo.jpg' %}" class="card-img-top object-fit-cover" alt="Museo Arqueológico">
-                    </div>
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="fw-bold">Museo Arqueológico</h5>
-                        <p class="small text-muted flex-grow-1">Explora la historia y cultura a través de piezas antiguas.</p>
-                        <h4 class="text-success fw-bold">$80.000</h4>
-                        <a href="{% url 'reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
+                        <a href="https://api.whatsapp.com/send?text=¡Mira este plan en Monagua! *{{ destino.nombre|urlencode }}* por solo *${{ destino.precio }}*. Más info aquí: {{ request.build_absolute_uri }}" 
+                           target="_blank" 
+                           class="btn btn-outline-success w-100">
+                           <i class="bi bi-whatsapp"></i> Compartir paquete
+                        </a>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="ratio ratio-4x3">
-                        <img src="{% static 'img/miradorcumbre.png' %}" class="card-img-top object-fit-cover" alt="Mirador de la Cumbre">
-                    </div>
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="fw-bold">Mirador de la Cumbre</h5>
-                        <p class="small text-muted flex-grow-1">Vistas panorámicas impresionantes de todo el paisaje.</p>
-                        <h4 class="text-success fw-bold">$65.000</h4>
-                        <a href="{% url 'reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
-                    </div>
-                </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <h3 class="text-muted">No encontramos resultados para tu búsqueda.</h3>
+                <p>Prueba con otras palabras como "Páramo", "Laguna" o "Museo".</p>
             </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="ratio ratio-4x3">
-                        <img src="{% static 'img/paramo.png' %}" class="card-img-top object-fit-cover" alt="Páramo Ocetá">
-                    </div>
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="fw-bold">Páramo Ocetá</h5>
-                        <p class="small text-muted flex-grow-1">Adéntrate en uno de los ecosistemas más bellos del mundo.</p>
-                        <h4 class="text-success fw-bold">$50.000</h4>
-                        <a href="{% url 'reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="ratio ratio-4x3">
-                        <img src="{% static 'img/pictografias.png' %}" class="card-img-top object-fit-cover" alt="Pictografías">
-                    </div>
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="fw-bold">Pictografías Indígenas</h5>
-                        <p class="small text-muted flex-grow-1">Descubre antiguas pinturas rupestres y sus historias.</p>
-                        <h4 class="text-success fw-bold">$50.000</h4>
-                        <a href="{% url 'reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="ratio ratio-4x3">
-                        <img src="{% static 'img/artesanias.jpg' %}" class="card-img-top object-fit-cover" alt="Museo Artesanal">
-                    </div>
-                    <div class="card-body text-center d-flex flex-column">
-                        <h5 class="fw-bold">Museo Artesanal</h5>
-                        <p class="small text-muted flex-grow-1">Aprecia el talento y la tradición en cada artesanía local.</p>
-                        <h4 class="text-success fw-bold">$95.000</h4>
-                        <a href="{% url 'reservas' %}" class="btn btn-success w-100 mt-2 shadow-sm">RESERVAR</a>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
 
         </div> 
     </section>

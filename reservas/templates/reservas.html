@@ -1,86 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
- {% block content %}
- <style>
-  
-    .titulo-principal {
-        color: #1a251e;
-        letter-spacing: 1px;
-        margin-bottom: 2rem;
-    }
 
-  
-    .img-full {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        min-height: 400px;
-    }
-
-    /* 3. Estilos del Formulario de Reserva */
-    .card-reserva {
-        border-radius: 15px;
-        border: 1px solid #e0e0e0;
-    }
-
-    .header-reserva {
-        color: #1a251e;
-        font-size: 1.5rem;
-    }
-
-    .subtitulo-formulario {
-        color: #3B643F;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        display: block;
-        margin-bottom: 10px;
-    }
-
-    /* 4. Inputs y Botón */
-    .form-control-sm {
-        border-radius: 6px;
-        border: 1px solid #ced4da;
-        padding: 0.5rem;
-    }
-
-    .form-control-sm:focus {
-        border-color: #3B643F;
-        box-shadow: 0 0 0 0.25rem rgba(59, 100, 63, 0.1);
-    }
-
-    .btn-confirmar {
-        background-color: #3B643F;
-        color: white;
-        border: none;
-        transition: all 0.3s ease;
-    }
-
-    .btn-confirmar:hover {
-        background-color: #2c4a2f;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .link-verde {
-        color: #3B643F;
-        font-weight: 600;
-    }
-    
-</style>
+{% block content %}
 <main class="container">
   <div class="text-center py-4">
-    <h1 class="titulo-gigante fw-bold">TU AVENTURA COMIENZA AQUÍ</h1>
+    <h1 class="titulo-gigante fw-bold text-uppercase">
+      {% if paquete %}{{ paquete.nombre }}{% else %}Tu aventura comienza aquí{% endif %}
+    </h1>
   </div>
 
   <div class="row g-4 align-items-stretch justify-content-center mb-5">
     <div class="col-md-5">
-      <div class="h-100 shadow-sm rounded-4 overflow-hidden border">
-        <img
-          src="{% static 'img/paramo.png' %}"
-          class="img-full"
-          alt="Paisaje"
-        />
+      <div class="h-100 shadow-sm rounded-4 overflow-hidden border bg-light d-flex align-items-center justify-content-center">
+        {% if paquete and paquete.imagen %}
+          <img src="{{ paquete.imagen.url }}" class="img-full" style="object-fit: cover; width: 100%; height: 100%; min-height: 400px;" alt="{{ paquete.nombre }}" />
+        {% else %}
+          <img src="{% static 'img/paramo.png' %}" class="img-full" style="object-fit: cover; width: 100%; height: 100%; min-height: 400px;" alt="Paisaje por defecto" />
+        {% endif %}
       </div>
     </div>
 
@@ -88,99 +24,66 @@
       <div class="card shadow-sm border h-100 card-reserva">
         <div class="card-header text-center py-3 bg-white border-0">
           <h4 class="mb-0 fw-bold header-reserva">Haz tu Reserva</h4>
+          {% if paquete %}
+            <p class="text-success fw-bold mb-0 mt-1 small">Estás reservando: {{ paquete.nombre }}</p>
+          {% endif %}
         </div>
         <div class="card-body p-4 pt-0">
-          <form action="" method="post">
+          
+          <form action="{% url 'pago' %}" method="GET">
+            
             <div class="mb-3">
-              <label class="form-label fw-bold subtitulo-formulario"
-                >Información Personal</label
-              >
+              <label class="form-label fw-bold subtitulo-formulario">Información Personal</label>
               <div class="row g-2">
                 <div class="col-6">
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    placeholder="Nombre"
-                    required
-                  />
+                  <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Nombre" required />
                 </div>
                 <div class="col-6">
-                  <input
-                    type="text"
-                    class="form-control form-control-sm"
-                    placeholder="Apellido"
-                    required
-                  />
+                  <input type="text" name="apellido" class="form-control form-control-sm" placeholder="Apellido" required />
                 </div>
               </div>
             </div>
+
             <div class="mb-2">
-              <input
-                type="email"
-                class="form-control form-control-sm"
-                placeholder="Correo"
-                required
-              />
+              <input type="email" name="correo" class="form-control form-control-sm" placeholder="Correo" required />
             </div>
+
             <div class="mb-3">
-              <input
-                type="tel"
-                class="form-control form-control-sm"
-                placeholder="Teléfono"
-                required
-              />
+              <input type="tel" name="telefono" class="form-control form-control-sm" placeholder="Teléfono" required />
             </div>
+
             <hr class="my-3 opacity-25" />
+
             <div class="mb-3">
-              <label class="form-label fw-bold subtitulo-formulario"
-                >Detalles del Tour</label
-              >
+              <label class="form-label fw-bold subtitulo-formulario">Detalles del Tour</label>
               <div class="row g-2">
                 <div class="col-7">
-                  <input
-                    type="date"
-                    class="form-control form-control-sm"
-                    required
-                  />
+                  <input type="date" name="fecha" class="form-control form-control-sm" required />
                 </div>
                 <div class="col-5">
-                  <input
-                    type="number"
-                    class="form-control form-control-sm"
-                    placeholder="Personas"
-                    min="1"
-                    required
-                  />
+                  <input type="number" name="personas" class="form-control form-control-sm" placeholder="Personas" min="1" required />
                 </div>
               </div>
             </div>
+
             <div class="mb-3">
-              <textarea
-                class="form-control form-control-sm"
-                rows="2"
-                placeholder="Comentarios..."
-              ></textarea>
+              <textarea name="comentarios" class="form-control form-control-sm" rows="2" placeholder="Comentarios..."></textarea>
             </div>
+
             <div class="form-check mb-3">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="terminos"
-                required
-              />
-              <label class="form-check-label small" for="terminos"
-                >Acepto
-                <a href="#" class="text-decoration-none link-verde"
-                  >términos</a
-                ></label
-              >
+              <input class="form-check-input" type="checkbox" id="terminos" required />
+              <label class="form-check-label small" for="terminos">
+                Acepto <a href="#" class="text-decoration-none link-verde">términos</a>
+              </label>
             </div>
+
             <div class="d-grid">
-              <button class="btn btn-confirmar py-2 fw-bold" type="submit">
-                Confirmar Reserva
-              </button>
+                <button class="btn btn-confirmar py-2 fw-bold w-100" type="submit">
+                    Reservar ahora
+                </button>
             </div>
           </form>
+
         </div>
       </div>
     </div>
