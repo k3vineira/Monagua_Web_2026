@@ -8,6 +8,7 @@
         --monagua-primary: #3B643F;
         --monagua-dark: #1a251e;
     }
+    body { padding-top: 0 !important; }
     .sidebar-monagua {
         width: 260px; 
         background-color: var(--monagua-dark); 
@@ -47,6 +48,10 @@
     }
 </style>
 {% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block user_menu_fixed %}{% endblock %}
+{% block footer %}{% endblock %}
 
 {% block content %}
 <aside class="d-none d-md-flex flex-column position-fixed top-0 start-0 h-100 sidebar-monagua p-4">
