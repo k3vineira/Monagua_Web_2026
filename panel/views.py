@@ -1,6 +1,5 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth import get_user_model
 from django.db.models import Sum, Count
 from django.contrib.auth import get_user_model
 from .models import Tour, Reserva
@@ -9,36 +8,45 @@ User = get_user_model()
 
 @staff_member_required
 def dashboard_administrador(request):
+    # 1. Total de usuarios registrados
     total_usuarios = User.objects.count()
 
+    # 2. Total de ventas (Sumamos el campo 'total_pagado' de todas las reservas)
     total_ventas_dict = Reserva.objects.aggregate(Sum('total_pagado'))
-    total_ventas = total_ventas_dict['total_pagado__sum'] or 0.00
+    total_ventas = total_ventas_dict['total_pagado__sum'] or 0.00 # Si no hay ventas, devuelve 0
 
+    # 3. Tours más populares (Contamos cuántas reservas tiene cada tour y ordenamos de mayor a menor)
     tours_populares = Tour.objects.annotate(
-        numero_reservas=Count('reservas')
-    ).order_by('-numero_reservas')[:5]
+        numero_reservas=Count('reserva')
+    ).order_by('-numero_reservas')[:5] # Traemos solo el Top 5
 
+    # 4. Total de reservas realizadas
     total_reservas = Reserva.objects.count()
-    total_tours = Tour.objects.count()
 
-    context = {
+    contexto = {
         'total_usuarios': total_usuarios,
         'total_ventas': total_ventas,
         'tours_populares': tours_populares,
         'total_reservas': total_reservas,
     }
-def dashboard_administrador(request):
-    
-    # 1. Creas el diccionario 'context' con los datos que tu HTML necesita
-    context = {
-        'total_ventas': 12500.50,       # Dato de prueba
-        'total_usuarios': 342,          # Dato de prueba
-        'total_reservas': 89,           # Dato de prueba
-        'tours_populares': [            # Lista de prueba para tu tabla
-            {'nombre': 'Tour Guatapé', 'precio': 120.00, 'numero_reservas': 45},
-            {'nombre': 'City Tour Medellín', 'precio': 50.00, 'numero_reservas': 30},
-        ]
-    }
+    return render(request, 'panel.html', contexto)
 
-    # 2. Ahora sí puedes pasar 'context' al render sin que dé error
-    return render(request, 'panel.html', context)# <--- Aquí ocurre el error porque 'context' no existe
+@staff_member_required
+def gestion_guias(request):
+    # Placeholder view for managing guides
+    return render(request, 'gestion_guias.html')
+
+@staff_member_required
+def guias_guardar(request):
+    # logic to save guides
+    return render(request, 'gestion_guias.html')
+
+@staff_member_required
+def guias_baja(request):
+    # logic to deactivate guides
+    return render(request, 'gestion_guias.html')
+
+@staff_member_required
+def guias_reactivar(request):
+    # logic to reactivate guides
+    return render(request, 'gestion_guias.html')
