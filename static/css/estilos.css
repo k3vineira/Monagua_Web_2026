@@ -6,6 +6,7 @@ body {
     padding-top: 90px; 
     margin: 0;
     background-color: #f8f9fa;
+    overflow-x: hidden;
 }
 
 .text-brand { color: #3B643F !important; }
@@ -54,10 +55,14 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
+    width: 100%;
     /* Sube la imagen para que ignore el padding del body solo en esta sección */
-    margin-top: -90px; 
-    transition: filter 0.8s ease-in-out; 
+    margin-top: -90px;
+    /* Optimización de transición */
+    transition: filter 0.8s ease-in-out, background-image 0.1s ease-in; 
     filter: brightness(1); 
+    will-change: filter;
+    background-color: #000; /* Fondo negro de seguridad mientras carga la siguiente imagen */
 }
 
 .hero-subtitle {
@@ -66,7 +71,7 @@ body {
 }
 
 .hero-dark {
-    filter: brightness(0); 
+    filter: brightness(0.15); 
 }
 
 /*  4. BOTONES */
@@ -310,5 +315,26 @@ body {
 .enlace-menu.activo { background-color: var(--primary-monagua); color: white !important; }
 .icono-menu { width: 30px; text-align: center; margin-right: 10px; }
 
+/* --- Historial de Pagos --- */
+.tabla-pagos {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.status-pendiente { background-color: #fff3cd; color: #856404; }
+.status-confirmada { background-color: #d4edda; color: #155724; }
+.status-cancelada { background-color: #f8d7da; color: #721c24; }
 
+.btn-download {
+    color: #3B643F;
+    text-decoration: none;
+    font-weight: 600;
+}
     

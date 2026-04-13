@@ -9,21 +9,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 2. Función para cambiar la imagen con efecto
     function cambiarImagen() {
-        // Añadimos la clase para oscurecer (definida en tu CSS)
+        // 1. Incrementamos el índice primero para evitar repetir la imagen actual
+        indiceActual = (indiceActual + 1) % listaImagenes.length;
+
+        // 2. Iniciamos el oscurecimiento
         hero.classList.add('hero-dark');
 
-        // Esperamos a que esté oscuro (800ms según tu CSS) para cambiar la foto
+        // 3. Esperamos a que la transición de oscuridad termine (800ms)
         setTimeout(() => {
-            indiceActual = (indiceActual + 1) % listaImagenes.length;
+            // 4. Cambiamos la imagen de fondo
             hero.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${listaImagenes[indiceActual]}')`;
-            
-            // Quitamos la clase para que brille de nuevo
+
+            // 5. Quitamos la clase para que vuelva a iluminarse
             hero.classList.remove('hero-dark');
         }, 800); 
     }
 
-    // 3. Iniciar el ciclo cada 5 segundos
+    // 3. Iniciar el ciclo cada 15 segundos
     if (hero && listaImagenes.length > 0) {
-        setInterval(cambiarImagen, 5000);
+        setInterval(cambiarImagen, 15000);
     }
 });

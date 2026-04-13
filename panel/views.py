@@ -30,3 +30,23 @@ def dashboard_administrador(request):
         'total_reservas': total_reservas,
     }
     return render(request, 'panel.html', contexto)
+
+@staff_member_required
+def gestion_guias(request):
+    # Placeholder view for managing guides
+    return render(request, 'gestion_guias.html')
+
+@staff_member_required
+def guias_guardar(request):
+    # logic to save guides
+    return render(request, 'gestion_guias.html')
+
+@staff_member_required
+def guias_baja(request):
+    # logic to deactivate guides
+    return render(request, 'gestion_guias.html')
+
+@staff_member_required
+def guias_reactivar(request):
+    # logic to reactivate guides
+    return render(request, 'gestion_guias.html')

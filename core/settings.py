@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'reservas',
     'inicio.apps.InicioConfig',
     'usuario',
-    'perfil', 
     'panel',
     'pago.apps.PagoConfig'
 ]
