@@ -42,6 +42,8 @@ urlpatterns = [
     path('panel/guias/guardar/', views_gestion.guias_guardar, name='guias_guardar'),
     path('panel/guias/baja/', views_gestion.guias_baja, name='guias_baja'),
     path('panel/guias/reactivar/', views_gestion.guias_reactivar, name='guias_reactivar'),
+    # Agrega esta línea junto a las demás rutas de guías:
+    path('panel/guias/detalle/<int:guia_id>/', views_gestion.guia_detalle_json, name='guia_detalle_json'),
 ]
 
 # Servir archivos multimedia en entorno de desarrollo

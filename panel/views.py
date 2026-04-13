@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, Count
@@ -126,3 +127,23 @@ def guias_reactivar(request):
         guia.disponibilidad = 'Disponible'
         guia.save()
     return redirect('/panel/guias/?msg=reactivado')
+
+@staff_member_required
+def guia_detalle_json(request, guia_id):
+    """Devuelve los datos de un guía en JSON para pre-rellenar el modal de edición."""
+    guia = get_object_or_404(Guia, pk=guia_id)
+    return JsonResponse({
+        'id':              guia.id,
+        'nombre':          guia.nombre,
+        'apellido':        guia.apellido,
+        'correo':          guia.correo,
+        'telefono':        guia.telefono,
+        'documento':       guia.documento or '',
+        'especialidad':    guia.especialidad,
+        'disponibilidad':  guia.disponibilidad,
+        'experiencia':     guia.experiencia,
+        'idiomas':         guia.idiomas or '',
+        'certificaciones': guia.certificaciones or '',
+        'notas':           guia.notas or '',
+        'estado':          guia.estado,
+    })
