@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Categorías de Turismo</h2>
+        <a href="{% url 'crear_categoria' %}" class="btn btn-success" style="background-color: #39A900; border: none;">
+            <i class="bi bi-folder-plus"></i> Nueva Categoría
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <table class="table table-sm table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nombre de Categoría</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cat in categorias %}
+                            <tr>
+                                <td class="py-3">{{ cat.nombre }}</td>
+                                <td class="text-center">
+                                    <a href="#" class="btn btn-sm btn-link text-primary">Editar</a>
+                                    <a href="#" class="btn btn-sm btn-link text-danger">Eliminar</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center">No hay categorías definidas.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="alert alert-info border-0 shadow-sm">
+                <h5><i class="bi bi-info-circle"></i> Tip</h5>
+                <p class="small">Las categorías ayudan a filtrar las actividades en el mapa y en la página principal del proyecto Monagua.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

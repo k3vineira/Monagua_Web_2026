@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-4">
+        <h2>Listado de Reservas Recibidas</h2>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Destino/Paquete</th>
+                        <th>Fecha Reserva</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in reservas %}
+                    <tr>
+                        <td>{{ reserva.nombre_cliente }}</td>
+                        <td>{{ reserva.paquete.nombre }}</td>
+                        <td>{{ reserva.fecha_viaje }}</td>
+                        <td>
+                            <span class="badge {% if reserva.confirmada %}bg-success{% else %}bg-warning{% endif %}">
+                                {{ reserva.estado }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Detalles</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">Todavía no hay reservas registradas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

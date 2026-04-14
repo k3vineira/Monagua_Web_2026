@@ -245,3 +245,39 @@ def editar_blog(request, pk):
         'form': form, 
         'titulo': f'Editando: {blog.titulo}'
     })
+    
+    #--lista de entradas para el admin--
+def lista_blog(request):
+    # Traemos todo de la base de datos
+    blogs = Blog.objects.all() 
+    return render(request, 'admin/blog/blog.html', {'blogs': blogs})
+
+def lista_actividades(request):
+    # Traemos todo de la base de datos
+    actividades = Actividades.objects.all() 
+    return render(request, 'admin/actividades/actividades.html', {'actividades': actividades})
+
+def lista_categorias(request):
+    # Traemos todo de la base de datos
+    categorias = Categoria.objects.all() 
+    return render(request, 'admin/categorias/categorias.html', {'categorias': categorias})
+
+def lista_paquetes(request):
+    # Traemos todo de la base de datos
+    paquetes = Paquete.objects.all() 
+    return render(request, 'admin/paquetes/paquetes.html', {'paquetes': paquetes})
+
+def lista_promociones(request):
+    # Traemos todo de la base de datos
+    promociones = Promocion.objects.all() 
+    return render(request, 'admin/promociones/promociones.html', {'promociones': promociones})
+
+def lista_reservas(request):
+    # Traemos todo de la base de datos
+    reservas = Reserva.objects.all() 
+    return render(request, 'admin/reservas/reservas.html', {'reservas': reservas})
+
+
+
+
+    

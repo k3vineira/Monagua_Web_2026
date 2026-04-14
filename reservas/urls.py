@@ -13,4 +13,11 @@ urlpatterns = [
     path('reservas/crear/', views.crear_reserva, name='crear_reserva'),
     path('pqrs/crear/', views.crear_pqrs, name='crear_pqrs'),
     path('blog/crear/', views.crear_blog, name='crear_blog'),
+    
+    path('admin/blog/', views.lista_blog, name='admin_blog'),
+    path('admin/actividades/', views.lista_actividades, name='admin_actividades'),
+    path('admin/categorias/', views.lista_categorias, name='admin_categorias'),
+    path('admin/paquetes/', views.lista_paquetes, name='admin_paquetes'),
+    path('admin/promociones/', views.lista_promociones, name='admin_promociones'),
+    path('admin/reservas/', views.lista_reservas, name='admin_reservas'),
 ]
