@@ -100,7 +100,7 @@ def guias_guardar(request):
         campos['color_avatar'] = colores[total % len(colores)]
 
         Guia.objects.create(**campos)
-        return redirect('/panel/guias/?msg=creado')
+        return redirect('gestion_guias')  # Usa el nombre de la URL en lugar de la ruta manual
 
 
 # ══════════════════════════════════════════════
@@ -128,6 +128,10 @@ def guias_reactivar(request):
         guia.save()
     return redirect('/panel/guias/?msg=reactivado')
 
+
+# ══════════════════════════════════════════════
+#  DETALLE DE GUÍA (JSON para modal de edición)
+# ══════════════════════════════════════════════
 @staff_member_required
 def guia_detalle_json(request, guia_id):
     """Devuelve los datos de un guía en JSON para pre-rellenar el modal de edición."""
