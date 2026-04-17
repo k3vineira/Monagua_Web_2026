@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from panel import views as views_gestion
+from Experiencia_soporte import views as soporte_views
 from . import views
  
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
     path('reservas/', include('reservas.urls')), # <--- Esto conecta con el código de arriba
     path('usuario/', include('usuario.urls')),
     path('Experiencia_soporte/', include('Experiencia_soporte.urls')),
+    path('tour/<int:paquete_id>/resenas/', soporte_views.ver_comentarios, name='ver_resenas'),
     path('pago/', include('pago.urls')),
     
     # 3. Autenticación y Gestión
