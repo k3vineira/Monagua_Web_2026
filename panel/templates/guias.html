@@ -1174,12 +1174,16 @@
         'editado':    { txt: 'Guía actualizado correctamente.',  color: '#2563eb' },
         'baja':       { txt: 'Guía marcado como Inactivo.',      color: '#b91c1c' },
         'reactivado': { txt: 'Guía reactivado correctamente.',   color: '#059669' },
+        // === PEGA LAS DOS LÍNEAS NUEVAS AQUÍ ===
+     'error_correo': { txt: 'Error: Este correo electrónico ya está registrado.', color: '#b91c1c' },
+     'error_bd':     { txt: 'Ocurrió un error al guardar en la base de datos.', color: '#b91c1c' }
     };
     const msg = params.get('msg');
     if (msg && mensajes[msg]) {
         mostrarToast(mensajes[msg].txt, mensajes[msg].color);
         // Limpiar el parámetro de la URL sin recargar
         window.history.replaceState({}, '', window.location.pathname);
+        
     }
 
 
