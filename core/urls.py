@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from panel import views as views_gestion
 from usuario import views as views_usuario
+from Experiencia_soporte import views as soporte_views
 from . import views
  
 urlpatterns = [
