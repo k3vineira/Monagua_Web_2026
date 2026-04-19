@@ -29,7 +29,7 @@ urlpatterns = [
     
     # 4. Recuperación de contraseña
     path('recuperar-contraseña/', auth_views.PasswordResetView.as_view(template_name='recuperar.html'), name='password_reset'),
-    path('recuperar-contraseña/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_sent.html'), name='password_reset_done'),
+    path('recuperar-contraseña/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='contraseña_reset_enviado.html'), name='password_reset_done'),
     path('recuperar-contraseña/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='contraseña_reset_form.html'), name='password_reset_confirm'),
     path('recuperar-contraseña/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='contraseña_reset_guardar.html'), name='password_reset_complete'),
         
