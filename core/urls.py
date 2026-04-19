@@ -26,10 +26,10 @@ urlpatterns = [
     path('gestion-admin/', views_gestion.dashboard_administrador, name='gestion_admin'),
     
     # 4. Recuperación de contraseña
-    path('recuperar-password/', auth_views.PasswordResetView.as_view(template_name='recuperar.html'), name='password_reset'),
-    path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_sent.html'), name='password_reset_done'),
-    path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_form.html'), name='password_reset_confirm'),
-    path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_done.html'), name='password_reset_complete'),
+    path('recuperar-contraseña/', auth_views.PasswordResetView.as_view(template_name='recuperar.html'), name='password_reset'),
+    path('recuperar-contraseña/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_sent.html'), name='password_reset_done'),
+    path('recuperar-contraseña/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='contraseña_reset_form.html'), name='password_reset_confirm'),
+    path('recuperar-contraseña/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='contraseña_reset_guardar.html'), name='password_reset_complete'),
         
   
 
