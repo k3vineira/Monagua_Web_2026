@@ -99,10 +99,21 @@
 
             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                 <li><h6 class="dropdown-header">Rol: 
-                    {% if user.es_guia %} Guía Turístico {% else %} Explorador (Turista) {% endif %}
+                    {% if user.is_staff %} Administrador
+                    {% elif user.es_guia %} Guía Turístico 
+                    {% else %} Explorador (Turista) 
+                    {% endif %}
                 </h6></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{% url 'dashboard' %}">Mi Panel</a></li>
+                
+                {% if user.is_staff %}
+                    <li><a class="dropdown-item" href="{% url 'panel' %}"><i class="bi bi-speedometer2 me-2"></i>Gestión Admin</a></li>
+                {% elif user.es_guia %}
+                    <li><a class="dropdown-item" href="{% url 'inicio_guia' %}"><i class="bi bi-geo-alt me-2"></i>Panel de Guía</a></li>
+                {% else %}
+                    <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="bi bi-person-badge me-2"></i>Mi Panel</a></li>
+                {% endif %}
+
                 <li><a class="dropdown-item" href="{% url 'comentarios' %}">Mis Comentarios</a></li>
                 <li>
                     <form action="{% url 'logout' %}" method="post" class="m-0">
