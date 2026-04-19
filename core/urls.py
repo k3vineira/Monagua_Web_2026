@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from panel import views as views_gestion
-from Experiencia_soporte import views as soporte_views
+from usuario import views as views_usuario
 from . import views
  
 urlpatterns = [
@@ -27,6 +27,9 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('gestion-admin/', views_gestion.dashboard_administrador, name='gestion_admin'),
     
+    # Dashboard de Guía
+    path('inicio-guia/', views_usuario.dashboard_guia_view, name='inicio_guia'),
+    
     # 4. Recuperación de contraseña
     path('recuperar-contraseña/', auth_views.PasswordResetView.as_view(template_name='recuperar.html'), name='password_reset'),
     path('recuperar-contraseña/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_sent.html'), name='password_reset_done'),
@@ -44,6 +47,8 @@ urlpatterns = [
     path('panel/guias/guardar/', views_gestion.guias_guardar, name='guias_guardar'),
     path('panel/guias/baja/', views_gestion.guias_baja, name='guias_baja'),
     path('panel/guias/reactivar/', views_gestion.guias_reactivar, name='guias_reactivar'),
+    # Agrega esta línea junto a las demás rutas de guías:
+    path('panel/guias/detalle/<int:guia_id>/', views_gestion.guia_detalle_json, name='guia_detalle_json'),
 ]
 
 # Servir archivos multimedia en entorno de desarrollo

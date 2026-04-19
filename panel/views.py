@@ -1,7 +1,9 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, Count
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from .models import Tour, Reserva, Guia
 
 User = get_user_model()
@@ -84,22 +86,40 @@ def guias_guardar(request):
         'notas':           request.POST.get('notas', '').strip() or None,
     }
 
-    if guia_id:
-        # ── EDITAR guía existente ──
-        guia = get_object_or_404(Guia, pk=guia_id)
-        for attr, valor in campos.items():
-            setattr(guia, attr, valor)
-        guia.save()
-        return redirect('/panel/guias/?msg=editado')
-    else:
-        # ── CREAR nuevo guía ──
-        # Asignamos color de avatar automáticamente por rotación
-        colores = Guia.COLORES_AVATAR
-        total   = Guia.objects.count()
-        campos['color_avatar'] = colores[total % len(colores)]
+    try:
+        if guia_id:
+            # ── EDITAR guía existente ──
+            guia = get_object_or_404(Guia, pk=guia_id)
+            
+            # Verificamos si el correo ya existe en OTRO guía para evitar el error de IntegrityError
+            if Guia.objects.exclude(pk=guia_id).filter(correo=campos['correo']).exists():
+                return redirect('/panel/guias/?msg=error_correo')
 
-        Guia.objects.create(**campos)
-        return redirect('/panel/guias/?msg=creado')
+            for attr, valor in campos.items():
+                setattr(guia, attr, valor)
+            guia.save()
+            return redirect('/panel/guias/?msg=editado')
+            
+        else:
+            # ── CREAR nuevo guía ──
+            # Verificamos si el correo ya existe antes de intentar crear
+            if Guia.objects.filter(correo=campos['correo']).exists():
+                return redirect('/panel/guias/?msg=error_correo')
+
+            # Asignamos color de avatar automáticamente por rotación
+            colores = Guia.COLORES_AVATAR
+            total   = Guia.objects.count()
+            campos['color_avatar'] = colores[total % len(colores)]
+
+            Guia.objects.create(**campos)
+            return redirect('/panel/guias/?msg=creado')
+
+    except IntegrityError:
+        # En caso de que ocurra un error de duplicidad no controlado
+        return redirect('/panel/guias/?msg=error_bd')
+    except Exception as e:
+        print(f"Error detectado: {e}")
+        return redirect('/panel/guias/?msg=error_bd')
 
 
 # ══════════════════════════════════════════════
@@ -109,7 +129,7 @@ def guias_guardar(request):
 def guias_baja(request):
     if request.method == 'POST':
         guia = get_object_or_404(Guia, pk=request.POST.get('guia_id'))
-        guia.estado        = 'Inactivo'
+        guia.estado         = 'Inactivo'
         guia.disponibilidad = 'Ocupado'   # ya no está disponible
         guia.save()
     return redirect('/panel/guias/?msg=baja')
@@ -122,7 +142,31 @@ def guias_baja(request):
 def guias_reactivar(request):
     if request.method == 'POST':
         guia = get_object_or_404(Guia, pk=request.POST.get('guia_id'))
-        guia.estado        = 'Activo'
+        guia.estado         = 'Activo'
         guia.disponibilidad = 'Disponible'
         guia.save()
     return redirect('/panel/guias/?msg=reactivado')
+
+
+# ══════════════════════════════════════════════
+#  DETALLE DE GUÍA (JSON para modal de edición)
+# ══════════════════════════════════════════════
+@staff_member_required
+def guia_detalle_json(request, guia_id):
+    """Devuelve los datos de un guía en JSON para pre-rellenar el modal de edición."""
+    guia = get_object_or_404(Guia, pk=guia_id)
+    return JsonResponse({
+        'id':              guia.id,
+        'nombre':          guia.nombre,
+        'apellido':        guia.apellido,
+        'correo':          guia.correo,
+        'telefono':        guia.telefono,
+        'documento':       guia.documento or '',
+        'especialidad':    guia.especialidad,
+        'disponibilidad':  guia.disponibilidad,
+        'experiencia':     guia.experiencia,
+        'idiomas':         guia.idiomas or '',
+        'certificaciones': guia.certificaciones or '',
+        'notas':           guia.notas or '',
+        'estado':          guia.estado,
+    })

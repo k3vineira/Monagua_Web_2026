@@ -3,16 +3,48 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Usuario, PerfilTurista  # Importamos tu modelo personalizado
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from panel.models import Reserva
 from django.http import HttpResponse
 import io
 from reportlab.pdfgen import canvas
+from functools import wraps
+
+# ─── DECORADORES DE ROL ───
+
+def es_guia_required(view_func):
+    """ Solo permite el acceso a usuarios que tengan es_guia=True """
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated and getattr(request.user, 'es_guia', False):
+            return view_func(request, *args, **kwargs)
+        messages.error(request, "No tienes permisos de Guía para acceder aquí.")
+        return redirect('login')
+    return _wrapped_view
+
+def es_turista_required(view_func):
+    """ Solo permite el acceso a usuarios que tengan es_turista=True """
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated and getattr(request.user, 'es_turista', False):
+            return view_func(request, *args, **kwargs)
+        messages.error(request, "Esta sección es exclusiva para Turistas.")
+        return redirect('login')
+    return _wrapped_view
+
+# ─── VISTAS DE DASHBOARDS ───
 
 @login_required
+@es_turista_required
 def dashboard_view(request):
     # Pasamos el usuario a la plantilla (aunque Django lo hace por defecto)
     return render(request, 'dashboard.html')
+
+@login_required
+@es_guia_required
+def dashboard_guia_view(request):
+    """ Apartado para que el guía vea sus rutas asignadas """
+    return render(request, 'dashboard_guia.html')
 
 @login_required
 def perfil_usuario_view(request):
