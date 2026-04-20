@@ -49,7 +49,17 @@ def reservas_view(request):
     if paquete_id:
         paquete_seleccionado = get_object_or_404(Paquete, id=paquete_id)
     
-    return render(request, 'reservas.html', {'paquete': paquete_seleccionado})
+    # Definimos los métodos de pago aceptados para dar claridad al cliente desde el inicio
+    metodos_pago = [
+        {'id': 'pse', 'nombre': 'PSE', 'icono': 'bi-bank'},
+        {'id': 'tarjetas', 'nombre': 'Tarjetas Crédito/Débito', 'icono': 'bi-credit-card'},
+        {'id': 'transferencia', 'nombre': 'Transferencia Bancaria', 'icono': 'bi-arrow-left-right'},
+    ]
+    
+    return render(request, 'reservas.html', {
+        'paquete': paquete_seleccionado,
+        'metodos_pago': metodos_pago
+    })
 
 
 # --- CRUD DE PAQUETES (MONAGUA) ---

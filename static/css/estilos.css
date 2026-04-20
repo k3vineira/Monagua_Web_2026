@@ -337,4 +337,35 @@ body {
     text-decoration: none;
     font-weight: 600;
 }
+
+/* 7. VISUALIZACIÓN DE MÉTODOS DE PAGO (Confianza del Cliente) */
+.metodos-pago-container {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid #eee;
+    margin-top: 1.5rem;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.metodo-pago-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 8px 12px;
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555;
+    transition: all 0.3s ease;
+}
+
+.metodo-pago-item:hover {
+    border-color: #3B643F;
+    color: #3B643F;
+    transform: translateY(-2px);
+}
     

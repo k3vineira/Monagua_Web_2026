@@ -102,6 +102,19 @@
     <div class="container py-5">
         <div class="row g-4 justify-content-center">
             <div class="col-lg-7 col-md-10">
+                <!-- Visualización de Métodos de Pago Aceptados -->
+                <div class="mb-4">
+                    <p class="small fw-bold text-muted text-uppercase mb-2" style="letter-spacing: 1px;">Métodos de pago aceptados:</p>
+                    <div class="metodos-pago-container mt-0 py-2 border-top-0">
+                        {% for metodo in metodos_pago %}
+                        <div class="metodo-pago-item bg-white shadow-sm">
+                            <i class="bi {{ metodo.icono }} text-success"></i>
+                            <span>{{ metodo.nombre }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
                 <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
                     <div class="card-header bg-success bg-opacity-10 border-0 p-4 text-center">
                         <i class="bi bi-bank fs-1 text-success mb-2"></i>
