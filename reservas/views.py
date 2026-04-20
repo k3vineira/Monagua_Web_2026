@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.utils import timezone
+from django.db.models import Q
 from .models import Actividades, Categoria, Paquete, Promocion, Reserva, PQRS
 from .forms import (
     CategoriaForm, CategoriaEditarForm, 
@@ -22,7 +24,19 @@ def comentarios_view(request):
 
 def promociones_view(request):
     """ Muestra la página de promociones """
-    promociones_list = Promocion.objects.all()
+    hoy = timezone.now().date()
+    
+    # Filtros base: Activa y dentro de rango de fechas (o sin fechas definidas)
+    query = Promocion.objects.filter(activo=True).filter(
+        Q(fecha_inicio__lte=hoy) | Q(fecha_inicio__isnull=True),
+        Q(fecha_fin__gte=hoy) | Q(fecha_fin__isnull=True)
+    )
+
+    # Filtro de segmento: Si no está logueado, ocultar las exclusivas para usuarios
+    if not request.user.is_authenticated:
+        query = query.filter(solo_usuarios=False)
+
+    promociones_list = query.order_by('prioridad', '-id')
     return render(request, 'promociones.html', {'promociones': promociones_list})
 
 def destinos(request):
@@ -49,7 +63,17 @@ def reservas_view(request):
     if paquete_id:
         paquete_seleccionado = get_object_or_404(Paquete, id=paquete_id)
     
-    return render(request, 'reservas.html', {'paquete': paquete_seleccionado})
+    # Definimos los métodos de pago aceptados para dar claridad al cliente desde el inicio
+    metodos_pago = [
+        {'id': 'pse', 'nombre': 'PSE', 'icono': 'bi-bank'},
+        {'id': 'tarjetas', 'nombre': 'Tarjetas Crédito/Débito', 'icono': 'bi-credit-card'},
+        {'id': 'transferencia', 'nombre': 'Transferencia Bancaria', 'icono': 'bi-arrow-left-right'},
+    ]
+    
+    return render(request, 'reservas.html', {
+        'paquete': paquete_seleccionado,
+        'metodos_pago': metodos_pago
+    })
 
 
 # --- CRUD DE PAQUETES (MONAGUA) ---

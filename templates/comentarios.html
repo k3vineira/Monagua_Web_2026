@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block titulo %}{{ titulo_pagina }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Eliminamos el espacio superior que se reserva para el navbar */
+    body { padding-top: 0 !important; }
+
+    .sidebar-monagua {
+        width: 280px;
+        background-color: #1a251e;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 1000;
+        padding: 2rem 1.5rem;
+        transition: all 0.3s ease;
+        border-right: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .main-wrapper {
+        margin-left: 280px;
+        background-color: #f8f9fa;
+        min-height: 100vh;
+    }
+
+    .nav-sidebar .nav-link {
+        color: rgba(255,255,255,0.7);
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: 0.2s;
+    }
+
+    .nav-sidebar .nav-link:hover {
+        color: #fff;
+        background: rgba(255,255,255,0.08);
+    }
+
+    .nav-sidebar .nav-link.active {
+        color: #fff;
+        background: #3B643F;
+        font-weight: 500;
+    }
+
+    .sidebar-logo {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 992px) {
+        .sidebar-monagua { transform: translateX(-100%); }
+        .main-wrapper { margin-left: 0; }
+    }
+</style>
+{% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block user_menu_fixed %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block content %}
+<div class="sidebar-monagua">
+    <div class="sidebar-logo text-center">
+        <img src="{% static 'img/logo_monagua.png' %}" alt="Monagua" width="60">
+        <h5 class="text-white mt-3 fw-bold mb-0">MONAGUA</h5>
+        <small class="text-success text-uppercase" style="letter-spacing: 2px; font-size: 0.65rem;">Experiencias</small>
+    </div>
+
+    <nav class="nav flex-column nav-sidebar">
+        <a href="/" class="nav-link">
+            <i class="bi bi-house"></i> Inicio
+        </a>
+        <a href="{% url 'inicio_usuario' %}" class="nav-link">
+            <i class="bi bi-grid"></i> Dashboard
+        </a>
+        <a href="#" class="nav-link">
+            <i class="bi bi-calendar-check"></i> Mis Reservas
+        </a>
+        <a href="{% url 'comentarios' %}" class="nav-link active">
+            <i class="bi bi-chat-left-text"></i> Mis Reseñas
+        </a>
+        <a href="{% url 'detalles' %}" class="nav-link">
+            <i class="bi bi-person"></i> Mi Perfil
+        </a>
+        <hr class="border-secondary my-4">
+        <form action="{% url 'logout' %}" method="post" class="px-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm w-100 rounded-pill">
+                <i class="bi bi-power me-2"></i> Cerrar Sesión
+            </button>
+        </form>
+    </nav>
+</div>
+
+<div class="main-wrapper">
+    <div class="container-fluid px-md-5 py-5">
+        <div class="row">
+            <!-- Formulario para nueva reseña -->
+            <div class="col-xl-4 col-lg-5 mb-4">
+                <div class="card shadow border-0 card-reserva">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold text-brand mb-3"><i class="bi bi-pencil-square me-2"></i>Nueva Reseña</h4>
+                        <p class="text-muted small">Comparte tu experiencia con la comunidad de Monagua.</p>
+                        <hr>
+                        <form method="POST">
+                            {% csrf_token %}
+                            {% if paquete_especifico %}
+                                <div class="mb-3">
+                                    <label class="subtitulo-formulario">Ruta / Paquete</label>
+                                    <input type="text" class="form-control bg-light" value="{{ paquete_especifico.nombre }}" readonly>
+                                </div>
+                                {{ form.estrellas|as_crispy_field }}
+                                {{ form.contenido|as_crispy_field }}
+                            {% else %}
+                                {{ form|crispy }}
+                            {% endif %}
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-brand">Publicar Comentario</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de reseñas -->
+            <div class="col-xl-8 col-lg-7">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h3 class="fw-bold text-brand m-0">{{ titulo_pagina }}</h3>
+                    <span class="badge bg-brand-dark px-3 py-2">{{ comentarios.count }} Reseñas totales</span>
+                </div>
+
+                {% for resena in comentarios %}
+                    <div class="card mb-3 shadow-sm border-0 card-hover">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="fw-bold text-success">{{ resena.paquete.nombre }}</h6>
+                                <small class="text-muted">{{ resena.fecha|date:"d/m/Y" }}</small>
+                            </div>
+                            <div class="text-warning mb-2" style="font-size: 0.8rem;">
+                                {% for i in "12345" %}
+                                    <i class="bi bi-star{% if forloop.counter <= resena.estrellas %}-fill{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+                            <p class="text-secondary italic">"{{ resena.contenido }}"</p>
+                            <div class="d-flex align-items-center mt-3 border-top pt-2">
+                                <div class="avatar-circle me-2" style="width: 25px; height: 25px; font-size: 0.6rem;">
+                                    {{ resena.usuario.username|first|upper }}
+                                </div>
+                                <span class="small text-muted">Reseñado por {{ resena.usuario.first_name|default:resena.usuario.username }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center py-5 bg-white rounded shadow-sm">
+                        <div class="mb-3">
+                            <i class="bi bi-chat-dots text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                        </div>
+                        <h5 class="text-muted">Aún no hay comentarios</h5>
+                        <p class="text-muted small">Cuando se agreguen paquetes y dejes tu opinión, aparecerán aquí.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

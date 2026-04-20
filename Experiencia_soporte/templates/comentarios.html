@@ -55,7 +55,7 @@
 
 {% block content %}
 <aside class="d-none d-md-flex flex-column position-fixed top-0 start-0 h-100 sidebar-monagua p-4">
-    <div class="d-flex align-items-center mb-5 px-2">
+    <div class="d-flex align-items-center mb-5 pxd-2">
         <img src="{% static 'img/logo_monagua.png' %}" alt="Monagua" width="45" height="45" class="me-2">
     </div>
     
@@ -100,35 +100,33 @@
             </div>
         </div>
     </header>
+
     <div class="container px-4 py-5" style="max-width: 900px;">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-4 mb-5">
             <div>
-                <h1 class="fw-bold mb-3">Tour Cascadas Monagua</h1>
+                <h1 class="fw-bold mb-3">{{ paquete.nombre }}</h1>
                 <div class="d-flex align-items-center gap-3">
                     <div class="d-flex align-items-center bg-success bg-opacity-10 px-3 py-1 rounded-3 text-success">
-                        <span class="fs-4 fw-bold me-2">4.8</span>
+                        <span class="fs-4 fw-bold me-2">{{ promedio|floatformat:1 }}</span>
                         <div class="d-flex text-warning">
                             <i class="bi bi-star-fill small"></i>
-                            <i class="bi bi-star-fill small"></i>
-                            <i class="bi bi-star-fill small"></i>
-                            <i class="bi bi-star-fill small"></i>
-                            <i class="bi bi-star-half small"></i>
                         </div>
                     </div>
-                    <span class="small text-muted">Basado en 124 reseñas</span>
+                    <span class="small text-muted">Basado en {{ total_resenas }} reseñas</span>
                 </div>
             </div>
             <a href="#" class="btn-brand-monagua fw-bold d-flex align-items-center gap-2 align-self-start align-self-md-end">
                 <i class="bi bi-pencil-square"></i> Escribir Reseña
             </a>
         </div>
+
         <div class="row g-3 mb-5">
             <div class="col-md-8">
                 <div class="position-relative h-100 rounded-4 overflow-hidden shadow-sm" style="min-height: 250px;">
-                    <img src="https://images.unsplash.com/photo-1432272816436-1e0e854deae9?auto=format&fit=crop&q=80&w=1000" class="w-100 h-100 object-fit-cover position-absolute top-0 start-0" alt="Waterfall">
+                    <img src="{% if paquete.imagen %}{{ paquete.imagen.url }}{% else %}https://images.unsplash.com/photo-1432272816436-1e0e854deae9?auto=format&fit=crop&q=80&w=1000{% endif %}" class="w-100 h-100 object-fit-cover position-absolute top-0 start-0" alt="{{ paquete.nombre }}">
                     <div class="position-absolute top-0 start-0 w-100 h-100 img-hero-overlay"></div>
                     <div class="position-absolute bottom-0 start-0 p-4 text-white">
-                        <p class="fs-5 fw-bold mb-0">Experiencia de Oasis Oculto</p>
+                        <p class="fs-5 fw-bold mb-0">{{ paquete.nombre }}</p>
                     </div>
                 </div>
             </div>
@@ -140,6 +138,7 @@
                 </div>
             </div>
         </div>
+
         <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
             <h3 class="fs-4 fw-bold mb-0 text-success">Comentarios</h3>
             <div class="d-flex gap-2">
@@ -147,11 +146,37 @@
                 <button class="btn btn-outline-secondary rounded-pill btn-sm px-3">Mejor Calificados</button>
             </div>
         </div>
+
+        <div class="row g-4 mt-2">
+            {% for resena in resenas %}
+            <div class="col-12 border-bottom pb-4 mb-4">
+                <div class="d-flex gap-3 align-items-center mb-2">
+                    <img src="{% if resena.usuario.imagen_perfil %}{{ resena.usuario.imagen_perfil.url }}{% else %}{% static 'img/avatar_pred.png' %}{% endif %}" 
+                         class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                    <div>
+                        <h6 class="mb-0 fw-bold">{{ resena.usuario.get_full_name }}</h6>
+                        <small class="text-muted">{{ resena.fecha|date:"d M, Y" }}</small>
+                    </div>
+                    <div class="ms-auto text-warning small">
+                        {{ resena.estrellas }} <i class="bi bi-star-fill"></i>
+                    </div>
+                </div>
+                <p class="mb-0 text-secondary">{{ resena.contenido }}</p>
+            </div>
+            {% empty %}
+            <div class="text-center py-5">
+                <i class="bi bi-chat-dots fs-1 text-muted"></i>
+                <p class="text-muted mt-2">Aún no hay reseñas para esta experiencia.</p>
+            </div>
+            {% endfor %}
+        </div>
+
         <div class="text-center pt-4">
             <button class="btn btn-link text-success fw-bold text-decoration-none">Cargar más reseñas...</button>
         </div>
     </div>
 </main>
+
 <nav class="d-md-none fixed-bottom bg-white border-top d-flex justify-content-around py-2 z-3 shadow-lg">
     <a href="/" class="text-decoration-none text-muted d-flex flex-column align-items-center">
         <i class="bi bi-compass fs-5"></i><span style="font-size: 10px;">Inicio</span>
@@ -166,7 +191,4 @@
         <i class="bi bi-person-circle fs-5"></i><span style="font-size: 10px;">Perfil</span>
     </a>
 </nav>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 {% endblock %}

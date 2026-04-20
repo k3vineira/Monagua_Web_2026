@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from panel import views as views_gestion
 from usuario import views as views_usuario
+from Experiencia_soporte import views as soporte_views
 from . import views
  
 urlpatterns = [
@@ -19,6 +20,7 @@ urlpatterns = [
     path('reservas/', include('reservas.urls')), # <--- Esto conecta con el código de arriba
     path('usuario/', include('usuario.urls')),
     path('Experiencia_soporte/', include('Experiencia_soporte.urls')),
+    path('tour/<int:paquete_id>/resenas/', soporte_views.ver_comentarios, name='ver_resenas'),
     path('pago/', include('pago.urls')),
     
     # 3. Autenticación y Gestión
@@ -30,10 +32,10 @@ urlpatterns = [
     path('inicio-guia/', views_usuario.dashboard_guia_view, name='inicio_guia'),
     
     # 4. Recuperación de contraseña
-    path('recuperar-password/', auth_views.PasswordResetView.as_view(template_name='recuperar.html'), name='password_reset'),
-    path('recuperar-password/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_sent.html'), name='password_reset_done'),
-    path('recuperar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_form.html'), name='password_reset_confirm'),
-    path('recuperar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_done.html'), name='password_reset_complete'),
+    path('recuperar-contraseña/', auth_views.PasswordResetView.as_view(template_name='recuperar.html'), name='password_reset'),
+    path('recuperar-contraseña/enviado/', auth_views.PasswordResetDoneView.as_view(template_name='contraseña_reset_enviado.html'), name='password_reset_done'),
+    path('recuperar-contraseña/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='contraseña_reset_form.html'), name='password_reset_confirm'),
+    path('recuperar-contraseña/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='contraseña_reset_guardar.html'), name='password_reset_complete'),
         
   
 
@@ -48,6 +50,12 @@ urlpatterns = [
     path('panel/guias/reactivar/', views_gestion.guias_reactivar, name='guias_reactivar'),
     # Agrega esta línea junto a las demás rutas de guías:
     path('panel/guias/detalle/<int:guia_id>/', views_gestion.guia_detalle_json, name='guia_detalle_json'),
+
+    # Gestión de Promociones (Banners)
+    path('panel/promociones/', views_gestion.gestion_promociones, name='gestion_promociones'),
+    path('panel/promociones/guardar/', views_gestion.guardar_promocion, name='guardar_promocion'),
+    path('panel/promociones/eliminar/<int:pk>/', views_gestion.eliminar_promocion, name='eliminar_promocion'),
+    path('panel/comentarios/', views_gestion.gestion_comentarios, name='gestion_comentarios'),
 ]
 
 # Servir archivos multimedia en entorno de desarrollo

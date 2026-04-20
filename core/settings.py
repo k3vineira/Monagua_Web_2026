@@ -132,5 +132,12 @@ LOGIN_REDIRECT_URL = '/'
 # A dónde enviar a los intrusos que no han iniciado sesión
 LOGIN_URL = 'login'
 
-# Manda los correos a la consola en vez de usar internet (Solo para desarrollo)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Configuración de Envío de Correos (Gmail SMTP)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'neirak424@gmail.com' # Reemplaza con tu cuenta de Gmail
+EMAIL_HOST_PASSWORD = 'nvqb rzzb umej vfxw' # Reemplaza con el código de 16 caracteres de Google
+DEFAULT_FROM_EMAIL = 'Monagua <tu-correo@gmail.com>'
