@@ -12,6 +12,13 @@ from reportlab.lib import colors
 
 #pagos
 def crear_pago(request):
+    # Definimos los métodos de pago para que aparezcan en la pantalla final de compra
+    metodos_pago = [
+        {'id': 'pse', 'nombre': 'PSE', 'icono': 'bi-bank'},
+        {'id': 'tarjetas', 'nombre': 'Tarjetas Crédito/Débito', 'icono': 'bi-credit-card'},
+        {'id': 'transferencia', 'nombre': 'Transferencia Bancaria', 'icono': 'bi-arrow-left-right'},
+    ]
+
     if request.method == 'POST':
 
         form = PagoForm(request.POST, request.FILES) 
@@ -27,6 +34,7 @@ def crear_pago(request):
     context = {
         'form': form,
         'titulo': 'Crear Nuevo Pago',
+        'metodos_pago': metodos_pago,
     }
     return render(request, 'pago.html', context)
 

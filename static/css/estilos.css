@@ -261,9 +261,11 @@ body {
     /*Estilos de pago
             /* --- Variables --- */
     :root {
-    --primary-monagua: #ec5b13;
-    --fondo-sidebar: #151b2b;
+    --primary-monagua: #3B643F;
+    --primary-hover: #2c4a2f;
+    --fondo-sidebar: #1a251e;
     --borde-gris: #e2e8f0;
+    --accent-monagua: #4ade80;
 }
 
 /* --- Utilidades --- */
@@ -282,13 +284,13 @@ body {
 /* --- Estilos de Pestañas (Tabs) --- */
 .nav-tabs .nav-link {
     border: none;
-    color: #64748b;
+    color: #adb5bd;
     border-bottom: 2px solid transparent;
 }
 .nav-tabs .nav-link.active {
     background-color: transparent !important;
-    color: var(--primary-monagua) !important;
-    border-bottom-color: var(--primary-monagua) !important;
+    color: var(--accent-monagua) !important;
+    border-bottom-color: var(--accent-monagua) !important;
 }
 
 /* --- Formulario --- */
@@ -310,9 +312,9 @@ body {
 }
 
 /* --- Ajuste Sidebar (Mantenemos tu arreglo anterior) --- */
-.barra-lateral { width: 260px; min-width: 260px; min-height: 100vh; background-color: var(--fondo-sidebar); position: sticky; top: 0; }
+.barra-lateral { width: 260px; min-width: 260px; min-height: 100vh; background-color: #1a251e; position: sticky; top: 0; }
 .enlace-menu { text-decoration: none; color: #9ca3af; padding: 12px 15px; border-radius: 10px; margin: 0 10px 5px; }
-.enlace-menu.activo { background-color: var(--primary-monagua); color: white !important; }
+.enlace-menu.activo { background-color: var(--primary-monagua); color: white !important; border-left: 4px solid var(--accent-monagua); }
 .icono-menu { width: 30px; text-align: center; margin-right: 10px; }
 
 /* --- Historial de Pagos --- */
@@ -336,5 +338,36 @@ body {
     color: #3B643F;
     text-decoration: none;
     font-weight: 600;
+}
+
+/* 7. VISUALIZACIÓN DE MÉTODOS DE PAGO (Confianza del Cliente) */
+.metodos-pago-container {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid #eee;
+    margin-top: 1.5rem;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.metodo-pago-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 8px 12px;
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555;
+    transition: all 0.3s ease;
+}
+
+.metodo-pago-item:hover {
+    border-color: #3B643F;
+    color: #3B643F;
+    transform: translateY(-2px);
 }
     
