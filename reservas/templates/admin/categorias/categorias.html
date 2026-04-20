@@ -18,6 +18,7 @@
                             <tr>
                                 <th>Nombre de Categoría</th>
                                 <th class="text-center">Acciones</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -25,8 +26,15 @@
                             <tr>
                                 <td class="py-3">{{ cat.nombre }}</td>
                                 <td class="text-center">
-                                    <a href="#" class="btn btn-sm btn-link text-primary">Editar</a>
-                                    <a href="#" class="btn btn-sm btn-link text-danger">Eliminar</a>
+                                    {% if cat.activa %}
+                                        <span class="badge bg-success">Activa</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactiva</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'editar_categoria' cat.pk %}" class="btn btn-sm btn-link text-primary">Editar</a>
+                                    <a href="{% url 'eliminar_categoria' cat.pk %}" class="btn btn-sm btn-link text-danger">Eliminar</a>
                                 </td>
                             </tr>
                             {% empty %}

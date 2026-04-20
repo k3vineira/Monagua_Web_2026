@@ -16,6 +16,7 @@
                     <tr>
                         <th>Descripción</th>
                         <th>Descuento</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -25,8 +26,15 @@
                         <td>{{ promo.nombre }}</td>
                         <td><span class="badge bg-info text-dark">{{ promo.descuento }}% OFF</span></td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-primary">Editar</a>
-                            <a href="#" class="btn btn-sm btn-danger">Eliminar</a>
+                            {% if promo.activa %}
+                                <span class="badge bg-success">Activa</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactiva</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'editar_promocion' promo.pk %}" class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{% url 'eliminar_promocion' promo.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
                         </td>
                     </tr>
                     {% empty %}
