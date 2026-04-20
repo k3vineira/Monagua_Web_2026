@@ -66,10 +66,16 @@ def gestion_guias(request):
 # ══════════════════════════════════════════════
 @staff_member_required
 def guias_guardar(request):
+    print("--- INICIANDO PROCESO DE GUARDAR GUÍA ---") # Rastreador 1
+    
     if request.method != 'POST':
         return redirect('gestion_guias')
 
     guia_id = request.POST.get('guia_id', '').strip()
+
+    # CORRECCIÓN VITAL: Manejo seguro del campo número
+    exp_str = request.POST.get('experiencia', '').strip()
+    exp_val = int(exp_str) if exp_str.isdigit() else 0
 
     # Recogemos todos los campos del formulario
     campos = {
@@ -80,30 +86,35 @@ def guias_guardar(request):
         'documento':       request.POST.get('documento', '').strip() or None,
         'especialidad':    request.POST.get('especialidad', ''),
         'disponibilidad':  request.POST.get('disponibilidad', 'Disponible'),
-        'experiencia':     int(request.POST.get('experiencia') or 0),
+        'experiencia':     exp_val, # Usamos la variable segura
         'idiomas':         request.POST.get('idiomas', '').strip() or None,
         'certificaciones': request.POST.get('certificaciones', '').strip() or None,
         'notas':           request.POST.get('notas', '').strip() or None,
     }
+
+    print("DATOS CAPTURADOS DEL HTML:", campos) # Rastreador 2
 
     try:
         if guia_id:
             # ── EDITAR guía existente ──
             guia = get_object_or_404(Guia, pk=guia_id)
             
-            # Verificamos si el correo ya existe en OTRO guía para evitar el error de IntegrityError
+            # Verificamos si el correo ya existe en OTRO guía
             if Guia.objects.exclude(pk=guia_id).filter(correo=campos['correo']).exists():
+                print("ERROR: Correo duplicado al editar")
                 return redirect('/panel/guias/?msg=error_correo')
 
             for attr, valor in campos.items():
                 setattr(guia, attr, valor)
             guia.save()
+            print("¡GUÍA ACTUALIZADO CON ÉXITO EN LA BD!")
             return redirect('/panel/guias/?msg=editado')
             
         else:
             # ── CREAR nuevo guía ──
             # Verificamos si el correo ya existe antes de intentar crear
             if Guia.objects.filter(correo=campos['correo']).exists():
+                print("ERROR: Correo duplicado al crear nuevo")
                 return redirect('/panel/guias/?msg=error_correo')
 
             # Asignamos color de avatar automáticamente por rotación
@@ -111,14 +122,15 @@ def guias_guardar(request):
             total   = Guia.objects.count()
             campos['color_avatar'] = colores[total % len(colores)]
 
-            Guia.objects.create(**campos)
+            nuevo_guia = Guia.objects.create(**campos)
+            print(f"¡GUÍA CREADO CON ÉXITO! ID asignado: {nuevo_guia.id}") # Rastreador 3
             return redirect('/panel/guias/?msg=creado')
 
-    except IntegrityError:
-        # En caso de que ocurra un error de duplicidad no controlado
+    except IntegrityError as e:
+        print(f"!!! ERROR DE INTEGRIDAD EN LA BD !!!: {e}")
         return redirect('/panel/guias/?msg=error_bd')
     except Exception as e:
-        print(f"Error detectado: {e}")
+        print(f"!!! ERROR FATAL AL GUARDAR EN LA BD !!!: {e}")
         return redirect('/panel/guias/?msg=error_bd')
 
 
