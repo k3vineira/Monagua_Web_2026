@@ -4,6 +4,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Sum, Count
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
+from reservas.models import Promocion
+from reservas.forms import PromocionForm, PromocionEditarForm
 from .models import Tour, Reserva, Guia
 
 User = get_user_model()
@@ -34,12 +36,15 @@ def dashboard_administrador(request):
         numero_reservas=Count('reservas')
     ).order_by('-numero_reservas')[:5]
 
+    total_promociones = Promocion.objects.count()
+
     context = {
         'total_usuarios':  total_usuarios,
         'total_ventas':    total_ventas,
         'total_reservas':  total_reservas,
         'total_tours':     total_tours,
         'tours_populares': tours_populares,
+        'total_promociones': total_promociones,
     }
     return render(request, 'panel.html', context)
 
@@ -93,18 +98,18 @@ def guias_guardar(request):
             
             # Verificamos si el correo ya existe en OTRO guía para evitar el error de IntegrityError
             if Guia.objects.exclude(pk=guia_id).filter(correo=campos['correo']).exists():
-                return redirect('/panel/guias/?msg=error_correo')
+                return redirect('gestion_guias')
 
             for attr, valor in campos.items():
                 setattr(guia, attr, valor)
             guia.save()
-            return redirect('/panel/guias/?msg=editado')
+            return redirect('gestion_guias')
             
         else:
             # ── CREAR nuevo guía ──
             # Verificamos si el correo ya existe antes de intentar crear
             if Guia.objects.filter(correo=campos['correo']).exists():
-                return redirect('/panel/guias/?msg=error_correo')
+                return redirect('gestion_guias')
 
             # Asignamos color de avatar automáticamente por rotación
             colores = Guia.COLORES_AVATAR
@@ -112,14 +117,14 @@ def guias_guardar(request):
             campos['color_avatar'] = colores[total % len(colores)]
 
             Guia.objects.create(**campos)
-            return redirect('/panel/guias/?msg=creado')
+            return redirect('gestion_guias')
 
     except IntegrityError:
         # En caso de que ocurra un error de duplicidad no controlado
-        return redirect('/panel/guias/?msg=error_bd')
+        return redirect('gestion_guias')
     except Exception as e:
         print(f"Error detectado: {e}")
-        return redirect('/panel/guias/?msg=error_bd')
+        return redirect('gestion_guias')
 
 
 # ══════════════════════════════════════════════
@@ -132,7 +137,7 @@ def guias_baja(request):
         guia.estado         = 'Inactivo'
         guia.disponibilidad = 'Ocupado'   # ya no está disponible
         guia.save()
-    return redirect('/panel/guias/?msg=baja')
+    return redirect('gestion_guias')
 
 
 # ══════════════════════════════════════════════
@@ -145,7 +150,7 @@ def guias_reactivar(request):
         guia.estado         = 'Activo'
         guia.disponibilidad = 'Disponible'
         guia.save()
-    return redirect('/panel/guias/?msg=reactivado')
+    return redirect('gestion_guias')
 
 
 # ══════════════════════════════════════════════
@@ -170,3 +175,51 @@ def guia_detalle_json(request, guia_id):
         'notas':           guia.notas or '',
         'estado':          guia.estado,
     })
+
+# ══════════════════════════════════════════════
+#  GESTIÓN DE PROMOCIONES Y BANNERS
+# ══════════════════════════════════════════════
+@staff_member_required
+def gestion_promociones(request):
+    """Lista todas las promociones para que el administrador las gestione."""
+    promociones = Promocion.objects.all().order_by('prioridad', '-id')
+    form = PromocionForm()
+    return render(request, 'promociones_gestion.html', {
+        'promociones': promociones,
+        'form': form
+    })
+
+@staff_member_required
+def guardar_promocion(request):
+    """Crea o edita una promoción desde el panel de administración."""
+    if request.method == 'POST':
+        promocion_id = request.POST.get('promocion_id')
+        try:
+            if promocion_id:
+                promocion = get_object_or_404(Promocion, pk=promocion_id)
+                form = PromocionEditarForm(request.POST, request.FILES, instance=promocion)
+            else:
+                form = PromocionForm(request.POST, request.FILES)
+
+            if form.is_valid():
+                form.save()
+                # Aquí podrías agregar un mensaje de éxito: messages.success(request, "Guardado correctamente")
+                return redirect('gestion_promociones')
+            else:
+                print(f"Errores en el formulario: {form.errors}")
+        except Exception as e:
+            print(f"Error al guardar promoción: {e}")
+            
+    return redirect('gestion_promociones')
+
+@staff_member_required
+def eliminar_promocion(request, pk):
+    """Elimina una promoción definitivamente."""
+    promocion = get_object_or_404(Promocion, pk=pk)
+    promocion.delete()
+    return redirect('gestion_promociones')
+
+@staff_member_required
+def gestion_comentarios(request):
+    """Vista para que el administrador gestione los comentarios y reseñas."""
+    return render(request, 'panel.html', {'msg': 'Sección de comentarios en desarrollo'})

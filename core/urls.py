@@ -50,6 +50,12 @@ urlpatterns = [
     path('panel/guias/reactivar/', views_gestion.guias_reactivar, name='guias_reactivar'),
     # Agrega esta línea junto a las demás rutas de guías:
     path('panel/guias/detalle/<int:guia_id>/', views_gestion.guia_detalle_json, name='guia_detalle_json'),
+
+    # Gestión de Promociones (Banners)
+    path('panel/promociones/', views_gestion.gestion_promociones, name='gestion_promociones'),
+    path('panel/promociones/guardar/', views_gestion.guardar_promocion, name='guardar_promocion'),
+    path('panel/promociones/eliminar/<int:pk>/', views_gestion.eliminar_promocion, name='eliminar_promocion'),
+    path('panel/comentarios/', views_gestion.gestion_comentarios, name='gestion_comentarios'),
 ]
 
 # Servir archivos multimedia en entorno de desarrollo

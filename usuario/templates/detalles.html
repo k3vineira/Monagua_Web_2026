@@ -53,6 +53,11 @@
                     <a class="nav-link text-muted p-0" href="#">Diario</a>
                     <a class="nav-link text-muted p-0" href="#">Colecciones</a>
                 </nav>
+                {% if user.is_staff %}
+                <div class="d-none d-lg-flex gap-3 ms-auto me-4">
+                    <a href="{% url 'gestion_promociones' %}" class="btn btn-sm btn-outline-success rounded-pill px-3 fw-bold">GESTIONAR BANNERS</a>
+                </div>
+                {% endif %}
                 {% if user.is_authenticated %}
                 <div class="iconos-usuario d-flex gap-3 align-items-center">
                     <i class="bi bi-bell text-muted fs-5"></i>
