@@ -1,0 +1,52 @@
+[
+{
+  "model": "usuario.usuario",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$gAW9gNLZn24oVPsqtNBg9v$mFcijA5XAPrn3UwiGJC+zXNXF4qW/uxhUkreQgFFcA8=",
+    "last_login": "2026-04-21T13:32:35.105Z",
+    "is_superuser": true,
+    "username": "KEVIN_NEIRA1",
+    "first_name": "",
+    "last_name": "",
+    "email": "windows10promaxacer@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-04-21T03:12:15.878Z",
+    "tipo_documento": "",
+    "numero_documento": null,
+    "telefono": "",
+    "residencia": "",
+    "imagen_perfil": "",
+    "es_guia": false,
+    "es_turista": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuario.usuario",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$WUdCKSfCNOymvGNkQG0e3q$16PyH3pYoD7QmOt/SmeQucRxb44A0J+xewOt8D9k/rU=",
+    "last_login": "2026-04-21T14:10:53Z",
+    "is_superuser": false,
+    "username": "kevin@gmail.com",
+    "first_name": "kevin alfonso",
+    "last_name": "garavito",
+    "email": "kevin@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-04-21T14:10:34Z",
+    "tipo_documento": "CC",
+    "numero_documento": "1052839198",
+    "telefono": "3027787555",
+    "residencia": "Duitama, Boyacá",
+    "imagen_perfil": "",
+    "es_guia": false,
+    "es_turista": true,
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
