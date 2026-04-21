@@ -49,6 +49,8 @@ def promociones_view(request):
     promociones_list = query.order_by('prioridad', '-id')
     return render(request, 'promociones.html', {'promociones': promociones_list})
 
+
+
 def destinos(request):
     destinos_list = Paquete.objects.all()
 
@@ -96,7 +98,7 @@ def crear_paquete(request):
         if form.is_valid():
             paquete = form.save()
             messages.success(request, f"Paquete '{paquete.nombre}' creado correctamente.")
-            return redirect('crear_paquete')
+            return redirect('admin_paquetes')
         else:
             messages.error(request, "Error al crear el paquete. Verifica los datos.")
     else:
@@ -111,7 +113,7 @@ def editar_paquete(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de {paquete.nombre} actualizados.")
-            return redirect('crear_paquete')
+            return redirect('admin_paquetes')
     else:
         form = PaqueteForm(instance=paquete)
     return render(request, 'admin/paquetes/editar_paquete.html', {'form': form, 'titulo': f'Editar {paquete.nombre}'})
@@ -122,7 +124,7 @@ def eliminar_paquete(request, pk):
     if request.method == 'POST':
         paquete.delete()
         messages.success(request, f"Paquete '{paquete.nombre}' eliminado.")
-        return redirect('crear_paquete')
+        return redirect('admin_paquetes')
     return render(request, 'admin/paquetes/eliminar_paquete.html', {'paquete': paquete})
 
 
@@ -135,7 +137,7 @@ def crear_categoria(request):
         if form.is_valid():
             categoria = form.save()
             messages.success(request, f"Categoría '{categoria.nombre}' creada.")
-            return redirect('crear_categoria')
+            return redirect('admin_categorias')
     else:
         form = CategoriaForm()
     return render(request, 'admin/categorias/agregar_categoria.html', {'form': form, 'titulo': 'Crear Categoría'})
@@ -147,7 +149,7 @@ def editar_categoria(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Categoría {categoria.nombre} actualizada.")
-            return redirect('crear_categoria')
+            return redirect('admin_categorias')
     else:
         form = CategoriaForm(instance=categoria)
     return render(request, 'admin/categorias/editar_categoria.html', {'form': form, 'titulo': f'Editar {categoria.nombre}'})
@@ -157,7 +159,7 @@ def eliminar_categoria(request, pk):
     if request.method == 'POST':
         categoria.delete()
         messages.success(request, f"Categoría '{categoria.nombre}' eliminada.")
-        return redirect('crear_categoria')
+        return redirect('admin_categorias')
     return render(request, 'admin/categorias/eliminar_categoria.html', {'categoria': categoria})
 
 # --- CRUD DE ACTIVIDADES ---
@@ -168,7 +170,7 @@ def crear_actividad(request):
         if form.is_valid():
             actividad = form.save()
             messages.success(request, f"Actividad '{actividad.nombre}' creada.")
-            return redirect('crear_actividad')
+            return redirect('admin_actividades')
     else:
         form = ActividadesForm()
     return render(request, 'admin/actividades/agregar_actividad.html', {'form': form, 'titulo': 'Crear Actividad'})
@@ -180,7 +182,7 @@ def editar_actividad(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Actividad {actividad.nombre} actualizada.")
-            return redirect('crear_actividad')
+            return redirect('admin_actividades')
     else:
         form = ActividadesForm(instance=actividad)
     return render(request, 'admin/actividades/editar_actividad.html', {'form': form, 'titulo': f'Editar {actividad.nombre}'})
@@ -190,7 +192,7 @@ def eliminar_actividad(request, pk):
     if request.method == 'POST':
         actividad.delete()
         messages.success(request, f"Actividad '{actividad.nombre}' eliminada.")
-        return redirect('crear_actividad')
+        return redirect('admin_actividades')
     return render(request, 'admin/actividades/eliminar_actividad.html', {'actividad': actividad})
 
 # --- CRUD DE RESERVAS ---
@@ -200,8 +202,8 @@ def crear_reserva(request):
         form = ReservaForm(request.POST)
         if form.is_valid():
             reserva = form.save()
-            messages.success(request, f"Reserva para '{reserva.nombre}' creada.")
-            return redirect('crear_reserva')
+            messages.success(request, f"Reserva para '{reserva.nombre_cliente}' creada.")
+            return redirect('admin_reservas')
     else:
         form = ReservaForm()
     return render(request, 'admin/reservas/agregar_reserva.html', {'form': form, 'titulo': 'Crear Reserva'})
@@ -212,8 +214,8 @@ def editar_reserva(request, pk):
         form = ReservaEditarForm(request.POST, instance=reserva)
         if form.is_valid():
             form.save()
-            messages.success(request, f"Reserva de {reserva.nombre} actualizada.")
-            return redirect('crear_reserva')
+            messages.success(request, f"Reserva de {reserva.nombre_cliente} actualizada.")
+            return redirect('admin_reservas')
     else:
         form = ReservaForm(instance=reserva)
     return render(request, 'admin/reservas/editar_reserva.html', {'form': form, 'titulo': f'Editar Reserva'})
@@ -221,8 +223,8 @@ def eliminar_reserva(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
     if request.method == 'POST':
         reserva.delete()
-        messages.success(request, f"Reserva de '{reserva.nombre}' eliminada.")
-        return redirect('crear_reserva')
+        messages.success(request, f"Reserva de '{reserva.nombre_cliente}' eliminada.")
+        return redirect('admin_reservas')
     return render(request, 'admin/reservas/eliminar_reserva.html', {'reserva': reserva})
 
 # --- PROMOCIONES ---
@@ -233,7 +235,7 @@ def crear_promocion(request):
         if form.is_valid():
             promocion = form.save()
             messages.success(request, f"Promoción '{promocion.nombre}' creada correctamente.")
-            return redirect('crear_promocion')
+            return redirect('admin_promociones')
     else:
         form = PromocionForm()
 
@@ -254,7 +256,7 @@ def editar_promocion(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Promoción {promocion.nombre} actualizada.")
-            return redirect('crear_promocion')
+            return redirect('admin_promociones')
     else:
         form = PromocionForm(instance=promocion)
     return render(request, 'admin/promociones/editar_promocion.html', {'form': form, 'titulo': f'Editar {promocion.nombre}'})
@@ -263,7 +265,7 @@ def eliminar_promocion(request, pk):
     if request.method == 'POST':
         promocion.delete()
         messages.success(request, f"Promoción '{promocion.nombre}' eliminada.")
-        return redirect('crear_promocion')
+        return redirect('admin_promociones')
     return render(request, 'admin/promociones/eliminar_promocion.html', {'promocion': promocion})
 
 def crear_pqrs(request):
@@ -272,8 +274,8 @@ def crear_pqrs(request):
         form = PQRSForm(request.POST)
         if form.is_valid():
             pqrs = form.save()
-            messages.success(request, f"PQRS '{pqrs.nombre}' enviada.")
-            return redirect('pqrs')
+            messages.success(request, f"PQRS '{pqrs.nombre_solicitante}' enviada.")
+            return redirect('crear_pqrs')
     else:
         form = PQRSForm()
     return render(request, 'pqrs.html', {'form': form, 'titulo': 'Contáctanos - PQRS'})
@@ -284,8 +286,8 @@ def editar_pqrs(request, pk):
         form = PQRSEditarForm(request.POST, instance=pqrs)
         if form.is_valid():
             form.save()
-            messages.success(request, f"PQRS de {pqrs.nombre} actualizada.")
-            return redirect('pqrs')
+            messages.success(request, f"PQRS de {pqrs.nombre_solicitante} actualizada.")
+            return redirect('crear_pqrs')
     else:
         form = PQRSForm(instance=pqrs)
     return render(request, 'pqrs.html', {'form': form, 'titulo': f'Editar PQRS de {pqrs.nombre}'})
@@ -294,8 +296,8 @@ def eliminar_pqrs(request, pk):
     pqrs = get_object_or_404(PQRS, pk=pk)
     if request.method == 'POST':
         pqrs.delete()
-        messages.success(request, f"PQRS de '{pqrs.nombre}' eliminada.")
-        return redirect('pqrs')
+        messages.success(request, f"PQRS de '{pqrs.nombre_solicitante}' eliminada.")
+        return redirect('crear_pqrs')
     return render(request, 'admin/pqrs/eliminar_pqrs.html', {'pqrs': pqrs})
 
 def crear_blog(request):
@@ -304,7 +306,7 @@ def crear_blog(request):
         if form.is_valid():
             blog = form.save()
             messages.success(request, f"Entrada '{blog.titulo}' publicada con éxito.")
-            return redirect('crear_blog') # Redirige a la lista del blog
+            return redirect('admin_blog') # Redirige a la lista del blog
     else:
         form = blogForm()
     
@@ -320,7 +322,7 @@ def editar_blog(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, f"Entrada '{blog.titulo}' actualizada.")
-            return redirect('blog_view')
+            return redirect('admin_blog')
     else:
         form = blogForm(instance=blog)
     
@@ -334,7 +336,7 @@ def eliminar_blog(request, pk):
     if request.method == 'POST':
         blog.delete()
         messages.success(request, f"Entrada '{blog.titulo}' eliminada.")
-        return redirect('blog_view')
+        return redirect('admin_blog')
     return render(request, 'admin/blog/eliminar_blog.html', {'blog': blog})
     
 
@@ -368,6 +370,16 @@ def lista_reservas(request):
     # Traemos todo de la base de datos
     reservas = Reserva.objects.all() 
     return render(request, 'admin/reservas/reservas.html', {'reservas': reservas})
+
+def lista_pqrs(request):
+    # Usamos un nombre diferente al del modelo (pqrs_objetos) para evitar errores
+    pqrs_objetos = PQRS.objects.all().order_by('-id') 
+    # Enviamos la variable con el nombre 'todas_las_pqrs'
+    return render(request, 'admin/pqrs/pqrs.html', {'todas_las_pqrs': pqrs_objetos})
+
+
+
+
 
 
 
