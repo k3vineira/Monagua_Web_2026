@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+   <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestión de Reservas</h2>
+        <a href="{% url 'crear_reserva' %}" class="btn btn-success">
+            <i class="bi bi-calendar-plus"></i> Crear Reserva
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Destino/Paquete</th>
+                        <th>Fecha Reserva</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in reservas %}
+                    <tr>
+                        <td>{{ reserva.nombre_cliente }}</td>
+                        <td>{{ reserva.paquete.nombre }}</td>
+                        <td>{{ reserva.fecha_viaje }}</td>
+                        <td>
+                            {% if reserva.estado == 'pendiente' %}
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                            {% elif reserva.estado == 'confirmada' %}
+                                <span class="badge bg-success">Confirmada</span>
+                            {% elif reserva.estado == 'cancelada' %}
+                                <span class="badge bg-danger">Cancelada</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Desconocido</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'editar_reserva' reserva.pk %}" class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{% url 'eliminar_reserva' reserva.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">Todavía no hay reservas registradas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
