@@ -24,48 +24,46 @@
             <p class="fs-4 fw-light">El corazón verde de Boyacá, Colombia</p>
         </div>
     </header>
-
-    <main class="container py-5">
-        <div class="row g-4">
-            
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm rounded-0">
-                    <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=600&q=80" class="card-img-top rounded-0" alt="Páramo">
-                    <div class="card-body p-4">
-                        <h3 class="fw-bold fs-4 mb-3">Páramo de Ocetá</h3>
-                        <p class="text-secondary small mb-0">
-                            Mongua es el punto de partida ideal para visitar el Páramo de Ocetá. Conoce la "Ciudad de Piedra" y maravíllate con los jardines naturales de frailejones que protegen el agua de la región.
-                        </p>
-                    </div>
-                  
+<div class="container py-5">
+    <h2 class="text-center fw-bold mb-5">Historias de Mongua</h2>
+    
+    <div class="row g-4"> 
+        {% for post in posts %}
+        <div class="col-md-6 col-lg-4"> <div class="card h-100 shadow-sm border-0">
+                
+                <div class="ratio ratio-4x3">
+                    {% if post.imagen_destacada %}
+                        <img src="{{ post.imagen_destacada.url }}" class="card-img-top object-fit-cover" alt="{{ post.titulo }}">
+                    {% else %}
+                        <img src="{% static 'img/Lagunanegra.png' %}" class="card-img-top object-fit-cover" alt="Default">
+                    {% endif %}
                 </div>
-            </div>
 
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm rounded-0">
-                    <img src="https://images.unsplash.com/photo-1519302959554-a75be0afc82a?auto=format&fit=crop&w=600&q=80" class="card-img-top rounded-0" alt="Artesanía">
-                    <div class="card-body p-4">
-                        <h3 class="fw-bold fs-4 mb-3">Arte en Paja Blanca</h3>
-                        <p class="text-secondary small mb-0">
-                            Descubre la técnica ancestral del <strong>Balay</strong>. Artesanías tejidas a mano por familias campesinas que transforman fibras naturales en cestos, platos y decoraciones únicas.
-                        </p>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-bold text-uppercase">{{ post.titulo }}</h5>
+                    <p class="small text-muted flex-grow-1">
+                        {{ post.contenido|truncatewords:15 }}
+                    </p>
+                    <div class="mt-auto">
+                        <hr class="my-3 opacity-25">
+                        <a href="#" class="btn btn-success w-100">Leer más</a>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm rounded-0">
-                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80" class="card-img-top rounded-0" alt="Comida">
-                    <div class="card-body p-4">
-                        <h3 class="fw-bold fs-4 mb-3">Sabores de la Montaña</h3>
-                        <p class="text-secondary small mb-0">
-                            Prueba el auténtico cocido boyacense, las arepas de maíz pelao y el chocolate caliente con queso. Mongua ofrece una experiencia gastronómica que calienta el cuerpo y el alma.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
         </div>
-    </main>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <h3 class="text-muted">Aún no hay historias publicadas.</h3>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
 
-    {% endblock content %}
+
+
+
+
+
+
+    

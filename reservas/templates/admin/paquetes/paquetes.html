@@ -1,0 +1,48 @@
+{% extends 'base.html' %} 
+{% block content %}
+<div class="container mt-4 ">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2>Administración de Paquetes Turísticos</h2>
+        <a href="{% url 'crear_paquete' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Nuevo Paquete
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-dark" style="background-color: #39A900;"> <tr>
+                        <th>Nombre del Paquete</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paquete in paquetes %}
+                    <tr>
+                        <td>{{ paquete.nombre }}</td>
+                        <td>${{ paquete.precio }}</td>
+                        <td>
+                            {% if paquete.activo %}
+                                <span class="badge bg-success">Activo</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactivo</span>
+                            {% endif %}
+                        <td>
+                            <a href="{% url 'editar_paquete' paquete.pk %}" class="btn btn-sm btn-primary">Editar</a>
+                            <a href="{% url 'eliminar_paquete' paquete.pk %}" class="btn btn-sm btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">Aún no has creado paquetes.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
