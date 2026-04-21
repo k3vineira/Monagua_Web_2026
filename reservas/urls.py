@@ -6,6 +6,7 @@ urlpatterns = [
     path('blog/', views.blog_view, name='blog'),
     path('reservar/', views.reservas_view, name='reservas'),
     path('promociones/', views.promociones_view, name='promociones'),
+   
     
     path('categorias/crear/', views.crear_categoria, name='crear_categoria'),
     path('categorias/editar/<int:pk>/', views.editar_categoria, name='editar_categoria'),
@@ -35,4 +36,5 @@ urlpatterns = [
     path('admin/paquetes/', views.lista_paquetes, name='admin_paquetes'),
     path('admin/promociones/', views.lista_promociones, name='admin_promociones'),
     path('admin/reservas/', views.lista_reservas, name='admin_reservas'),
+    path('admin/pqrs/', views.lista_pqrs, name='lista_pqrs'),
 ]
