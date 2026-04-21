@@ -4,7 +4,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Usuario, PerfilTurista  # Importamos tu modelo personalizado
 from django.contrib.auth.decorators import login_required, user_passes_test
-from panel.models import Reserva
+from administrador.models import Reserva
 from django.http import HttpResponse
 import io
 from reportlab.pdfgen import canvas

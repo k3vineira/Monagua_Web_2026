@@ -107,7 +107,7 @@
                 <li><hr class="dropdown-divider"></li>
                 
                 {% if user.is_staff %}
-                    <li><a class="dropdown-item" href="{% url 'panel' %}"><i class="bi bi-speedometer2 me-2"></i>Gestión Admin</a></li>
+                    <li><a class="dropdown-item" href="{% url 'administrador' %}"><i class="bi bi-speedometer2 me-2"></i>Gestión Admin</a></li>
                 {% elif user.es_guia %}
                     <li><a class="dropdown-item" href="{% url 'inicio_guia' %}"><i class="bi bi-geo-alt me-2"></i>Panel de Guía</a></li>
                 {% else %}

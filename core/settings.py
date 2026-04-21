@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'inicio.apps.InicioConfig',
     'usuario',
     'Experiencia_soporte',
-    'panel',
+    'administrador',
     'pago',
 ]
 

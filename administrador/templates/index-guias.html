@@ -525,7 +525,7 @@
         const modal = new bootstrap.Modal(document.getElementById('modalGuia'));
         modal.show();
 
-        fetch(`/panel/guias/detalle/${id}/`)
+        fetch(`/administrador/guias/detalle/${id}/`)
             .then(res => {
                 if (!res.ok) throw new Error('Error HTTP ' + res.status);
                 return res.json();
