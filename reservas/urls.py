@@ -30,6 +30,7 @@ urlpatterns = [
     path('blog/editar/<int:pk>/', views.editar_blog, name='editar_blog'),
     path('blog/eliminar/<int:pk>/', views.eliminar_blog, name='eliminar_blog'),
     
+    
     path('admin/blog/', views.lista_blog, name='admin_blog'),
     path('admin/actividades/', views.lista_actividades, name='admin_actividades'),
     path('admin/categorias/', views.lista_categorias, name='admin_categorias'),
