@@ -1,0 +1,277 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel | Monagua{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+    <!-- Estilos base compartidos (sidebar, topbar, KPI, modales, a11y, etc.) -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-brand">
+        <img src="{% static 'img/logo_monagua.png' %}" alt="Logo">
+        <div>
+            <div class="brand-name">MONAGUA</div>
+            <div class="brand-sub">Admin Panel</div>
+        </div>
+    </div>
+
+    <div class="sidebar-section">Principal</div>
+    <a href="{% url 'administrador' %}" class="sidebar-link {% if request.resolver_match.url_name == 'administrador' %}active{% endif %}">
+        <i class="bi bi-grid-1x2-fill"></i> Dashboard
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-graph-up-arrow"></i> Estadísticas
+    </a>
+
+    <div class="sidebar-section">Gestión</div>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-map-fill"></i> Tours
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-people-fill"></i> Usuarios
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-calendar-check-fill"></i> Reservas
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-cash-stack"></i> Pagos
+    </a>
+    <a href="{% url 'gestion_guias' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gestion_guias' %}active{% endif %}">
+        <i class="bi bi-person-badge-fill"></i> Guías
+    </a>
+
+    <div class="sidebar-section">Sistema</div>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-bell-fill"></i> Notificaciones
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-gear-fill"></i> Configuración
+    </a>
+
+    <div class="sidebar-footer">
+        <div class="admin-avatar">
+            <div class="avatar-circle">A</div>
+            <div>
+                <div class="admin-name">Administrador</div>
+                <div class="admin-role">Super Admin</div>
+            </div>
+        </div>
+        <a href="{% url 'logout' %}" class="btn-logout">
+            <i class="bi bi-power"></i> Cerrar Sesión
+        </a>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+{% block content %}{% endblock %}
+
+<!-- Toast notificación -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3"
+     style="margin-bottom:4.5rem;">
+    <div id="toastMsg" class="toast align-items-center text-white border-0"
+         role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastBody">Acción completada con éxito.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<!-- ─── WIDGET DE ACCESIBILIDAD ─── -->
+<button id="a11y-btn" title="Accesibilidad"
+        aria-label="Abrir panel de accesibilidad"
+        onclick="toggleA11yPanel()">
+    <i class="bi bi-universal-access"></i>
+</button>
+
+<div id="a11y-panel" role="dialog" aria-label="Panel de accesibilidad">
+    <div class="a11y-header">
+        <span><i class="bi bi-universal-access me-2"></i>Accesibilidad</span>
+        <button onclick="toggleA11yPanel()" aria-label="Cerrar">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+
+    <div class="a11y-section">Idioma / Language</div>
+    <div class="a11y-row" style="padding-bottom:0.75rem;">
+        <div class="lang-btn-group" style="width:100%;">
+            <button class="lang-btn active" id="btn-es" onclick="setLang('es')">🇨🇴 Español</button>
+            <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇺🇸 English</button>
+        </div>
+    </div>
+
+    <div class="a11y-section">Tamaño de texto</div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-fonts"></i> Tamaño</div>
+        <div class="a11y-font-ctrl">
+            <button onclick="cambiarFuente(-1)" aria-label="Reducir">
+                <i class="bi bi-dash"></i>
+            </button>
+            <span id="fontPct">100%</span>
+            <button onclick="cambiarFuente(1)" aria-label="Aumentar">
+                <i class="bi bi-plus"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="a11y-section">Visual</div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-circle-half"></i> Alto contraste</div>
+        <label class="a11y-toggle">
+            <input type="checkbox" id="togContraste"
+                   onchange="toggleClase('alto-contraste', this.checked)">
+            <span class="a11y-slider"></span>
+        </label>
+    </div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-link-45deg"></i> Subrayar enlaces</div>
+        <label class="a11y-toggle">
+            <input type="checkbox" id="togLinks"
+                   onchange="toggleClase('subrayar-links', this.checked)">
+            <span class="a11y-slider"></span>
+        </label>
+    </div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-cursor-fill"></i> Cursor grande</div>
+        <label class="a11y-toggle">
+            <input type="checkbox" id="togCursor"
+                   onchange="toggleClase('cursor-grande', this.checked)">
+            <span class="a11y-slider"></span>
+        </label>
+    </div>
+    <div class="a11y-row">
+        <div class="a11y-label"><i class="bi bi-pause-circle"></i> Reducir animaciones</div>
+        <label class="a11y-toggle">
+            <input type="checkbox" id="togAnim"
+                   onchange="toggleAnimaciones(this.checked)">
+            <span class="a11y-slider"></span>
+        </label>
+    </div>
+
+    <button class="a11y-reset" onclick="resetA11y()">
+        <i class="bi bi-arrow-counterclockwise me-1"></i> Restablecer todo
+    </button>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    /* ══════════════════════════════════════════
+       WIDGET DE ACCESIBILIDAD — GLOBAL
+    ══════════════════════════════════════════ */
+    window.currentLang = localStorage.getItem('a11y-lang') || 'es';
+
+    let fontStep = parseInt(localStorage.getItem('a11y-font') || '0');
+
+    window.toggleA11yPanel = function () {
+        document.getElementById('a11y-panel').classList.toggle('open');
+    };
+
+    window.setLang = function (lang) {
+        window.currentLang = lang;
+        localStorage.setItem('a11y-lang', lang);
+        document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+        const dateEl = document.getElementById('currentDate');
+        if (dateEl) {
+            dateEl.textContent = new Date().toLocaleDateString(
+                lang === 'en' ? 'en-US' : 'es-CO',
+                { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }
+            );
+        }
+    };
+
+    window.cambiarFuente = function (dir) {
+        fontStep = Math.max(-3, Math.min(5, fontStep + dir));
+        localStorage.setItem('a11y-font', fontStep);
+        const pct = 100 + fontStep * 10;
+        document.documentElement.style.fontSize = pct + '%';
+        document.getElementById('fontPct').textContent = pct + '%';
+    };
+
+    window.toggleClase = function (cls, val) {
+        document.body.classList.toggle(cls, val);
+        localStorage.setItem('a11y-' + cls, val ? '1' : '0');
+    };
+
+    window.toggleAnimaciones = function (val) {
+        if (val) {
+            const style = document.createElement('style');
+            style.id = 'a11y-no-anim';
+            style.textContent =
+                '*, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }';
+            document.head.appendChild(style);
+        } else {
+            const el = document.getElementById('a11y-no-anim');
+            if (el) el.remove();
+        }
+        localStorage.setItem('a11y-anim', val ? '1' : '0');
+    };
+
+    window.resetA11y = function () {
+        fontStep = 0;
+        document.documentElement.style.fontSize = '';
+        document.getElementById('fontPct').textContent = '100%';
+        ['alto-contraste', 'subrayar-links', 'cursor-grande'].forEach(c => {
+            document.body.classList.remove(c);
+            localStorage.removeItem('a11y-' + c);
+        });
+        ['togContraste', 'togLinks', 'togCursor', 'togAnim'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.checked = false;
+        });
+        const noAnim = document.getElementById('a11y-no-anim');
+        if (noAnim) noAnim.remove();
+        localStorage.removeItem('a11y-font');
+        localStorage.removeItem('a11y-anim');
+    };
+
+    (function initA11y() {
+        document.getElementById('btn-es').classList.toggle('active', window.currentLang === 'es');
+        document.getElementById('btn-en').classList.toggle('active', window.currentLang === 'en');
+
+        const pct = 100 + fontStep * 10;
+        document.documentElement.style.fontSize = pct + '%';
+        document.getElementById('fontPct').textContent = pct + '%';
+
+        const togMap = {
+            'alto-contraste': 'togContraste',
+            'subrayar-links': 'togLinks',
+            'cursor-grande':  'togCursor'
+        };
+        Object.entries(togMap).forEach(([cls, togId]) => {
+            if (localStorage.getItem('a11y-' + cls) === '1') {
+                document.body.classList.add(cls);
+                const el = document.getElementById(togId);
+                if (el) el.checked = true;
+            }
+        });
+
+        if (localStorage.getItem('a11y-anim') === '1') {
+            toggleAnimaciones(true);
+            document.getElementById('togAnim').checked = true;
+        }
+    })();
+</script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>
