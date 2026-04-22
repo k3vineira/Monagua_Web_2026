@@ -26,7 +26,7 @@ urlpatterns = [
     # 3. Autenticación y Gestión
     path('login/', auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
-    path('gestion-admin/', views_gestion.dashboard_administrador, name='gestion_admin'),
+    path('panel/', views_gestion.dashboard_administrador, name='panel'),
     
     # Dashboard de Guía
     path('inicio-guia/', views_usuario.dashboard_guia_view, name='inicio_guia'),
@@ -37,12 +37,6 @@ urlpatterns = [
     path('recuperar-contraseña/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='contraseña_reset_form.html'), name='password_reset_confirm'),
     path('recuperar-contraseña/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='contraseña_reset_guardar.html'), name='password_reset_complete'),
         
-  
-
-    # Cambia la línea 29 por esta:
-    path('panel/', views_gestion.dashboard_administrador, name='panel'),
-
-
     # Gestión de guías
     path('panel/guias/', views_gestion.gestion_guias, name='gestion_guias'),
     path('panel/guias/guardar/', views_gestion.guias_guardar, name='guias_guardar'),

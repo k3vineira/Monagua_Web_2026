@@ -72,9 +72,6 @@ def registro_view(request):
     if request.method == 'POST':
         # 1. Capturamos los datos del POST (Coinciden con los 'name' de tu HTML)
         nombres = request.POST.get('nombres')
-        
-        print("¡ATENCIÓN: He recibido un POST del formulario!")
-        
         apellidos = request.POST.get('apellidos')
         tipo_doc = request.POST.get('tipo_documento')
         num_doc = request.POST.get('numero_documento')
@@ -116,7 +113,6 @@ def registro_view(request):
             return redirect('login')
             
         except Exception as e:
-            print(f"ERROR CRÍTICO EN DB: {e}")
             messages.error(request, f"Error: {e}")
             return render(request, 'registro.html')
 
