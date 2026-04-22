@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 from administrador import views as views_gestion
-from usuario import views as views_usuario
+from usuario.views import * 
 from Experiencia_soporte import views as soporte_views
 from . import views
 
@@ -31,6 +31,9 @@ urlpatterns = [
 
 
     # 3. Autenticación y Gestión
+    # path('login/', login_view, name='login'),
+    path('registro/', registro_view, name='registro'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('login/', auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
@@ -38,7 +41,7 @@ urlpatterns = [
 
     
     # Dashboard de Guía
-    path('inicio-guia/', views_usuario.dashboard_guia_view, name='inicio_guia'),
+    path('inicio-guia/', dashboard_guia_view, name='inicio_guia'),
 
 
     # 4. Recuperación de contraseña

@@ -2,7 +2,7 @@
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
@@ -17,7 +17,6 @@ User = get_user_model()
 # ══════════════════════════════════════════════
 #  DASHBOARD ADMINISTRADOR
 # ══════════════════════════════════════════════
-@staff_member_required
 def dashboard_administrador(request):
 
     # Total usuarios registrados
@@ -56,7 +55,7 @@ def dashboard_administrador(request):
 # ══════════════════════════════════════════════
 #  GESTIÓN DE GUÍAS — LISTA
 # ══════════════════════════════════════════════
-@staff_member_required
+@login_required
 def gestion_guias(request):
 
     guias = Guia.objects.all()
@@ -78,7 +77,7 @@ def gestion_guias(request):
 # ══════════════════════════════════════════════
 #  GUARDAR GUÍA (Crear o Editar)
 # ══════════════════════════════════════════════
-@staff_member_required
+@login_required
 def guias_guardar(request):
 
     print("--- INICIANDO PROCESO DE GUARDAR GUÍA ---")
@@ -149,7 +148,7 @@ def guias_guardar(request):
 # ══════════════════════════════════════════════
 #  DAR DE BAJA
 # ══════════════════════════════════════════════
-@staff_member_required
+@login_required
 def guias_baja(request):
 
     if request.method == 'POST':
@@ -169,7 +168,7 @@ def guias_baja(request):
 # ══════════════════════════════════════════════
 #  REACTIVAR GUÍA
 # ══════════════════════════════════════════════
-@staff_member_required
+@login_required
 def guias_reactivar(request):
 
     if request.method == 'POST':
@@ -189,7 +188,7 @@ def guias_reactivar(request):
 # ══════════════════════════════════════════════
 #  DETALLE DE GUÍA (JSON)
 # ══════════════════════════════════════════════
-@staff_member_required
+@login_required
 def guia_detalle_json(request, guia_id):
 
     guia = get_object_or_404(Guia, pk=guia_id)
@@ -213,8 +212,8 @@ def guia_detalle_json(request, guia_id):
 
 # ══════════════════════════════════════════════
 #  GESTIÓN DE PROMOCIONES
-# ══════════════════════════════════════════════
-@staff_member_required
+#══════════════════════════════════════════════
+@login_required
 def gestion_promociones(request):
 
     promociones = Promocion.objects.all().order_by(
@@ -234,7 +233,7 @@ def gestion_promociones(request):
     )
 
 
-@staff_member_required
+@login_required
 def guardar_promocion(request):
 
     if request.method == 'POST':
@@ -279,7 +278,7 @@ def guardar_promocion(request):
     return redirect('gestion_promociones')
 
 
-@staff_member_required
+@login_required
 def eliminar_promocion(request, pk):
 
     promocion = get_object_or_404(
@@ -295,7 +294,7 @@ def eliminar_promocion(request, pk):
 # ══════════════════════════════════════════════
 #  GESTIÓN DE COMENTARIOS
 # ══════════════════════════════════════════════
-@staff_member_required
+@login_required
 def gestion_comentarios(request):
 
     return render(
