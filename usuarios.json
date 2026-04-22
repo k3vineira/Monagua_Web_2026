@@ -1,0 +1,27 @@
+[
+{
+  "model": "usuario.usuario",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$nmaVuldDY9pb1PKJ2ePvuK$TY1grtpjNtoH4lPJq9jStWMSfNwj1B/Dqw/YgUEKK2c=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "KEVIN_NEIRA1",
+    "first_name": "",
+    "last_name": "",
+    "email": "windows10promaxacer@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-04-22T17:39:44.928Z",
+    "tipo_documento": "",
+    "numero_documento": null,
+    "telefono": "",
+    "residencia": "",
+    "imagen_perfil": "",
+    "es_guia": false,
+    "es_turista": false,
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

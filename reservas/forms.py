@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from .models import Categoria, Actividades, Paquete, Promocion, Reserva , PQRS
+from .models import Categoria, Actividades, Paquete, Promocion, Reserva , PQRS , Blog
 
 class CategoriaForm(ModelForm):
     class Meta:
@@ -65,7 +65,15 @@ class PQRSEditarForm(ModelForm):
     class Meta:
         model = PQRS
         fields = '__all__'
-        
+class blogForm(ModelForm):
+    class Meta:
+        model = Blog
+        fields = '__all__'
+class blogEditarForm(ModelForm):
+    class Meta:
+        model = Blog
+        fields = '__all__'
+
     
 
         
