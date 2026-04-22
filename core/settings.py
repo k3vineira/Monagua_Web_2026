@@ -7,7 +7,8 @@ load_dotenv()
 # Reemplazar la llave quemada por la variable de entorno
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default-key-for-dev')
 # Leer el DEBUG desde el .env (por defecto será False si no lo encuentra)
-DEBUG = os.getenv('DEBUG') == 'True'
+# DEBUG = os.getenv('DEBUG') == 'True
+DEBUG= 'True'  # Cambia a 'False' para producción
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
