@@ -1,3 +1,11 @@
+:root {
+  --verde-oscuro: #005215;
+  --verde-bosque: #318443;
+  --verde-medio: #5ABA73;
+  --verde-claro: #96DCAA;
+  --verde-menta: #CFFFE3;
+}
+
 /*  1. VARIABLES Y ESTILOS GLOBALES */
 body {
     font-family: 'Poppins', sans-serif;
