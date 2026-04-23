@@ -393,6 +393,9 @@ def lista_pqrs(request):
     # Enviamos la variable con el nombre 'todas_las_pqrs'
     return render(request, 'admin/pqrs/pqrs.html', {'todas_las_pqrs': pqrs_objetos})
 
+def nosotros(request):
+    return render(request, 'nosotros.html')
+
 
 
 

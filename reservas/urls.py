@@ -38,4 +38,6 @@ urlpatterns = [
     path('admin/promociones/', views.lista_promociones, name='admin_promociones'),
     path('admin/reservas/', views.lista_reservas, name='admin_reservas'),
     path('admin/pqrs/', views.lista_pqrs, name='lista_pqrs'),
+   
+    path('nosotros/', views.nosotros, name='nosotros'),
 ]
