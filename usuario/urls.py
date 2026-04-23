@@ -8,6 +8,7 @@ urlpatterns = [
     
     path('dashboard/', views.dashboard_view, name='dashboard'),
     
+    path('logout/', views.logout_view, name='logout_usuario'),
     path('terminos-y-condiciones/', views.terminos_condiciones, name="terminos"),
     path('perfil/', views.perfil_usuario_view, name='detalles'),
     path('mis-pagos/', views.mis_pagos_view, name='mis_pagos'),
