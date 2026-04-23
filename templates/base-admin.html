@@ -39,13 +39,13 @@
     </a>
 
     <div class="sidebar-section">Gestión</div>
-    <a href="#" class="sidebar-link">
+    <a href="{% url 'destinos' %}" class="sidebar-link">
         <i class="bi bi-map-fill"></i> Tours
     </a>
     <a href="guias" class="sidebar-link">
         <i class="bi bi-people-fill"></i> guias
     </a>
-    <a href="#" class="sidebar-link">
+    <a href="{% url 'reservas' %}" class="sidebar-link">
         <i class="bi bi-calendar-check-fill"></i> Reservas
     </a>
     <a href="{% url 'gestion_promociones' %}" class="sidebar-link {% if 'promociones' in request.path %}active{% endif %}">
