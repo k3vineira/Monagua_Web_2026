@@ -83,7 +83,7 @@
             <i class="bi bi-person"></i> Mi Perfil
         </a>
         <hr class="border-secondary my-4">
-        <form action="{% url 'logout' %}" method="post" class="px-2">
+        <form action="{% url 'logout_usuario' %}" method="post" class="px-2">
             {% csrf_token %}
             <button type="submit" class="btn btn-outline-danger btn-sm w-100 rounded-pill">
                 <i class="bi bi-power me-2"></i> Cerrar Sesión
