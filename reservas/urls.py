@@ -5,7 +5,6 @@ urlpatterns = [
     path('destinos/', views.destinos, name='destinos'), 
     path('blog/', views.blog_view, name='blog'),
     path('reservar/', views.reservas_view, name='reservas'),
-    path('promociones/', views.promociones_view, name='promociones'),
    
     
     path('categorias/crear/', views.crear_categoria, name='crear_categoria'),
@@ -14,9 +13,6 @@ urlpatterns = [
     path('actividades/crear/', views.crear_actividad, name='crear_actividad'),
     path('actividades/editar/<int:pk>/', views.editar_actividad, name='editar_actividad'),
     path('actividades/eliminar/<int:pk>/', views.eliminar_actividad, name='eliminar_actividad'),
-    path('promociones/crear/', views.crear_promocion, name='crear_promocion'),
-    path('promociones/editar/<int:pk>/', views.editar_promocion, name='editar_promocion'),
-    path('promociones/eliminar/<int:pk>/', views.eliminar_promocion, name='eliminar_promocion'),
     path('paquetes/crear/', views.crear_paquete, name='crear_paquete'),
     path('paquetes/editar/<int:pk>/', views.editar_paquete, name='editar_paquete'),
     path('paquetes/eliminar/<int:pk>/', views.eliminar_paquete, name='eliminar_paquete'),
@@ -35,7 +31,6 @@ urlpatterns = [
     path('admin/actividades/', views.lista_actividades, name='admin_actividades'),
     path('admin/categorias/', views.lista_categorias, name='admin_categorias'),
     path('admin/paquetes/', views.lista_paquetes, name='admin_paquetes'),
-    path('admin/promociones/', views.lista_promociones, name='admin_promociones'),
     path('admin/reservas/', views.lista_reservas, name='admin_reservas'),
     path('admin/pqrs/', views.lista_pqrs, name='lista_pqrs'),
 ]
