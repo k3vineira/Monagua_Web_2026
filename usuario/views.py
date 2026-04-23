@@ -109,7 +109,7 @@ def registro_view(request):
             # 4. Creamos su perfil de turista relacionado (MVT)
             PerfilTurista.objects.create(usuario=nuevo_usuario)
 
-            messages.success(request, f"¡Bienvenido a Monagua, {nombres}! Ya puedes iniciar sesión.")
+            messages.success(request, f"¡Registro realizado con éxito! Bienvenido(a), {nombres}. Ya puedes iniciar sesión.")
             return redirect('login')
             
         except Exception as e:

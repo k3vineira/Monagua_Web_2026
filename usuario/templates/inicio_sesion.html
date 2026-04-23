@@ -102,6 +102,15 @@
     </div>
 
     <h2 class="h4 fw-bold mb-1">Bienvenido de nuevo</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} py-2 small text-center" role="alert">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
     <p class="text-muted small mb-4">
       Ingresa tus datos para acceder a tu experiencia.
     </p>
