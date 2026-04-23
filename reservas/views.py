@@ -11,19 +11,18 @@ from .forms import (
     PromocionForm, PromocionEditarForm, 
     ReservaForm, ReservaEditarForm,
     PQRSForm, PQRSEditarForm,
-    blogForm, blogEditarForm
+    blogForm, blogEditarForm)
     
-
-)
 
 # --- VISTAS GENERALES ---
 
 def blog_view(request):
     """ Muestra la página del blog """
-    return render(request, 'blog.html')
+    """ Muestra la página principal del blog con las entradas de la BD """
+    posts = Blog.objects.all().order_by('-id') 
+    return render(request, 'blog.html', {'posts': posts})
 
 def comentarios_view(request):
-    """ Muestra la página de reseñas y comentarios """
     return render(request, 'comentarios.html')
     """ Muestra la página principal del blog con las entradas de la BD """
     # Buscamos todos los objetos guardados en el modelo Blog
@@ -240,14 +239,31 @@ def crear_promocion(request):
         form = PromocionForm()
 
     # Traemos todas las promociones de la base de datos para el carrusel
-    todas_las_promociones = Promocion.objects.all() 
-
     # Renderizamos una sola vez con todos los datos necesarios
-    return render(request, 'admin/promociones/agregar_promocion.html', {
+    return render(request, 'promociones_gestion.html', )
+    # Asegúrate de que la ruta de la plantilla sea la correcta
+    return render(request, 'admin/promociones/promociones.html', {
         'form': form, 
-        'titulo': 'Crear Promoción',
+        'titulo': 'Gestión de Promociones',
         'promociones': todas_las_promociones
     })
+
+def guardar_promocion(request):
+    """ Procesa tanto la creación como la edición de promociones desde el modal """
+    if request.method == 'POST':
+        promo_id = request.POST.get('promocion_id')
+        if promo_id:
+            promocion = get_object_or_404(Promocion, id=promo_id)
+            form = PromocionForm(request.POST, request.FILES, instance=promocion)
+        else:
+            form = PromocionForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Promoción guardada correctamente.")
+        else:
+            messages.error(request, "Error al guardar la promoción. Verifica los campos.")
+    return redirect('admin_promociones')
 
 def editar_promocion(request, pk):
     promocion = get_object_or_404(Promocion, pk=pk)
@@ -363,7 +379,7 @@ def lista_paquetes(request):
 
 def lista_promociones(request):
     # Traemos todo de la base de datos
-    promociones = Promocion.objects.all() 
+    promociones = Promocion.objects.all().order_by('prioridad') 
     return render(request, 'admin/promociones/promociones.html', {'promociones': promociones})
 
 def lista_reservas(request):
