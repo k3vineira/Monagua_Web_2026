@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Usuario, PerfilTurista  # Importamos tu modelo personalizado
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -134,6 +134,12 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     return render(request, 'inicio_sesion.html', {'form': form})
+
+def logout_view(request):
+    """ Finaliza la sesión del usuario y lo redirige al login """
+    logout(request)
+    messages.success(request, "Has cerrado sesión correctamente. ¡Vuelve pronto!")
+    return redirect('/')
 
 def terminos_condiciones(request):
     return render(request, 'terminos.html')
