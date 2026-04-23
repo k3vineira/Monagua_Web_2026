@@ -37,8 +37,9 @@ def es_turista_required(view_func):
 @login_required
 @es_turista_required
 def dashboard_view(request):
-    # Pasamos el usuario a la plantilla (aunque Django lo hace por defecto)
-    return render(request, 'dashboard.html')
+    """ Dashboard principal para el turista con resumen de actividad """
+    reservas_count = Reserva.objects.filter(usuario=request.user).count()
+    return render(request, 'dashboard.html', {'reservas_count': reservas_count})
 
 @login_required
 @es_guia_required
