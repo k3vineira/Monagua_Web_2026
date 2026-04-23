@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 
     <!-- Estilos base compartidos -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 
     {% block extra_head %}{% endblock %}
@@ -27,7 +28,7 @@
         </div>
     </a>
 
-    <div class="sidebar-section">Principal</div>
+<div class="sidebar-section">Principal</div>
     <a href="{% url 'administrador' %}" class="sidebar-link {% if request.resolver_match.url_name == 'administrador' %}active{% endif %}">
         <i class="bi bi-grid-1x2-fill"></i> Dashboard
     </a>
@@ -39,6 +40,21 @@
     </a>
 
     <div class="sidebar-section">Gestión</div>
+    <a href="{% url 'admin_paquetes' %}" class="sidebar-link">
+        <i class="bi bi-box-seam-fill"></i> Paquetes Turísticos
+    </a>
+    <a href="{% url 'admin_blog' %}" class="sidebar-link">
+        <i class="bi bi-journal-text"></i> Blog
+    </a>
+    <a href="{% url 'admin_categorias' %}" class="sidebar-link">
+        <i class="bi bi-tags-fill"></i> Categorías
+    </a>
+    <a href="{% url 'admin_actividades' %}" class="sidebar-link">
+        <i class="bi bi-bicycle"></i> Actividades
+    </a>
+    
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-map-fill"></i> Tours
     <a href="{% url 'destinos' %}" class="sidebar-link">
         <i class="bi bi-people-fill"></i> usuarios
     </a>

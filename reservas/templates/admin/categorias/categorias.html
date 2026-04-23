@@ -1,58 +1,59 @@
-{% extends 'base.html' %}
+{% extends 'base-admin.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Categorías de Turismo</h2>
-        <a href="{% url 'crear_categoria' %}" class="btn btn-success" style="background-color: #39A900; border: none;">
-            <i class="bi bi-folder-plus"></i> Nueva Categoría
-        </a>
-    </div>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            
+            <div class="d-flex justify-content-between align-items-end p-3 shadow-sm" 
+                 style="background-color: var(--verde-bosque); border-radius: 8px 8px 0 0; border-bottom: 2px solid rgba(255,255,255,0.2);">
+                <h3 class="text-white mb-0 fw-bold">Categorías de Turismo</h3>
+                <a href="{% url 'crear_categoria' %}" class="btn btn-sm btn-light fw-bold" style="color: var(--verde-oscuro);">
+                    <i class="bi bi-plus-lg"></i> Nueva Categoría
+                </a>
+            </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <table class="table table-sm table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Nombre de Categoría</th>
-                                <th class="text-center">Acciones</th>
-                                <th>Estado</th>
+            <div class="card border-0 shadow-sm" style="border-radius: 0 0 8px 8px; overflow: hidden;">
+                <div class="card-body p-0">
+                    <table class="table table-hover table-borderless mb-0">
+                        <thead style="background-color: var(--verde-menta);">
+                            <tr style="color: var(--verde-oscuro); border-bottom: 1px solid var(--verde-claro);">
+                                <th class="ps-4 py-3">Nombre de Categoría</th>
+                                <th class="text-center py-3">Estado</th>
+                                <th class="text-end pe-4 py-3">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="align-middle">
                             {% for cat in categorias %}
-                            <tr>
-                                <td class="py-3">{{ cat.nombre }}</td>
-                                <td class="text-center">
+                            <tr style="border-bottom: 1px solid #f0f0f0;">
+                                <td class="ps-4 py-3 fw-medium">{{ cat.nombre }}</td>
+                                <td class="text-center py-3">
                                     {% if cat.activa %}
-                                        <span class="badge bg-success">Activa</span>
+                                        <span class="badge rounded-0" style="background-color: var(--verde-medio); color: white;">Activa</span>
                                     {% else %}
-                                        <span class="badge bg-secondary">Inactiva</span>
+                                        <span class="badge rounded-0 bg-secondary text-white">Inactiva</span>
                                     {% endif %}
                                 </td>
-                                <td class="text-center">
-                                    <a href="{% url 'editar_categoria' cat.pk %}" class="btn btn-sm btn-link text-primary">Editar</a>
-                                    <a href="{% url 'eliminar_categoria' cat.pk %}" class="btn btn-sm btn-link text-danger">Eliminar</a>
+                                <td class="text-end pe-4 py-3">
+                                    <a href="{% url 'editar_categoria' cat.pk %}" class="text-primary text-decoration-none me-3 small fw-bold">EDITAR</a>
+                                    <a href="{% url 'eliminar_categoria' cat.pk %}" class="text-danger text-decoration-none small fw-bold">ELIMINAR</a>
                                 </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="2" class="text-center">No hay categorías definidas.</td>
+                                <td colspan="3" class="text-center py-5 text-muted">No hay categorías registradas.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
-        
-        <div class="col-md-4">
-            <div class="alert alert-info border-0 shadow-sm">
-                <h5><i class="bi bi-info-circle"></i> Tip</h5>
-                <p class="small">Las categorías ayudan a filtrar las actividades en el mapa y en la página principal del proyecto Monagua.</p>
+
+            <div class="mt-3 p-2 d-flex align-items-center" style="color: var(--verde-oscuro); font-size: 0.85rem;">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                <span>Las categorías ayudan a organizar las actividades en el mapa de Mongua.</span>
             </div>
+            
         </div>
     </div>
 </div>
