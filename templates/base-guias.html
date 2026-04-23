@@ -42,8 +42,8 @@
     </a>
 
     <div class="sidebar-section">Gestión</div>
-    <a href="{% url 'destinos' %}" class="sidebar-link">
-        <i class="bi bi-map-fill"></i> Tours
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-people-fill"></i> usuarios
     </a>
     <a href="guias" class="sidebar-link">
         <i class="bi bi-people-fill"></i> guias
@@ -74,9 +74,12 @@
                 <div class="admin-role">Super Admin</div>
             </div>
         </div>
-        <a href="{% url 'logout' %}" class="btn-logout">
-            <i class="bi bi-power"></i> Cerrar Sesión
-        </a>
+        <form action="{% url 'logout_usuario' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout border-0 bg-transparent text-white p-0">
+                <i class="bi bi-power"></i> Cerrar Sesión
+            </button>
+        </form>
     </div>
 </aside>
 
