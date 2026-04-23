@@ -139,7 +139,7 @@ def logout_view(request):
     """ Finaliza la sesión del usuario y lo redirige al login """
     logout(request)
     messages.success(request, "Has cerrado sesión correctamente. ¡Vuelve pronto!")
-    return redirect('login')
+    return redirect('/')
 
 def terminos_condiciones(request):
     return render(request, 'terminos.html')
