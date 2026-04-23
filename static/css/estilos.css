@@ -964,6 +964,43 @@ body {
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.18);
 }
 
+
+/* 1. Habilitar el scroll vertical en el sidebar */
+
+.sidebar {
+    /* Asegúrate de tener un alto definido, por ejemplo: */
+    height: 100vh;
+    /* Esta es la regla mágica que habilita la barrita cuando el contenido se desborda: */
+    overflow-y: auto;
+    /* Para evitar que el scroll horizontal aparezca por accidente: */
+    overflow-x: hidden;
+}
+
+
+/* 2. Personalizar la "barrita" para que se vea moderna (Estilos para navegadores WebKit como Chrome/Edge/Safari) */
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+    /* Hace la barra más delgada y estética */
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+    /* Fondo transparente para no dañar tu diseño */
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(150, 150, 150, 0.4);
+    /* Color gris semitransparente. Cámbialo si tu sidebar es oscuro (ej: rgba(255,255,255,0.2)) */
+    border-radius: 10px;
+    /* Bordes redondeados */
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(150, 150, 150, 0.7);
+    /* Se oscurece un poco cuando pasas el mouse */
+}
+
 .sidebar-brand {
     display: flex;
     align-items: center;
