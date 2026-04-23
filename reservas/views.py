@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Q
-from .models import Actividades, Categoria, Paquete, Reserva, PQRS
-from .models import Actividades, Categoria, Paquete,Reserva, PQRS, Blog
+from .models import Actividades, Categoria, Paquete, Promocion, Reserva, PQRS
+from .models import Actividades, Categoria, Paquete, Promocion, Reserva, PQRS, Blog
 from .forms import (
     CategoriaForm, CategoriaEditarForm, 
     ActividadesForm, ActividadesEditarForm, 
-    PaqueteForm, PaqueteEditarForm,  
+    PaqueteForm, PaqueteEditarForm, 
+    PromocionForm, PromocionEditarForm, 
     ReservaForm, ReservaEditarForm,
     PQRSForm, PQRSEditarForm,
     blogForm, blogEditarForm)
@@ -29,6 +30,23 @@ def comentarios_view(request):
     
     # IMPORTANTE: El nombre en el diccionario ('posts') debe ser igual al del for
     return render(request, 'blog.html', {'posts': posts})
+
+def promociones_view(request):
+    """ Muestra la página de promociones """
+    hoy = timezone.now().date()
+    
+    # Filtros base: Activa y dentro de rango de fechas (o sin fechas definidas)
+    query = Promocion.objects.filter(activo=True).filter(
+        Q(fecha_inicio__lte=hoy) | Q(fecha_inicio__isnull=True),
+        Q(fecha_fin__gte=hoy) | Q(fecha_fin__isnull=True)
+    )
+
+    # Filtro de segmento: Si no está logueado, ocultar las exclusivas para usuarios
+    if not request.user.is_authenticated:
+        query = query.filter(solo_usuarios=False)
+
+    promociones_list = query.order_by('prioridad', '-id')
+    return render(request, 'promociones.html', {'promociones': promociones_list})
 
 
 
@@ -208,6 +226,63 @@ def eliminar_reserva(request, pk):
         return redirect('admin_reservas')
     return render(request, 'admin/reservas/eliminar_reserva.html', {'reserva': reserva})
 
+# --- PROMOCIONES ---
+def crear_promocion(request):
+    if request.method == 'POST':
+        # Importante: si usas imágenes en las promociones, agrega request.FILES
+        form = PromocionForm(request.POST, request.FILES) 
+        if form.is_valid():
+            promocion = form.save()
+            messages.success(request, f"Promoción '{promocion.nombre}' creada correctamente.")
+            return redirect('admin_promociones')
+    else:
+        form = PromocionForm()
+
+    # Traemos todas las promociones de la base de datos para el carrusel
+    # Renderizamos una sola vez con todos los datos necesarios
+    return render(request, 'promociones_gestion.html', )
+    # Asegúrate de que la ruta de la plantilla sea la correcta
+    return render(request, 'admin/promociones/promociones.html', {
+        'form': form, 
+        'titulo': 'Gestión de Promociones',
+        'promociones': todas_las_promociones
+    })
+
+def guardar_promocion(request):
+    """ Procesa tanto la creación como la edición de promociones desde el modal """
+    if request.method == 'POST':
+        promo_id = request.POST.get('promocion_id')
+        if promo_id:
+            promocion = get_object_or_404(Promocion, id=promo_id)
+            form = PromocionForm(request.POST, request.FILES, instance=promocion)
+        else:
+            form = PromocionForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Promoción guardada correctamente.")
+        else:
+            messages.error(request, "Error al guardar la promoción. Verifica los campos.")
+    return redirect('admin_promociones')
+
+def editar_promocion(request, pk):
+    promocion = get_object_or_404(Promocion, pk=pk)
+    if request.method == 'POST':
+        form = PromocionEditarForm(request.POST, instance=promocion)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Promoción {promocion.nombre} actualizada.")
+            return redirect('admin_promociones')
+    else:
+        form = PromocionForm(instance=promocion)
+    return render(request, 'admin/promociones/editar_promocion.html', {'form': form, 'titulo': f'Editar {promocion.nombre}'})
+def eliminar_promocion(request, pk):
+    promocion = get_object_or_404(Promocion, pk=pk)
+    if request.method == 'POST':
+        promocion.delete()
+        messages.success(request, f"Promoción '{promocion.nombre}' eliminada.")
+        return redirect('admin_promociones')
+    return render(request, 'admin/promociones/eliminar_promocion.html', {'promocion': promocion})
 
 def crear_pqrs(request):
     """ Vista para mostrar el formulario de PQRS """
@@ -302,7 +377,10 @@ def lista_paquetes(request):
     paquetes = Paquete.objects.all() 
     return render(request, 'admin/paquetes/paquetes.html', {'paquetes': paquetes})
 
-
+def lista_promociones(request):
+    # Traemos todo de la base de datos
+    promociones = Promocion.objects.all().order_by('prioridad') 
+    return render(request, 'admin/promociones/promociones.html', {'promociones': promociones})
 
 def lista_reservas(request):
     # Traemos todo de la base de datos

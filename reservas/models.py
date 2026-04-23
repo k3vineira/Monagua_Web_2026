@@ -46,6 +46,26 @@ class Paquete(models.Model):
         return self.nombre
 
 
+class Promocion(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name='Nombre de la Promoción')
+    descripcion = models.TextField(verbose_name='Descripción de la Oferta', null=True, blank=True)
+    imagen = models.ImageField(upload_to='promociones/', null=True, blank=True, verbose_name='Imagen del Banner')
+    enlace = models.URLField(max_length=500, null=True, blank=True, verbose_name='Enlace (URL)')
+    porcentaje_descuento = models.PositiveIntegerField(verbose_name='Porcentaje de Descuento (%)', default=0)
+    fecha_inicio = models.DateField(verbose_name='Fecha de Inicio', null=True, blank=True)
+    fecha_fin = models.DateField(verbose_name='Fecha de Finalización', null=True, blank=True)
+    paquete = models.ForeignKey(Paquete, on_delete=models.SET_NULL, null=True, blank=True, related_name='promociones', verbose_name='Paquete en Oferta')
+    prioridad = models.PositiveIntegerField(verbose_name='Prioridad/Orden', default=0, help_text='Menor número aparece primero')
+    solo_usuarios = models.BooleanField(default=False, verbose_name='Solo usuarios registrados')
+    activo = models.BooleanField(default=True, verbose_name='¿Está Activa?')
+
+    class Meta:
+        verbose_name = 'Promoción'
+        verbose_name_plural = 'Promociones'
+
+    def __str__(self):
+        return f"{self.nombre} ({self.porcentaje_descuento}% desc.)"
+
 class Reserva(models.Model):
     ESTADO_CHOICES = [
         ('Pendiente', 'Pendiente'),

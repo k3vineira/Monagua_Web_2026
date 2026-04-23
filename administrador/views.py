@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
+
+from reservas.models import Promocion
+from reservas.forms import PromocionForm, PromocionEditarForm
 from .models import Tour, Reserva, Guia
 
 User = get_user_model()
