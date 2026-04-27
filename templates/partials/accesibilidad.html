@@ -1,0 +1,300 @@
+{%load static %}
+<!--
+  ============================================================
+  accessibility-panel.html — Fragmento HTML del panel
+  ============================================================
+  INSTRUCCIONES DE USO
+  ─────────────────────────────────────────────────────────────
+  1. Copia este fragmento justo antes de </body> en tu plantilla base.
+  2. En tu <head> agrega:
+       <link rel="stylesheet" href="accessibility.css">
+       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  3. Antes de </body> agrega (después de este fragmento):
+       <script src="accessibility.js"></script>
+
+  CLASES QUE DEBES AGREGAR A TU SITIO
+  ─────────────────────────────────────────────────────────────
+  - Agrega class="a11y-target" a los elementos cuya fuente,
+    tamaño e interlineado quieres que el panel controle.
+    Ejemplo: <p class="a11y-target">, <article class="a11y-target">
+
+  - Agrega class="a11y-content-wrapper" a tu contenedor principal
+    para que el control de ancho y brillo lo afecten.
+    Ejemplo: <main class="a11y-content-wrapper">
+  ============================================================
+-->
+
+<!-- BOTÓN FLOTANTE -->
+<button
+  id="a11y-btn"
+  onclick="A11y.togglePanel()"
+  aria-label="Abrir panel de accesibilidad"
+  aria-expanded="false"
+  aria-controls="a11y-panel"
+>
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm9 5h-6l1 3-3 2v8h-2v-6h-2v6H7v-8L4 10l1-3H2V5h19v2zm-7 5-2-1.5L10 12l2 1.5v5h2v-5z"/>
+  </svg>
+</button>
+
+<!-- PANEL PRINCIPAL -->
+<div
+  id="a11y-panel"
+  role="dialog"
+  aria-label="Panel de accesibilidad"
+  aria-modal="true"
+>
+
+  <!-- TABS -->
+  <div class="a11y-panel-tabs" role="tablist">
+    <button class="a11y-panel-tab active" role="tab" aria-selected="true"  onclick="A11y.switchTab('visual')">Visual</button>
+    <button class="a11y-panel-tab"        role="tab" aria-selected="false" onclick="A11y.switchTab('texto')">Texto</button>
+    <button class="a11y-panel-tab"        role="tab" aria-selected="false" onclick="A11y.switchTab('avanzado')">Avanzado</button>
+    <button class="a11y-panel-tab"        role="tab" aria-selected="false" onclick="A11y.switchTab('atajos')">Atajos</button>
+  </div>
+
+  <!-- HEADER -->
+  <div class="a11y-panel-header">
+    <div class="a11y-panel-title">Accesibilidad</div>
+    <button class="a11y-reset-btn" onclick="A11y.resetAll()">↺ Restablecer</button>
+  </div>
+
+  <!-- BODY -->
+  <div class="a11y-panel-body">
+
+    <!-- ═══════════════════════════════════════════
+         TAB: VISUAL
+    ═══════════════════════════════════════════ -->
+    <div class="a11y-tab-content active" id="a11y-tab-visual" role="tabpanel">
+
+      <!-- Tema de color -->
+      <div class="a11y-section">
+        <div class="a11y-section-label">Tema de color</div>
+        <div class="a11y-theme-grid-wrap">
+          <div class="a11y-theme-grid">
+            <button class="a11y-theme-chip active" data-t="default"  onclick="A11y.setTheme('default')"  title="Oscuro"><span class="a11y-chip-label">Oscuro</span></button>
+            <button class="a11y-theme-chip"        data-t="dim"      onclick="A11y.setTheme('dim')"      title="Tenue"><span class="a11y-chip-label">Tenue</span></button>
+            <button class="a11y-theme-chip"        data-t="light"    onclick="A11y.setTheme('light')"    title="Claro"><span class="a11y-chip-label">Claro</span></button>
+            <button class="a11y-theme-chip"        data-t="sepia"    onclick="A11y.setTheme('sepia')"    title="Sepia"><span class="a11y-chip-label">Sepia</span></button>
+            <button class="a11y-theme-chip"        data-t="contrast" onclick="A11y.setTheme('contrast')" title="Alto contraste"><span class="a11y-chip-label">Contraste</span></button>
+            <button class="a11y-theme-chip"        data-t="dalton"   onclick="A11y.setTheme('dalton')"   title="Daltonismo"><span class="a11y-chip-label">Dalton</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtro de pantalla -->
+      <div class="a11y-section">
+        <div class="a11y-section-label">Filtro de pantalla</div>
+        <div class="a11y-opt-group">
+          <button class="a11y-opt-btn active" id="a11y-filter-none"      onclick="A11y.setFilter('none')">Normal</button>
+          <button class="a11y-opt-btn"        id="a11y-filter-invert"    onclick="A11y.setFilter('invert')">Invertir</button>
+          <button class="a11y-opt-btn"        id="a11y-filter-grayscale" onclick="A11y.setFilter('grayscale')">Sin color</button>
+          <button class="a11y-opt-btn"        id="a11y-filter-low-sat"   onclick="A11y.setFilter('low-saturation')">Baja sat.</button>
+        </div>
+      </div>
+
+      <!-- Brillo -->
+      <div class="a11y-section">
+        <div class="a11y-section-label">Brillo de página</div>
+        <div class="a11y-slider-row">
+          <span>🌑</span>
+          <input
+            type="range"
+            id="a11y-brightness-slider"
+            min="50" max="120" value="100" step="1"
+            aria-label="Brillo de página"
+            oninput="A11y.setBrightness(this.value)"
+          >
+          <span>🌕</span>
+          <span class="a11y-val" id="a11y-brightness-val">100%</span>
+        </div>
+      </div>
+
+    </div><!-- /tab-visual -->
+
+    <!-- ═══════════════════════════════════════════
+         TAB: TEXTO
+    ═══════════════════════════════════════════ -->
+    <div class="a11y-tab-content" id="a11y-tab-texto" role="tabpanel">
+
+      <!-- Tamaño de texto -->
+      <div class="a11y-section">
+        <div class="a11y-section-label">Tamaño de texto</div>
+        <div class="a11y-slider-row">
+          <span style="font-size:12px;">A</span>
+          <input
+            type="range"
+            id="a11y-font-slider"
+            min="80" max="160" value="100" step="1"
+            aria-label="Tamaño de texto"
+            oninput="A11y.setFontSize(this.value)"
+          >
+          <span style="font-size:18px;">A</span>
+          <span class="a11y-val" id="a11y-font-val">100%</span>
+        </div>
+      </div>
+
+      <!-- Tipo de fuente -->
+      <div class="a11y-section">
+        <div class="a11y-section-label">Tipo de fuente</div>
+        <div class="a11y-opt-group">
+          <button class="a11y-opt-btn active" id="a11y-font-sans"      onclick="A11y.setFont('sans')">Sans</button>
+          <button class="a11y-opt-btn"        id="a11y-font-serif"     onclick="A11y.setFont('serif')">Serif</button>
+          <button class="a11y-opt-btn"        id="a11y-font-mono"      onclick="A11y.setFont('mono')">Mono</button>
+          <button class="a11y-opt-btn"        id="a11y-font-dyslexia"  onclick="A11y.setFont('dyslexia')">Dislexia</button>
+          <button class="a11y-opt-btn"        id="a11y-font-humanist"  onclick="A11y.setFont('humanist')">Humanista</button>
+        </div>
+      </div>
+
+      <!-- Interlineado -->
+      <div class="a11y-section">
+        <div class="a11y-section-label">Interlineado</div>
+        <div class="a11y-opt-group">
+          <button class="a11y-opt-btn"        id="a11y-spacing-compact" onclick="A11y.setSpacing('compact')">Compacto</button>
+          <button class="a11y-opt-btn active" id="a11y-spacing-normal"  onclick="A11y.setSpacing('normal')">Normal</button>
+          <button class="a11y-opt-btn"        id="a11y-spacing-wide"    onclick="A11y.setSpacing('wide')">Amplio</button>
+          <button class="a11y-opt-btn"        id="a11y-spacing-max"     onclick="A11y.setSpacing('max')">Máximo</button>
+        </div>
+      </div>
+
+      <!-- Ancho de columna -->
+      <div class="a11y-section">
+        <div class="a11y-section-label">Ancho de columna</div>
+        <div class="a11y-slider-row">
+          <span>⟵</span>
+          <input
+            type="range"
+            id="a11y-width-slider"
+            min="480" max="1200" value="860" step="20"
+            aria-label="Ancho de columna de contenido"
+            oninput="A11y.setWidth(this.value)"
+          >
+          <span>⟷</span>
+          <span class="a11y-val" id="a11y-width-val">860px</span>
+        </div>
+      </div>
+
+    </div><!-- /tab-texto -->
+
+    <!-- ═══════════════════════════════════════════
+         TAB: AVANZADO
+    ═══════════════════════════════════════════ -->
+    <div class="a11y-tab-content" id="a11y-tab-avanzado" role="tabpanel">
+
+      <div class="a11y-section">
+        <div class="a11y-section-label">Opciones de usabilidad</div>
+
+        <div class="a11y-toggle-row">
+          <div class="a11y-toggle-info">
+            <div class="a11y-toggle-name">Cursor grande</div>
+            <div class="a11y-toggle-desc">Aumenta el tamaño del puntero</div>
+          </div>
+          <label class="a11y-toggle">
+            <input type="checkbox" id="a11y-tog-cursor" onchange="A11y.toggleFeature('big-cursor', this.checked)">
+            <span class="a11y-toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="a11y-toggle-row">
+          <div class="a11y-toggle-info">
+            <div class="a11y-toggle-name">Foco visible</div>
+            <div class="a11y-toggle-desc">Resalta el elemento activo al navegar con teclado</div>
+          </div>
+          <label class="a11y-toggle">
+            <input type="checkbox" id="a11y-tog-focus" onchange="A11y.toggleFeature('show-focus', this.checked)">
+            <span class="a11y-toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="a11y-toggle-row">
+          <div class="a11y-toggle-info">
+            <div class="a11y-toggle-name">Resaltar enlaces</div>
+            <div class="a11y-toggle-desc">Subraya y colorea todos los vínculos</div>
+          </div>
+          <label class="a11y-toggle">
+            <input type="checkbox" id="a11y-tog-links" onchange="A11y.toggleFeature('highlight-links', this.checked)">
+            <span class="a11y-toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="a11y-toggle-row">
+          <div class="a11y-toggle-info">
+            <div class="a11y-toggle-name">Sin animaciones</div>
+            <div class="a11y-toggle-desc">Desactiva todas las transiciones y efectos</div>
+          </div>
+          <label class="a11y-toggle">
+            <input type="checkbox" id="a11y-tog-motion" onchange="A11y.toggleFeature('no-motion', this.checked)">
+            <span class="a11y-toggle-track"></span>
+          </label>
+        </div>
+
+        <div class="a11y-toggle-row">
+          <div class="a11y-toggle-info">
+            <div class="a11y-toggle-name">Modo lectura</div>
+            <div class="a11y-toggle-desc">Aplica sepia + serif + interlineado amplio</div>
+          </div>
+          <label class="a11y-toggle">
+            <input type="checkbox" id="a11y-tog-reading" onchange="A11y.toggleReading(this.checked)">
+            <span class="a11y-toggle-track"></span>
+          </label>
+        </div>
+
+      </div>
+
+    </div><!-- /tab-avanzado -->
+
+    <!-- ═══════════════════════════════════════════
+         TAB: ATAJOS
+    ═══════════════════════════════════════════ -->
+    <div class="a11y-tab-content" id="a11y-tab-atajos" role="tabpanel">
+
+      <div class="a11y-section">
+        <div class="a11y-section-label">Atajos de teclado</div>
+
+        <div class="a11y-shortcut-row">
+          <span class="a11y-shortcut-name">Abrir / cerrar panel</span>
+          <div class="a11y-kbd-group"><kbd>Alt</kbd><kbd>A</kbd></div>
+        </div>
+        <div class="a11y-shortcut-row">
+          <span class="a11y-shortcut-name">Texto más grande</span>
+          <div class="a11y-kbd-group"><kbd>Alt</kbd><kbd>+</kbd></div>
+        </div>
+        <div class="a11y-shortcut-row">
+          <span class="a11y-shortcut-name">Texto más pequeño</span>
+          <div class="a11y-kbd-group"><kbd>Alt</kbd><kbd>−</kbd></div>
+        </div>
+        <div class="a11y-shortcut-row">
+          <span class="a11y-shortcut-name">Claro / oscuro</span>
+          <div class="a11y-kbd-group"><kbd>Alt</kbd><kbd>T</kbd></div>
+        </div>
+        <div class="a11y-shortcut-row">
+          <span class="a11y-shortcut-name">Alto contraste</span>
+          <div class="a11y-kbd-group"><kbd>Alt</kbd><kbd>C</kbd></div>
+        </div>
+        <div class="a11y-shortcut-row">
+          <span class="a11y-shortcut-name">Restablecer todo</span>
+          <div class="a11y-kbd-group"><kbd>Alt</kbd><kbd>R</kbd></div>
+        </div>
+        <div class="a11y-shortcut-row">
+          <span class="a11y-shortcut-name">Siguiente pestaña</span>
+          <div class="a11y-kbd-group"><kbd>Alt</kbd><kbd>→</kbd></div>
+        </div>
+
+      </div>
+    </div><!-- /tab-atajos -->
+
+  </div><!-- /panel-body -->
+
+  <!-- STATUS BAR -->
+  <div class="a11y-status-bar">
+    <div class="a11y-status-dot"></div>
+    <span>Configuración guardada automáticamente</span>
+  </div>
+
+</div><!-- /a11y-panel -->
+
+<!-- TOAST NOTIFICATION -->
+<div id="a11y-toast" role="status" aria-live="polite">
+  <div class="a11y-toast-dot"></div>
+  <span id="a11y-toast-msg"></span>
+</div>

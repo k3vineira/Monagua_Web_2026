@@ -1,0 +1,80 @@
+{% load static %}
+
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <a href="/" class="sidebar-brand text-decoration-none">
+        <img src="{% static 'img/logo_monagua.png' %}" alt="Logo">
+        <div>
+            <div class="brand-name">MONAGUA</div>
+            <div class="brand-sub">Admin Panel</div>
+        </div>
+    </a>
+
+   <div class="sidebar-section">Principal</div>
+    <a href="{% url 'administrador' %}" class="sidebar-link {% if request.resolver_match.url_name == 'administrador' %}active{% endif %}">
+        <i class="bi bi-grid-1x2-fill"></i> Dashboard
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-graph-up-arrow"></i> Estadísticas
+    </a>
+    <a href="/reservas/comentarios/" class="sidebar-link">
+        <i class="bi bi-chat-left-dots-fill"></i> Comentarios
+    </a>
+
+    <div class="sidebar-section">Gestión</div>
+    <a href="{% url 'admin_paquetes' %}" class="sidebar-link">
+        <i class="bi bi-box-seam-fill"></i> Paquetes Turísticos
+    </a>
+    <a href="{% url 'admin_blog' %}" class="sidebar-link">
+        <i class="bi bi-journal-text"></i> Blog
+    </a>
+    <a href="{% url 'admin_categorias' %}" class="sidebar-link">
+        <i class="bi bi-tags-fill"></i> Categorías
+    </a>
+    <a href="{% url 'admin_actividades' %}" class="sidebar-link">
+        <i class="bi bi-bicycle"></i> Actividades
+    </a>
+    
+    <a href="guias" class="sidebar-link">
+        <i class="bi bi-people-fill"></i> guias
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-people-fill"></i> Usuarios
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-calendar-check-fill"></i> Reservas
+    </a>
+    <a href="{% url 'gestion_promociones' %}" class="sidebar-link {% if 'promociones' in request.path %}active{% endif %}">
+        <i class="bi bi-megaphone-fill"></i> Promociones
+    </a>
+
+    <div class="sidebar-section">Sistema</div>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-bell-fill"></i> Notificaciones
+    </a>
+    <a href="#" class="sidebar-link">
+        <i class="bi bi-gear-fill"></i> Configuración
+    </a>
+
+    <div class="sidebar-footer">
+        <div class="admin-avatar">
+            <img src="{% if user.imagen_perfil %}{{ user.imagen_perfil.url }}{% else %}{% static 'img/avatar_pred.png' %}{% endif %}"
+                 alt="{{ user.first_name|default:'Admin' }}"
+                 class="rounded-circle" width="34" height="34"
+                 style="object-fit: cover; border: 2px solid var(--verde-accent);">
+            <div>
+                <div class="admin-name">{{ user.first_name|default:'Administrador' }}</div>
+                <div class="admin-role">Super Admin</div>
+            </div>
+        </div>
+        <form action="{% url 'logout_usuario' %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout border-0 bg-transparent text-white p-0">
+                <i class="bi bi-power"></i> Cerrar Sesión
+            </button>
+        </form>
+    </div>
+</aside>
+
+

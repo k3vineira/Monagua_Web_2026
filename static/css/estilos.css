@@ -1853,3 +1853,133 @@ body.cursor-grande,
 body.cursor-grande * {
     cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6 2 L6 26 L12 20 L17 30 L20 29 L15 19 L23 19 Z' fill='%232c6e3c' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E") 6 2, auto !important;
 }
+
+#a11y-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: #2e8b57;
+    color: white;
+    border: none;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+}
+
+#a11y-panel {
+    position: fixed;
+    right: 20px;
+    bottom: 90px;
+    width: 320px;
+    background: #0f1b2d;
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+    display: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    z-index: 9999;
+}
+
+.a11y-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.a11y-section {
+    margin-top: 15px;
+}
+
+.a11y-section p {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-bottom: 8px;
+}
+
+.a11y-colors {
+    display: flex;
+    gap: 10px;
+}
+
+.theme {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid white;
+    cursor: pointer;
+}
+
+.theme.default {
+    background: #1e293b;
+}
+
+.theme.light {
+    background: #f1f5f9;
+}
+
+.theme.sepia {
+    background: #f4ecd8;
+}
+
+.theme.contrast {
+    background: black;
+}
+
+.theme.dalton {
+    background: linear-gradient(45deg, #4facfe, #fa709a);
+}
+
+#a11y-panel button {
+    background: #1e293b;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#a11y-panel button:hover {
+    background: #2e8b57;
+}
+
+#a11y-panel input[type="range"] {
+    width: 100%;
+}.theme-light{
+background:white;
+color:black;
+}
+
+.theme-sepia{
+background:#f4ecd8;
+color:#5b4636;
+}
+
+.theme-contrast{
+background:black;
+color:white;
+}
+
+.font-serif{
+font-family:serif;
+}
+
+.font-mono{
+font-family:monospace;
+}
+
+.font-dyslexia{
+font-family:"OpenDyslexic",sans-serif;
+}
+
+.spacing-wide{
+line-height:1.8;
+}
+
+.spacing-max{
+line-height:2.3;
+}

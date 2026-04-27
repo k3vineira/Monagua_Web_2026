@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -20,82 +21,8 @@
 </head>
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-    <a href="/" class="sidebar-brand text-decoration-none">
-        <img src="{% static 'img/logo_monagua.png' %}" alt="Logo">
-        <div>
-            <div class="brand-name">MONAGUA</div>
-            <div class="brand-sub">Admin Panel</div>
-        </div>
-    </a>
-
-   <div class="sidebar-section">Principal</div>
-    <a href="{% url 'administrador' %}" class="sidebar-link {% if request.resolver_match.url_name == 'administrador' %}active{% endif %}">
-        <i class="bi bi-grid-1x2-fill"></i> Dashboard
-    </a>
-    <a href="#" class="sidebar-link">
-        <i class="bi bi-graph-up-arrow"></i> Estadísticas
-    </a>
-    <a href="/reservas/comentarios/" class="sidebar-link">
-        <i class="bi bi-chat-left-dots-fill"></i> Comentarios
-    </a>
-
-    <div class="sidebar-section">Gestión</div>
-    <a href="{% url 'admin_paquetes' %}" class="sidebar-link">
-        <i class="bi bi-box-seam-fill"></i> Paquetes Turísticos
-    </a>
-    <a href="{% url 'admin_blog' %}" class="sidebar-link">
-        <i class="bi bi-journal-text"></i> Blog
-    </a>
-    <a href="{% url 'admin_categorias' %}" class="sidebar-link">
-        <i class="bi bi-tags-fill"></i> Categorías
-    </a>
-    <a href="{% url 'admin_actividades' %}" class="sidebar-link">
-        <i class="bi bi-bicycle"></i> Actividades
-    </a>
-    
-    <a href="guias" class="sidebar-link">
-        <i class="bi bi-people-fill"></i> guias
-    </a>
-    <a href="#" class="sidebar-link">
-        <i class="bi bi-people-fill"></i> Usuarios
-    </a>
-    <a href="#" class="sidebar-link">
-        <i class="bi bi-calendar-check-fill"></i> Reservas
-    </a>
-    <a href="{% url 'gestion_promociones' %}" class="sidebar-link {% if 'promociones' in request.path %}active{% endif %}">
-        <i class="bi bi-megaphone-fill"></i> Promociones
-    </a>
-
-    <div class="sidebar-section">Sistema</div>
-    <a href="#" class="sidebar-link">
-        <i class="bi bi-bell-fill"></i> Notificaciones
-    </a>
-    <a href="#" class="sidebar-link">
-        <i class="bi bi-gear-fill"></i> Configuración
-    </a>
-
-    <div class="sidebar-footer">
-        <div class="admin-avatar">
-            <img src="{% if user.imagen_perfil %}{{ user.imagen_perfil.url }}{% else %}{% static 'img/avatar_pred.png' %}{% endif %}"
-                 alt="{{ user.first_name|default:'Admin' }}"
-                 class="rounded-circle" width="34" height="34"
-                 style="object-fit: cover; border: 2px solid var(--verde-accent);">
-            <div>
-                <div class="admin-name">{{ user.first_name|default:'Administrador' }}</div>
-                <div class="admin-role">Super Admin</div>
-            </div>
-        </div>
-        <form action="{% url 'logout_usuario' %}" method="post" class="d-inline">
-            {% csrf_token %}
-            <button type="submit" class="btn-logout border-0 bg-transparent text-white p-0">
-                <i class="bi bi-power"></i> Cerrar Sesión
-            </button>
-        </form>
-    </div>
-</aside>
-
+{% include "partials/aside-admin.html" %}
+{% include "partials/accesibilidad.html" %}
 
 <!-- MAIN CONTENT -->
 {% block content %}{% endblock %}
@@ -113,81 +40,6 @@
     </div>
 </div>
 
-<!-- ─── WIDGET DE ACCESIBILIDAD ─── -->
-<button id="a11y-btn" title="Accesibilidad"
-        aria-label="Abrir panel de accesibilidad"
-        onclick="toggleA11yPanel()">
-    <i class="bi bi-universal-access"></i>
-</button>
-
-<div id="a11y-panel" role="dialog" aria-label="Panel de accesibilidad">
-    <div class="a11y-header">
-        <span><i class="bi bi-universal-access me-2"></i>Accesibilidad</span>
-        <button onclick="toggleA11yPanel()" aria-label="Cerrar">
-            <i class="bi bi-x-lg"></i>
-        </button>
-    </div>
-
-    <div class="a11y-section">Idioma / Language</div>
-    <div class="a11y-row" style="padding-bottom:0.75rem;">
-        <div class="lang-btn-group" style="width:100%;">
-            <button class="lang-btn active" id="btn-es" onclick="setLang('es')">🇨🇴 Español</button>
-            <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇺🇸 English</button>
-        </div>
-    </div>
-
-    <div class="a11y-section">Tamaño de texto</div>
-    <div class="a11y-row">
-        <div class="a11y-label"><i class="bi bi-fonts"></i> Tamaño</div>
-        <div class="a11y-font-ctrl">
-            <button onclick="cambiarFuente(-1)" aria-label="Reducir">
-                <i class="bi bi-dash"></i>
-            </button>
-            <span id="fontPct">100%</span>
-            <button onclick="cambiarFuente(1)" aria-label="Aumentar">
-                <i class="bi bi-plus"></i>
-            </button>
-        </div>
-    </div>
-
-    <div class="a11y-section">Visual</div>
-    <div class="a11y-row">
-        <div class="a11y-label"><i class="bi bi-circle-half"></i> Alto contraste</div>
-        <label class="a11y-toggle">
-            <input type="checkbox" id="togContraste"
-                   onchange="toggleClase('alto-contraste', this.checked)">
-            <span class="a11y-slider"></span>
-        </label>
-    </div>
-    <div class="a11y-row">
-        <div class="a11y-label"><i class="bi bi-link-45deg"></i> Subrayar enlaces</div>
-        <label class="a11y-toggle">
-            <input type="checkbox" id="togLinks"
-                   onchange="toggleClase('subrayar-links', this.checked)">
-            <span class="a11y-slider"></span>
-        </label>
-    </div>
-    <div class="a11y-row">
-        <div class="a11y-label"><i class="bi bi-cursor-fill"></i> Cursor grande</div>
-        <label class="a11y-toggle">
-            <input type="checkbox" id="togCursor"
-                   onchange="toggleClase('cursor-grande', this.checked)">
-            <span class="a11y-slider"></span>
-        </label>
-    </div>
-    <div class="a11y-row">
-        <div class="a11y-label"><i class="bi bi-pause-circle"></i> Reducir animaciones</div>
-        <label class="a11y-toggle">
-            <input type="checkbox" id="togAnim"
-                   onchange="toggleAnimaciones(this.checked)">
-            <span class="a11y-slider"></span>
-        </label>
-    </div>
-
-    <button class="a11y-reset" onclick="resetA11y()">
-        <i class="bi bi-arrow-counterclockwise me-1"></i> Restablecer todo
-    </button>
-</div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
