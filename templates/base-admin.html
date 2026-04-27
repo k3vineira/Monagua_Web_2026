@@ -34,7 +34,7 @@
     <a href="#" class="sidebar-link">
         <i class="bi bi-graph-up-arrow"></i> Estadísticas
     </a>
-    <a href="/reservas/comentarios/" class="sidebar-link">
+    <a href="{% url 'comentarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'comentarios' %}active{% endif %}">
         <i class="bi bi-chat-left-dots-fill"></i> Comentarios
     </a>
 
