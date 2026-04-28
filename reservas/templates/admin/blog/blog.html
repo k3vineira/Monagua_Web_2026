@@ -19,7 +19,6 @@
                         <thead style="background-color: var(--verde-menta);">
                             <tr style="color: var(--verde-oscuro); border-bottom: 1px solid var(--verde-claro);">
                                 <th class="ps-4 py-3">Título</th>
-                                <th class="py-3">Fecha de Publicación</th>
                                 <th class="text-center py-3">Estado</th>
                                 <th class="text-end pe-4 py-3">Acciones</th>
                             </tr>
@@ -28,7 +27,6 @@
                             {% for entrada in blogs %}
                             <tr style="border-bottom: 1px solid #f0f0f0;">
                                 <td class="ps-4 py-3 fw-medium text-secondary">{{ entrada.titulo }}</td>
-                                <td class="py-3 small text-muted">{{ entrada.fecha|date:"d/m/Y" }}</td>
                                 <td class="text-center py-3">
                                     {% if entrada.publicado %}
                                         <span class="badge rounded-0" style="background-color: var(--verde-medio); color: white;">Publicado</span>
