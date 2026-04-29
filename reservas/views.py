@@ -49,6 +49,30 @@ def promociones_view(request):
     promociones_list = query.order_by('prioridad', '-id')
     return render(request, 'promociones.html', {'promociones': promociones_list})
 
+def reservas_view(request, paquete_id=None):
+    """ Detalle de un paquete para el formulario de reserva """
+    # Primero verificar si viene por parámetro URL, luego por query string
+    if not paquete_id:
+        paquete_id = request.GET.get('paquete_id')
+    
+    if paquete_id:
+        paquete = get_object_or_404(Paquete, id=paquete_id)
+    else:
+        paquete = None
+   
+   
+    # Definimos los métodos de pago aceptados para dar claridad al cliente desde el inicio
+    metodos_pago = [
+        {'id': 'pse', 'nombre': 'PSE', 'icono': 'bi-bank'},
+        {'id': 'tarjetas', 'nombre': 'Tarjetas Crédito/Débito', 'icono': 'bi-credit-card'},
+        {'id': 'transferencia', 'nombre': 'Transferencia Bancaria', 'icono': 'bi-arrow-left-right'},
+    ]
+    
+    return render(request, 'reservas.html', {
+        'paquete': paquete,
+        'metodos_pago': metodos_pago
+    })
+
 
 
 def destinos(request):
@@ -66,26 +90,6 @@ def destinos(request):
     
     # Este diccionario {'destinos': destinos_list} es lo que lee el {% for %}
     return render(request, 'destinos.html', {'destinos': destinos_list})
-
-def reservas_view(request):
-    """ Detalle de un paquete para el formulario de reserva """
-    paquete_id = request.GET.get('paquete_id') 
-    paquete_seleccionado = None
-    
-    if paquete_id:
-        paquete_seleccionado = get_object_or_404(Paquete, id=paquete_id)
-    
-    # Definimos los métodos de pago aceptados para dar claridad al cliente desde el inicio
-    metodos_pago = [
-        {'id': 'pse', 'nombre': 'PSE', 'icono': 'bi-bank'},
-        {'id': 'tarjetas', 'nombre': 'Tarjetas Crédito/Débito', 'icono': 'bi-credit-card'},
-        {'id': 'transferencia', 'nombre': 'Transferencia Bancaria', 'icono': 'bi-arrow-left-right'},
-    ]
-    
-    return render(request, 'reservas.html', {
-        'paquete': paquete_seleccionado,
-        'metodos_pago': metodos_pago
-    })
 
 
 # --- CRUD DE PAQUETES (MONAGUA) ---
@@ -404,12 +408,14 @@ def guardar_reserva(request, paquete_id):
         cantidad = request.POST.get('numero_personas')
         
         if fecha_viaje and cantidad:
-            Reserva.objects.create(
+            reserva= Reserva.objects.create(
                 usuario=request.user,       
                 paquete=paquete,            
                 fecha=fecha_viaje,
                 numero_personas=cantidad
             )
+            reserva.save()
+            
             messages.success(request, f"¡Reserva para {paquete.nombre} realizada con éxito!")
             return redirect('reservas') 
         else:
