@@ -1,34 +1,44 @@
+/* ============================================================
+   java.js  —  Monagua Admin
+   1. Hero slideshow
+   2. Panel de accesibilidad (window.A11y)
+   ============================================================ */
+
+/* ──────────────────────────────────────────────────────────
+   1. HERO SLIDESHOW
+   ────────────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", function() {
-    // 1. Obtener las imágenes desde el HTML
     const imagenesJson = document.getElementById('datos-imagenes');
-    if (!imagenesJson) return; // Si no estamos en el index, no hace nada
+    if (!imagenesJson) return;
 
     const listaImagenes = JSON.parse(imagenesJson.textContent);
     const hero = document.querySelector('.hero-section');
     let indiceActual = 0;
 
-    // 2. Función para cambiar la imagen con efecto
     function cambiarImagen() {
         indiceActual = (indiceActual + 1) % listaImagenes.length;
         hero.classList.add('hero-dark');
         setTimeout(() => {
-            hero.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${listaImagenes[indiceActual]}')`;
+            hero.style.backgroundImage =
+                `linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('${listaImagenes[indiceActual]}')`;
             hero.classList.remove('hero-dark');
         }, 800);
     }
 
-    // 3. Iniciar el ciclo cada 15 segundos
     if (hero && listaImagenes.length > 0) {
         setInterval(cambiarImagen, 15000);
     }
 });
 
-/* ============================================================
-   LÓGICA DEL PANEL DE ACCESIBILIDAD
-   ============================================================ */
 
+/* ──────────────────────────────────────────────────────────
+   2. PANEL DE ACCESIBILIDAD
+   ────────────────────────────────────────────────────────── */
 'use strict';
+
 (function() {
+
+    /* ── ESTADO ──────────────────────────────────────────────── */
     const state = {
         panelOpen: false,
         activeTab: 'visual',
@@ -48,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
+    /* ── STORAGE ─────────────────────────────────────────────── */
     function save(k, v) {
         try { localStorage.setItem('a11y_' + k, JSON.stringify(v)); } catch (e) {}
     }
@@ -59,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } catch (e) { return def; }
     }
 
+    /* ── TOAST ───────────────────────────────────────────────── */
     let toastTimer;
 
     function toast(msg) {
@@ -71,6 +83,7 @@ document.addEventListener("DOMContentLoaded", function() {
         toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
     }
 
+    /* ── PANEL TOGGLE ────────────────────────────────────────── */
     function togglePanel() {
         state.panelOpen = !state.panelOpen;
         const panel = document.getElementById('a11y-panel');
@@ -92,18 +105,26 @@ document.addEventListener("DOMContentLoaded", function() {
         if (btn) btn.setAttribute('aria-expanded', 'false');
     }
 
+    /* ── TABS ────────────────────────────────────────────────── */
     function switchTab(name) {
         state.activeTab = name;
         document.querySelectorAll('.a11y-tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.a11y-panel-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.a11y-panel-tab').forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+        });
         const content = document.getElementById('a11y-tab-' + name);
         if (content) content.classList.add('active');
         const TABS = ['visual', 'texto', 'avanzado', 'atajos'];
         const idx = TABS.indexOf(name);
         const tabs = document.querySelectorAll('.a11y-panel-tab');
-        if (tabs[idx]) tabs[idx].classList.add('active');
+        if (tabs[idx]) {
+            tabs[idx].classList.add('active');
+            tabs[idx].setAttribute('aria-selected', 'true');
+        }
     }
 
+    /* ── TEMA ────────────────────────────────────────────────── */
     function setTheme(t) {
         const THEMES = ['default', 'dim', 'light', 'sepia', 'contrast', 'dalton'];
         THEMES.forEach(th => document.body.classList.remove('theme-' + th));
@@ -116,6 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
         toast('Tema: ' + t);
     }
 
+    /* ── FILTRO ──────────────────────────────────────────────── */
     function setFilter(f) {
         document.body.classList.remove('filter-invert', 'filter-grayscale', 'low-saturation');
         if (f === 'invert') document.body.classList.add('filter-invert');
@@ -126,12 +148,18 @@ document.addEventListener("DOMContentLoaded", function() {
             const el = document.getElementById('a11y-filter-' + x);
             if (el) el.classList.remove('active');
         });
-        const idMap = { 'none': 'none', 'invert': 'invert', 'grayscale': 'grayscale', 'low-saturation': 'low-sat' };
+        const idMap = {
+            'none': 'none',
+            'invert': 'invert',
+            'grayscale': 'grayscale',
+            'low-saturation': 'low-sat'
+        };
         const btn = document.getElementById('a11y-filter-' + (idMap[f] || f));
         if (btn) btn.classList.add('active');
         save('filter', f);
     }
 
+    /* ── BRILLO ──────────────────────────────────────────────── */
     function setBrightness(v) {
         v = Math.round(v);
         const wrapper = document.querySelector('.a11y-content-wrapper');
@@ -142,6 +170,7 @@ document.addEventListener("DOMContentLoaded", function() {
         save('brightness', v);
     }
 
+    /* ── TAMAÑO TEXTO ────────────────────────────────────────── */
     function setFontSize(v) {
         v = Math.round(v);
         document.querySelectorAll('.a11y-target').forEach(el => {
@@ -153,6 +182,7 @@ document.addEventListener("DOMContentLoaded", function() {
         save('fontSize', v);
     }
 
+    /* ── FUENTE ──────────────────────────────────────────────── */
     function setFont(f) {
         ['sans', 'serif', 'mono', 'dyslexia', 'humanist'].forEach(x => {
             document.body.classList.remove('font-' + x);
@@ -167,6 +197,7 @@ document.addEventListener("DOMContentLoaded", function() {
         toast('Fuente: ' + f);
     }
 
+    /* ── INTERLINEADO ────────────────────────────────────────── */
     function setSpacing(s) {
         ['compact', 'normal', 'wide', 'max'].forEach(x => {
             document.body.classList.remove('spacing-' + x);
@@ -180,8 +211,9 @@ document.addEventListener("DOMContentLoaded", function() {
         save('spacing', s);
     }
 
+    /* ── ANCHO ───────────────────────────────────────────────── */
     function setWidth(v) {
-        v = Math.round(v / 20) * 20;
+        v = Math.round(v);
         const wrapper = document.querySelector('.a11y-content-wrapper');
         if (wrapper) wrapper.style.maxWidth = v + 'px';
         const val = document.getElementById('a11y-width-val');
@@ -190,6 +222,7 @@ document.addEventListener("DOMContentLoaded", function() {
         save('width', v);
     }
 
+    /* ── FEATURES / TOGGLES ──────────────────────────────────── */
     function toggleFeature(cls, on) {
         document.body.classList.toggle(cls, on);
         state.features[cls] = on;
@@ -212,9 +245,11 @@ document.addEventListener("DOMContentLoaded", function() {
         toast(on ? 'Modo lectura activado' : 'Modo lectura desactivado');
     }
 
+    /* ── RESTABLECER ─────────────────────────────────────────── */
     function resetAll() {
         localStorage.clear();
         document.body.className = '';
+
         setTheme('default');
         setFont('sans');
         setSpacing('normal');
@@ -236,16 +271,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
         document.querySelectorAll('.a11y-target').forEach(el => el.style.cssText = '');
         const wrapper = document.querySelector('.a11y-content-wrapper');
-        if (wrapper) { wrapper.style.filter = '';
-            wrapper.style.maxWidth = ''; }
+        if (wrapper) {
+            wrapper.style.filter = '';
+            wrapper.style.maxWidth = '';
+        }
 
         ['tog-cursor', 'tog-focus', 'tog-links', 'tog-motion', 'tog-reading'].forEach(id => {
             const el = document.getElementById('a11y-' + id);
             if (el) el.checked = false;
         });
+
         toast('Todo restablecido');
     }
 
+    /* ── CARGAR CONFIGURACIÓN ────────────────────────────────── */
     function loadSettings() {
         const t = load('theme', 'default');
         const fi = load('filter', 'none');
@@ -286,13 +325,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
         Object.keys(state.features).forEach(cls => {
             const on = load('feat_' + cls, false);
-            if (on) { document.body.classList.add(cls);
-                state.features[cls] = true; }
+            if (on) {
+                document.body.classList.add(cls);
+                state.features[cls] = true;
+            }
             const el = document.getElementById('a11y-' + togMap[cls]);
             if (el) el.checked = on;
         });
     }
 
+    /* ── ATAJOS DE TECLADO ───────────────────────────────────── */
     document.addEventListener('keydown', function(e) {
         if (!e.altKey) return;
         switch (e.key) {
@@ -344,14 +386,18 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    /* ── CLICK FUERA = CERRAR ────────────────────────────────── */
     document.addEventListener('click', function(e) {
         const panel = document.getElementById('a11y-panel');
         const btn = document.getElementById('a11y-btn');
-        if (panel && btn && !panel.contains(e.target) && !btn.contains(e.target)) {
+        if (panel && btn &&
+            !panel.contains(e.target) &&
+            !btn.contains(e.target)) {
             closePanel();
         }
     });
 
+    /* ── EXPONER API GLOBAL ──────────────────────────────────── */
     window.A11y = {
         togglePanel,
         closePanel,
@@ -368,9 +414,11 @@ document.addEventListener("DOMContentLoaded", function() {
         resetAll
     };
 
+    /* ── INIT ────────────────────────────────────────────────── */
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', loadSettings);
     } else {
         loadSettings();
     }
+
 })();

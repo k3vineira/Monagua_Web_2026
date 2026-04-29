@@ -1603,8 +1603,12 @@ body {
 
 
 /* ============================================================
-   ACCESSIBILITY PANEL — estilos.css
+   estilos.css — Monagua Admin
+   Panel de accesibilidad — versión corregida
    ============================================================ */
+
+
+/* ── VARIABLES BASE (tema oscuro por defecto) ─────────────────── */
 
 :root {
     --a11y-bg: #0d1117;
@@ -1630,6 +1634,9 @@ body {
     --a11y-font-mono: 'DM Mono', monospace;
     --a11y-transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+
+/* ── TEMAS ────────────────────────────────────────────────────── */
 
 body.theme-light {
     --a11y-bg: #f6f8fa;
@@ -1706,6 +1713,9 @@ body.theme-dalton {
     --a11y-accent-dim: rgba(245, 166, 35, 0.15);
 }
 
+
+/* ── CLASES DE ACCESIBILIDAD (afectan tu sitio) ───────────────── */
+
 body.font-serif .a11y-target {
     font-family: 'Georgia', serif;
 }
@@ -1772,7 +1782,7 @@ body.highlight-links a {
 }
 
 
-/* BOTÓN FLOTANTE */
+/* ── BOTÓN FLOTANTE ───────────────────────────────────────────── */
 
 #a11y-btn {
     position: fixed;
@@ -1819,13 +1829,20 @@ body.highlight-links a {
 }
 
 
-/* PANEL */
+/* ── PANEL ────────────────────────────────────────────────────── */
 
 #a11y-panel {
     position: fixed;
     right: 24px;
     bottom: 96px;
+    /* posición base — JS la ajusta si no cabe */
     width: 340px;
+    /* ✅ CORRECCIÓN CLAVE: altura máxima dinámica según el viewport    */
+    /* Nunca puede superar la pantalla menos 16px de margen arriba/abajo */
+    max-height: calc(100vh - 112px);
+    display: flex;
+    flex-direction: column;
+    /* permite que el body haga scroll sin cortar tabs/header */
     background: var(--a11y-bg-panel);
     border: 1px solid var(--a11y-border-active);
     border-radius: var(--a11y-radius-lg);
@@ -1846,10 +1863,12 @@ body.highlight-links a {
 }
 
 
-/* COMPONENTES INTERNOS */
+/* Tabs — fijos arriba, nunca se cortan */
 
 .a11y-panel-tabs {
     display: flex;
+    flex-shrink: 0;
+    /* ✅ no se encoge cuando el panel es pequeño */
     background: var(--a11y-bg-card);
     border-bottom: 1px solid var(--a11y-border);
 }
@@ -1881,9 +1900,14 @@ body.highlight-links a {
     background: var(--a11y-bg-panel);
 }
 
+
+/* Header — fijo, no se encoge */
+
 .a11y-panel-header {
     padding: 1rem 1.1rem 0.75rem;
     display: flex;
+    flex-shrink: 0;
+    /* ✅ */
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--a11y-border);
@@ -1927,12 +1951,18 @@ body.highlight-links a {
     background: var(--a11y-red-dim);
 }
 
+
+/* Body — ✅ ocupa el espacio restante y hace scroll si el contenido no cabe */
+
 .a11y-panel-body {
     padding: 1rem 1.1rem;
-    max-height: 480px;
+    flex: 1;
+    /* ocupa todo el espacio entre header y status bar */
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: var(--a11y-border-active) transparent;
+    /* sin max-height fijo — el panel padre lo controla */
 }
 
 .a11y-tab-content {
@@ -1942,6 +1972,9 @@ body.highlight-links a {
 .a11y-tab-content.active {
     display: block;
 }
+
+
+/* Secciones */
 
 .a11y-section {
     margin-bottom: 1.25rem;
@@ -1962,6 +1995,9 @@ body.highlight-links a {
     align-items: center;
     gap: 6px;
 }
+
+
+/* Chips de tema */
 
 .a11y-theme-grid-wrap {
     padding-bottom: 1.4rem;
@@ -2031,6 +2067,9 @@ body.highlight-links a {
     pointer-events: none;
 }
 
+
+/* Sliders */
+
 .a11y-slider-row {
     display: flex;
     align-items: center;
@@ -2056,7 +2095,6 @@ body.highlight-links a {
 
 .a11y-slider-row input[type="range"] {
     flex: 1;
-    appearance: none;
     -webkit-appearance: none;
     height: 4px;
     border-radius: 2px;
@@ -2079,6 +2117,9 @@ body.highlight-links a {
 .a11y-slider-row input[type="range"]::-webkit-slider-thumb:hover {
     transform: scale(1.2);
 }
+
+
+/* Botones de opción */
 
 .a11y-opt-group {
     display: flex;
@@ -2111,6 +2152,9 @@ body.highlight-links a {
     border-color: var(--a11y-accent);
     color: var(--a11y-accent);
 }
+
+
+/* Toggles */
 
 .a11y-toggle-row {
     display: flex;
@@ -2186,6 +2230,9 @@ body.highlight-links a {
     transform: translateX(16px);
 }
 
+
+/* Atajos */
+
 .a11y-shortcut-row {
     display: flex;
     align-items: center;
@@ -2220,8 +2267,13 @@ body.highlight-links a {
     letter-spacing: 0.04em;
 }
 
+
+/* Status bar — fija abajo, no se encoge */
+
 .a11y-status-bar {
     display: flex;
+    flex-shrink: 0;
+    /* ✅ */
     align-items: center;
     gap: 6px;
     padding: 0.6rem 1.1rem;
@@ -2246,12 +2298,15 @@ body.highlight-links a {
 @keyframes a11y-blink {
     0%,
     100% {
-        opacity: 1
+        opacity: 1;
     }
     50% {
-        opacity: 0.3
+        opacity: 0.3;
     }
 }
+
+
+/* Toast */
 
 #a11y-toast {
     position: fixed;
@@ -2289,10 +2344,15 @@ body.highlight-links a {
     flex-shrink: 0;
 }
 
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+
 @media (max-width: 600px) {
     #a11y-panel {
         right: 12px;
-        width: calc(100vw - 24px);
+        left: 12px;
+        width: auto;
+        max-height: calc(100vh - 100px);
     }
     #a11y-btn {
         bottom: 20px;
