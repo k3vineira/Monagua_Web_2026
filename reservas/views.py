@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from .models import Actividades, Categoria, Paquete, Promocion, Reserva, PQRS
 from .models import Actividades, Categoria, Paquete, Promocion, Reserva, PQRS, Blog
@@ -201,7 +202,7 @@ def crear_reserva(request):
         form = ReservaForm(request.POST)
         if form.is_valid():
             reserva = form.save()
-            messages.success(request, f"Reserva para '{reserva.nombre_cliente}' creada.")
+            messages.success(request, f"Reserva para '{reserva.usuario}' creada.")
             return redirect('admin_reservas')
     else:
         form = ReservaForm()
@@ -213,7 +214,7 @@ def editar_reserva(request, pk):
         form = ReservaEditarForm(request.POST, instance=reserva)
         if form.is_valid():
             form.save()
-            messages.success(request, f"Reserva de {reserva.nombre_cliente} actualizada.")
+            messages.success(request, f"Reserva de {reserva.usuario} actualizada.")
             return redirect('admin_reservas')
     else:
         form = ReservaForm(instance=reserva)
@@ -222,7 +223,7 @@ def eliminar_reserva(request, pk):
     reserva = get_object_or_404(Reserva, pk=pk)
     if request.method == 'POST':
         reserva.delete()
-        messages.success(request, f"Reserva de '{reserva.nombre_cliente}' eliminada.")
+        messages.success(request, f"Reserva de '{reserva.usuario}' eliminada.")
         return redirect('admin_reservas')
     return render(request, 'admin/reservas/eliminar_reserva.html', {'reserva': reserva})
 
@@ -388,15 +389,33 @@ def lista_reservas(request):
     return render(request, 'admin/reservas/reservas.html', {'reservas': reservas})
 
 def lista_pqrs(request):
-    # Usamos un nombre diferente al del modelo (pqrs_objetos) para evitar errores
     pqrs_objetos = PQRS.objects.all().order_by('-id') 
-    # Enviamos la variable con el nombre 'todas_las_pqrs'
     return render(request, 'admin/pqrs/pqrs.html', {'todas_las_pqrs': pqrs_objetos})
 
 def nosotros(request):
     return render(request, 'nosotros.html')
 
 
+@login_required 
+def guardar_reserva(request, paquete_id):
+    if request.method == 'POST':
+        paquete = get_object_or_404(Paquete, id=paquete_id)
+        fecha_viaje = request.POST.get('fecha')
+        cantidad = request.POST.get('numero_personas')
+        
+        if fecha_viaje and cantidad:
+            Reserva.objects.create(
+                usuario=request.user,       
+                paquete=paquete,            
+                fecha=fecha_viaje,
+                numero_personas=cantidad
+            )
+            messages.success(request, f"¡Reserva para {paquete.nombre} realizada con éxito!")
+            return redirect('reservas') 
+        else:
+            messages.error(request, "Por favor completa todos los campos.")
+
+    return redirect('reservas')
 
 
 
