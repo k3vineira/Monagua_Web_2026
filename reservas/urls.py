@@ -6,8 +6,9 @@ urlpatterns = [
     path('blog/', views.blog_view, name='blog'),
     path('reservar/', views.reservas_view, name='reservas'),
     path('promociones/', views.promociones_view, name='promociones'),
+
+    path('confirmar-reserva/<int:paquete_id>/', views.guardar_reserva, name='guardar_reserva'),
    
-    
     path('categorias/crear/', views.crear_categoria, name='crear_categoria'),
     path('categorias/editar/<int:pk>/', views.editar_categoria, name='editar_categoria'),
     path('categorias/eliminar/<int:pk>/', views.eliminar_categoria, name='eliminar_categoria'),

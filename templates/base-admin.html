@@ -58,7 +58,7 @@
     <a href="#" class="sidebar-link">
         <i class="bi bi-people-fill"></i> Usuarios
     </a>
-    <a href="#" class="sidebar-link">
+    <a href="{% url 'admin_reservas' %}" class="sidebar-link">
         <i class="bi bi-calendar-check-fill"></i> Reservas
     </a>
     <a href="{% url 'gestion_promociones' %}" class="sidebar-link {% if 'promociones' in request.path %}active{% endif %}">
