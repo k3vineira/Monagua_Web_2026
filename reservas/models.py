@@ -1,4 +1,6 @@
 from django.db import models
+from django.conf import settings
+
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre de la Categoría')
@@ -67,24 +69,33 @@ class Promocion(models.Model):
         return f"{self.nombre} ({self.porcentaje_descuento}% desc.)"
 
 class Reserva(models.Model):
-    ESTADO_CHOICES = [
-        ('Pendiente', 'Pendiente'),
-        ('Confirmada', 'Confirmada'),
-        ('Cancelada', 'Cancelada'),
-    ]
-    nombre_cliente = models.CharField(max_length=150, verbose_name='Nombre del Cliente')
+    # Relación con el usuario (Cliente)
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='reservas_realizadas', 
+        verbose_name='Cliente'
+    )
+    
+    paquete = models.ForeignKey(Paquete, on_delete=models.PROTECT, verbose_name='Paquete Reservado')
     fecha = models.DateField(verbose_name='Fecha de Reserva')
     numero_personas = models.PositiveIntegerField(verbose_name='Número de Personas')
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Pendiente', verbose_name='Estado')
-    paquete = models.ForeignKey(Paquete, on_delete=models.PROTECT, verbose_name='Paquete Reservado')
-    monto_total = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Monto Total')
+    
+    # Monto total (se calculará automáticamente)
+    monto_total = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Monto Total', editable=False)
 
     class Meta:
         verbose_name = 'Reserva'
         verbose_name_plural = 'Reservas'
 
+    def save(self, *args, **kwargs):
+        if self.paquete and self.numero_personas:
+            self.monto_total = self.paquete.precio * self.numero_personas
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"Reserva {self.id} - {self.nombre_cliente}"
+        return f"Reserva {self.id} - {self.usuario.get_full_name()} ({self.paquete.nombre})"
+    
 
 class PQRS(models.Model):
      TIPO_CHOICES = [

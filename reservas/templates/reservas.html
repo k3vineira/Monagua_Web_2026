@@ -2,13 +2,8 @@
 {% load static %}
 
 {% block content %}
-<main class="container">
-  <div class="text-center py-4">
-    <h1 class="titulo-gigante fw-bold text-uppercase">
-      {% if paquete %}{{ paquete.nombre }}{% else %}Tu aventura comienza aquí{% endif %}
-    </h1>
-  </div>
 
+<main class="container"style="margin-top: 100px;">
   <div class="row g-4 align-items-stretch justify-content-center mb-5">
     <div class="col-md-5">
       <div class="h-100 shadow-sm rounded-4 overflow-hidden border bg-light d-flex align-items-center justify-content-center">
@@ -29,27 +24,29 @@
           {% endif %}
         </div>
         <div class="card-body p-4 pt-0">
-          
-          <form action="{% url 'pago' %}" method="GET">
+ 
+          <form action="{% url 'guardar_reserva' paquete.id %}" method="POST">
+            {% csrf_token %}
             
             <div class="mb-3">
               <label class="form-label fw-bold subtitulo-formulario">Información Personal</label>
               <div class="row g-2">
                 <div class="col-6">
-                  <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Nombre" required />
+                  <input type="text" class="form-control form-control-sm bg-light" value="{{ user.first_name }}" placeholder="Nombre" readonly />
                 </div>
                 <div class="col-6">
-                  <input type="text" name="apellido" class="form-control form-control-sm" placeholder="Apellido" required />
+              
+                  <input type="text" class="form-control form-control-sm bg-light" value="{{ user.last_name }}" placeholder="Apellido" readonly />
                 </div>
               </div>
             </div>
 
             <div class="mb-2">
-              <input type="email" name="correo" class="form-control form-control-sm" placeholder="Correo" required />
+              <input type="email" class="form-control form-control-sm bg-light" value="{{ user.email }}" placeholder="Correo" readonly />
             </div>
 
             <div class="mb-3">
-              <input type="tel" name="telefono" class="form-control form-control-sm" placeholder="Teléfono" required />
+              <input type="tel" class="form-control form-control-sm bg-light" value="{{ user.telefono }}" placeholder="Teléfono" readonly max_length=15 />
             </div>
 
             <hr class="my-3 opacity-25" />
@@ -58,16 +55,14 @@
               <label class="form-label fw-bold subtitulo-formulario">Detalles del Tour</label>
               <div class="row g-2">
                 <div class="col-7">
+                  <!-- Nombre del campo: fecha -->
                   <input type="date" name="fecha" class="form-control form-control-sm" required />
                 </div>
                 <div class="col-5">
-                  <input type="number" name="personas" class="form-control form-control-sm" placeholder="Personas" min="1" required />
+                  <!-- Nombre del campo: numero_personas -->
+                  <input type="number" name="numero_personas" class="form-control form-control-sm" placeholder="Personas" min="1" required />
                 </div>
               </div>
-            </div>
-
-            <div class="mb-3">
-              <textarea name="comentarios" class="form-control form-control-sm" rows="2" placeholder="Comentarios..."></textarea>
             </div>
 
             <div class="form-check mb-3">
