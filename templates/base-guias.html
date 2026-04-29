@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,16 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin Panel | Monagua{% endblock %}</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 
-    <!-- Estilos base compartidos (sidebar, topbar, KPI, modales, a11y, etc.) -->
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
-
+    
     {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -24,10 +19,8 @@
 {% include "partials/aside-admin.html" %}
 {% include "partials/accesibilidad.html" %}
 
-<!-- MAIN CONTENT -->
 {% block content %}{% endblock %}
 
-<!-- Toast notificación -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3"
      style="margin-bottom:4.5rem;">
     <div id="toastMsg" class="toast align-items-center text-white border-0"
@@ -41,106 +34,236 @@
 </div>
 
 
-<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+<script src="{% static 'js/java.js' %}"></script>
+
 <script>
-    /* ══════════════════════════════════════════
-       WIDGET DE ACCESIBILIDAD — GLOBAL
-    ══════════════════════════════════════════ */
-    window.currentLang = localStorage.getItem('a11y-lang') || 'es';
+/* ══════════════════════════════════════════
+   WIDGET DE ACCESIBILIDAD — GLOBAL
+══════════════════════════════════════════ */
 
-    let fontStep = parseInt(localStorage.getItem('a11y-font') || '0');
+window.currentLang = localStorage.getItem('a11y-lang') || 'es';
+let fontStep = parseInt(localStorage.getItem('a11y-font') || '0');
 
-    window.toggleA11yPanel = function () {
-        document.getElementById('a11y-panel').classList.toggle('open');
-    };
 
-    window.setLang = function (lang) {
-        window.currentLang = lang;
-        localStorage.setItem('a11y-lang', lang);
-        document.getElementById('btn-es').classList.toggle('active', lang === 'es');
-        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-        const dateEl = document.getElementById('currentDate');
-        if (dateEl) {
-            dateEl.textContent = new Date().toLocaleDateString(
-                lang === 'en' ? 'en-US' : 'es-CO',
-                { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }
-            );
-        }
-    };
+/* ───────── PANEL ───────── */
 
-    window.cambiarFuente = function (dir) {
-        fontStep = Math.max(-3, Math.min(5, fontStep + dir));
-        localStorage.setItem('a11y-font', fontStep);
-        const pct = 100 + fontStep * 10;
-        document.documentElement.style.fontSize = pct + '%';
-        document.getElementById('fontPct').textContent = pct + '%';
-    };
+window.toggleA11yPanel = function () {
+    const panel = document.getElementById('a11y-panel');
+    if(panel) panel.classList.toggle('open');
+};
 
-    window.toggleClase = function (cls, val) {
-        document.body.classList.toggle(cls, val);
-        localStorage.setItem('a11y-' + cls, val ? '1' : '0');
-    };
 
-    window.toggleAnimaciones = function (val) {
-        if (val) {
-            const style = document.createElement('style');
-            style.id = 'a11y-no-anim';
-            style.textContent =
-                '*, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }';
-            document.head.appendChild(style);
-        } else {
-            const el = document.getElementById('a11y-no-anim');
-            if (el) el.remove();
-        }
-        localStorage.setItem('a11y-anim', val ? '1' : '0');
-    };
+/* ───────── IDIOMA ───────── */
 
-    window.resetA11y = function () {
-        fontStep = 0;
-        document.documentElement.style.fontSize = '';
-        document.getElementById('fontPct').textContent = '100%';
-        ['alto-contraste', 'subrayar-links', 'cursor-grande'].forEach(c => {
-            document.body.classList.remove(c);
-            localStorage.removeItem('a11y-' + c);
-        });
-        ['togContraste', 'togLinks', 'togCursor', 'togAnim'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.checked = false;
-        });
-        const noAnim = document.getElementById('a11y-no-anim');
-        if (noAnim) noAnim.remove();
-        localStorage.removeItem('a11y-font');
-        localStorage.removeItem('a11y-anim');
-    };
+window.setLang = function (lang) {
 
-    (function initA11y() {
-        document.getElementById('btn-es').classList.toggle('active', window.currentLang === 'es');
-        document.getElementById('btn-en').classList.toggle('active', window.currentLang === 'en');
+    window.currentLang = lang;
+    localStorage.setItem('a11y-lang', lang);
 
-        const pct = 100 + fontStep * 10;
-        document.documentElement.style.fontSize = pct + '%';
-        document.getElementById('fontPct').textContent = pct + '%';
+    const btnEs = document.getElementById('btn-es');
+    const btnEn = document.getElementById('btn-en');
 
-        const togMap = {
-            'alto-contraste': 'togContraste',
-            'subrayar-links': 'togLinks',
-            'cursor-grande':  'togCursor'
-        };
-        Object.entries(togMap).forEach(([cls, togId]) => {
-            if (localStorage.getItem('a11y-' + cls) === '1') {
-                document.body.classList.add(cls);
-                const el = document.getElementById(togId);
-                if (el) el.checked = true;
+    if(btnEs) btnEs.classList.toggle('active', lang === 'es');
+    if(btnEn) btnEn.classList.toggle('active', lang === 'en');
+
+    const dateEl = document.getElementById('currentDate');
+
+    if (dateEl) {
+        dateEl.textContent = new Date().toLocaleDateString(
+            lang === 'en' ? 'en-US' : 'es-CO',
+            {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
             }
+        );
+    }
+
+};
+
+
+/* ───────── TAMAÑO TEXTO ───────── */
+
+window.cambiarFuente = function (dir) {
+
+    fontStep = Math.max(-3, Math.min(5, fontStep + dir));
+
+    localStorage.setItem('a11y-font', fontStep);
+
+    const pct = 100 + fontStep * 10;
+
+    document.documentElement.style.fontSize = pct + '%';
+
+    const fontPctEl = document.getElementById('fontPct');
+
+    if(fontPctEl) fontPctEl.textContent = pct + '%';
+
+};
+
+
+/* ───────── CLASES ACCESIBILIDAD ───────── */
+
+window.toggleClase = function (cls, val) {
+
+    document.body.classList.toggle(cls, val);
+
+    localStorage.setItem('a11y-' + cls, val ? '1' : '0');
+
+};
+
+
+/* ───────── ANIMACIONES ───────── */
+
+window.toggleAnimaciones = function (val) {
+
+    if (val) {
+
+        const style = document.createElement('style');
+
+        style.id = 'a11y-no-anim';
+
+        style.textContent =
+            '*, *::before, *::after { animation-duration: 0.001s !important; transition-duration: 0.001s !important; }';
+
+        document.head.appendChild(style);
+
+    } else {
+
+        const el = document.getElementById('a11y-no-anim');
+
+        if (el) el.remove();
+
+    }
+
+    localStorage.setItem('a11y-anim', val ? '1' : '0');
+
+};
+
+
+/* ───────── RESET ───────── */
+
+window.resetA11y = function () {
+
+    fontStep = 0;
+
+    document.documentElement.style.fontSize = '';
+
+    const fontPctEl = document.getElementById('fontPct');
+
+    if(fontPctEl) fontPctEl.textContent = '100%';
+
+
+    ['alto-contraste', 'subrayar-links', 'cursor-grande'].forEach(c => {
+
+        document.body.classList.remove(c);
+
+        localStorage.removeItem('a11y-' + c);
+
+    });
+
+
+    ['togContraste', 'togLinks', 'togCursor', 'togAnim'].forEach(id => {
+
+        const el = document.getElementById(id);
+
+        if (el) el.checked = false;
+
+    });
+
+
+    const noAnim = document.getElementById('a11y-no-anim');
+
+    if (noAnim) noAnim.remove();
+
+
+    localStorage.removeItem('a11y-font');
+    localStorage.removeItem('a11y-anim');
+
+};
+
+
+/* ───────── INICIALIZACIÓN ───────── */
+
+document.addEventListener("DOMContentLoaded", function(){
+
+
+    /* idioma */
+
+    const btnEs = document.getElementById('btn-es');
+    const btnEn = document.getElementById('btn-en');
+
+    if(btnEs) btnEs.classList.toggle('active', window.currentLang === 'es');
+    if(btnEn) btnEn.classList.toggle('active', window.currentLang === 'en');
+
+
+    /* tamaño texto */
+
+    const pct = 100 + fontStep * 10;
+
+    document.documentElement.style.fontSize = pct + '%';
+
+    const fontPctEl = document.getElementById('fontPct');
+
+    if(fontPctEl) fontPctEl.textContent = pct + '%';
+
+
+    /* toggles */
+
+    const toggles = {
+
+        'alto-contraste': 'togContraste',
+        'subrayar-links': 'togLinks',
+        'cursor-grande':  'togCursor'
+
+    };
+
+
+    Object.entries(toggles).forEach(([cls, id]) => {
+
+        const toggle = document.getElementById(id);
+
+        if(!toggle) return;
+
+        const active = localStorage.getItem('a11y-' + cls) === '1';
+
+        toggle.checked = active;
+
+        document.body.classList.toggle(cls, active);
+
+        toggle.addEventListener('change', () => {
+
+            toggleClase(cls, toggle.checked);
+
         });
 
-        if (localStorage.getItem('a11y-anim') === '1') {
-            toggleAnimaciones(true);
-            document.getElementById('togAnim').checked = true;
-        }
-    })();
+    });
+
+
+    /* animaciones */
+
+    const togAnim = document.getElementById('togAnim');
+
+    if(togAnim){
+
+        const active = localStorage.getItem('a11y-anim') === '1';
+
+        togAnim.checked = active;
+
+        if(active) toggleAnimaciones(true);
+
+        togAnim.addEventListener('change', () => {
+
+            toggleAnimaciones(togAnim.checked);
+
+        });
+
+    }
+
+
+});
 </script>
 
 {% block extra_js %}{% endblock %}
