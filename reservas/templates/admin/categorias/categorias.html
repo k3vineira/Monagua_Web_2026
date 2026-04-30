@@ -6,9 +6,9 @@
         <div class="col-md-10">
             
             <div class="d-flex justify-content-between align-items-end p-3 shadow-sm" 
-                 style="background-color: var(--verde-bosque); border-radius: 8px 8px 0 0; border-bottom: 2px solid rgba(255,255,255,0.2);">
+                 style="background-color: var(--verde-bosque); border-radius: 8px 8px 0 0;">
                 <h3 class="text-white mb-0 fw-bold">Categorías de Turismo</h3>
-                <a href="{% url 'crear_categoria' %}" class="btn btn-sm btn-light fw-bold" style="color: var(--verde-oscuro);">
+                <a href="{% url 'crear_categoria' %}" class="btn btn-sm btn-light fw-bold">
                     <i class="bi bi-plus-lg"></i> Nueva Categoría
                 </a>
             </div>
@@ -17,7 +17,7 @@
                 <div class="card-body p-0">
                     <table class="table table-hover table-borderless mb-0">
                         <thead style="background-color: var(--verde-menta);">
-                            <tr style="color: var(--verde-oscuro); border-bottom: 1px solid var(--verde-claro);">
+                            <tr style="color: var(--verde-oscuro);">
                                 <th class="ps-4 py-3">Nombre de Categoría</th>
                                 <th class="text-center py-3">Estado</th>
                                 <th class="text-end pe-4 py-3">Acciones</th>
@@ -26,14 +26,15 @@
                         <tbody class="align-middle">
                             {% for cat in categorias %}
                             <tr style="border-bottom: 1px solid #f0f0f0;">
-                                <td class="ps-4 py-3 fw-medium">{{ cat.nombre }}</td>
-                                <td class="text-center py-3">
-                                    {% if cat.activa %}
-                                        <span class="badge rounded-0" style="background-color: var(--verde-medio); color: white;">Activa</span>
+                                <td class="ps-4 py-3 fw-medium text-secondary">{{ cat.nombre }}</td>
+                                <td class="text-center">
+                                    {% if cat.estado %} 
+                                        <span class="btn btn-sm btn-success">Activo</span>
                                     {% else %}
-                                        <span class="badge rounded-0 bg-secondary text-white">Inactiva</span>
+                                        <span class="btn btn-sm btn-danger">Inactivo</span>
                                     {% endif %}
                                 </td>
+
                                 <td class="text-end pe-4 py-3">
                                     <a href="{% url 'editar_categoria' cat.pk %}" class="text-primary text-decoration-none me-3 small fw-bold">EDITAR</a>
                                     <a href="{% url 'eliminar_categoria' cat.pk %}" class="text-danger text-decoration-none small fw-bold">ELIMINAR</a>
@@ -48,12 +49,6 @@
                     </table>
                 </div>
             </div>
-
-            <div class="mt-3 p-2 d-flex align-items-center" style="color: var(--verde-oscuro); font-size: 0.85rem;">
-                <i class="bi bi-info-circle-fill me-2"></i>
-                <span>Las categorías ayudan a organizar las actividades en el mapa de Mongua.</span>
-            </div>
-            
         </div>
     </div>
 </div>

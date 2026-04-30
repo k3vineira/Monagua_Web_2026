@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-4">
     <div class="card border-0 shadow-sm" style="border-radius: 10px; overflow: hidden;">
-        <!-- Encabezado con el mismo verde de Monagua -->
+        
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3" style="background-color: #388e3c !important;">
             <h4 class="mb-0 text-white fw-bold">Administración de Reservas</h4>
             <a href="{% url 'crear_reserva' %}" class="btn btn-light btn-sm fw-bold" style="border-radius: 20px; color: #388e3c;">
@@ -24,7 +24,7 @@
                         </tr>
                     </thead>
                     <tbody style="font-size: 0.9rem;">
-                        {% for reserva in Reserva %}
+                        {% for reserva in reservas %}
                         <tr class="align-middle">
                            
                             <td class="ps-4 text-secondary">{{ reserva.usuario }}</td>

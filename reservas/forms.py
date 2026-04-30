@@ -12,16 +12,21 @@ class CategoriaEditarForm(ModelForm):
     class Meta:
         model = Categoria
         fields = '__all__'
+        widgets = {
+            'estado': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
 
 class ActividadesForm(ModelForm):
 
     class Meta:
         model = Actividades
-        fields = ['categoria', 'nombre', 'descripcion', 'duracion', 'nivel_dificultad']
+        fields = '__all__'
+
 class ActividadesEditarForm(ModelForm):
     class Meta:
         model = Actividades
         fields = '__all__'
+        widgets = {'estado': forms.CheckboxInput(attrs={'class': 'form-check-input'}),}
 
 
 class PaqueteForm(ModelForm):
@@ -33,6 +38,10 @@ class PaqueteEditarForm(ModelForm):
     class Meta:
         model = Paquete
         fields = '__all__'
+        widgets = {
+            'estado': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'actividades': forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }
         
         
 class PromocionForm(ModelForm):
@@ -73,6 +82,7 @@ class blogEditarForm(ModelForm):
     class Meta:
         model = Blog
         fields = '__all__'
+        widgets = {'estado': forms.CheckboxInput(attrs={'class': 'form-check-input'}),}   
 
     
 
