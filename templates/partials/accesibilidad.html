@@ -1,7 +1,6 @@
 {% load static %}
 
 
-<!-- BOTÓN FLOTANTE -->
 <button
     id="a11y-btn"
     onclick="A11y.togglePanel()"
@@ -14,7 +13,6 @@
     </svg>
 </button>
 
-<!-- PANEL PRINCIPAL -->
 <div
     id="a11y-panel"
     role="dialog"
@@ -22,7 +20,6 @@
     aria-modal="true"
 >
 
-    <!-- TABS -->
     <div class="a11y-panel-tabs" role="tablist">
         <button class="a11y-panel-tab active" role="tab" aria-selected="true"  onclick="A11y.switchTab('visual')">Visual</button>
         <button class="a11y-panel-tab"        role="tab" aria-selected="false" onclick="A11y.switchTab('texto')">Texto</button>
@@ -30,21 +27,15 @@
         <button class="a11y-panel-tab"        role="tab" aria-selected="false" onclick="A11y.switchTab('atajos')">Atajos</button>
     </div>
 
-    <!-- HEADER -->
     <div class="a11y-panel-header">
         <div class="a11y-panel-title">Accesibilidad</div>
         <button class="a11y-reset-btn" onclick="A11y.resetAll()">↺ Restablecer</button>
     </div>
 
-    <!-- BODY -->
     <div class="a11y-panel-body">
 
-        <!-- ═══════════════════════════════════════════
-             TAB: VISUAL
-        ═══════════════════════════════════════════ -->
         <div class="a11y-tab-content active" id="a11y-tab-visual" role="tabpanel">
 
-            <!-- Tema de color -->
             <div class="a11y-section">
                 <div class="a11y-section-label">Tema de color</div>
                 <div class="a11y-theme-grid-wrap">
@@ -59,7 +50,6 @@
                 </div>
             </div>
 
-            <!-- Filtro de pantalla -->
             <div class="a11y-section">
                 <div class="a11y-section-label">Filtro de pantalla</div>
                 <div class="a11y-opt-group">
@@ -70,7 +60,6 @@
                 </div>
             </div>
 
-            <!-- Brillo -->
             <div class="a11y-section">
                 <div class="a11y-section-label">Brillo de página</div>
                 <div class="a11y-slider-row">
@@ -87,14 +76,8 @@
                 </div>
             </div>
 
-        </div><!-- /tab-visual -->
+        </div><div class="a11y-tab-content" id="a11y-tab-texto" role="tabpanel">
 
-        <!-- ═══════════════════════════════════════════
-             TAB: TEXTO
-        ═══════════════════════════════════════════ -->
-        <div class="a11y-tab-content" id="a11y-tab-texto" role="tabpanel">
-
-            <!-- Tamaño de texto -->
             <div class="a11y-section">
                 <div class="a11y-section-label">Tamaño de texto</div>
                 <div class="a11y-slider-row">
@@ -111,7 +94,6 @@
                 </div>
             </div>
 
-            <!-- Tipo de fuente -->
             <div class="a11y-section">
                 <div class="a11y-section-label">Tipo de fuente</div>
                 <div class="a11y-opt-group">
@@ -123,7 +105,6 @@
                 </div>
             </div>
 
-            <!-- Interlineado -->
             <div class="a11y-section">
                 <div class="a11y-section-label">Interlineado</div>
                 <div class="a11y-opt-group">
@@ -134,7 +115,6 @@
                 </div>
             </div>
 
-            <!-- Ancho de columna -->
             <div class="a11y-section">
                 <div class="a11y-section-label">Ancho de columna</div>
                 <div class="a11y-slider-row">
@@ -151,12 +131,7 @@
                 </div>
             </div>
 
-        </div><!-- /tab-texto -->
-
-        <!-- ═══════════════════════════════════════════
-             TAB: AVANZADO
-        ═══════════════════════════════════════════ -->
-        <div class="a11y-tab-content" id="a11y-tab-avanzado" role="tabpanel">
+        </div><div class="a11y-tab-content" id="a11y-tab-avanzado" role="tabpanel">
 
             <div class="a11y-section">
                 <div class="a11y-section-label">Opciones de usabilidad</div>
@@ -218,12 +193,7 @@
 
             </div>
 
-        </div><!-- /tab-avanzado -->
-
-        <!-- ═══════════════════════════════════════════
-             TAB: ATAJOS
-        ═══════════════════════════════════════════ -->
-        <div class="a11y-tab-content" id="a11y-tab-atajos" role="tabpanel">
+        </div><div class="a11y-tab-content" id="a11y-tab-atajos" role="tabpanel">
 
             <div class="a11y-section">
                 <div class="a11y-section-label">Atajos de teclado</div>
@@ -258,21 +228,14 @@
                 </div>
 
             </div>
-        </div><!-- /tab-atajos -->
-
-    </div><!-- /panel-body -->
-
-    <!-- STATUS BAR -->
-    <div class="a11y-status-bar">
+        </div></div><div class="a11y-status-bar">
         <div class="a11y-status-dot"></div>
         <span>Configuración guardada automáticamente</span>
     </div>
 
-</div><!-- /a11y-panel -->
-
-<!-- TOAST NOTIFICATION -->
-<div id="a11y-toast" role="status" aria-live="polite">
+</div><div id="a11y-toast" role="status" aria-live="polite">
     <div class="a11y-toast-dot"></div>
     <span id="a11y-toast-msg"></span>
 </div>
-{% block  %}{% endblock  %}
+
+{% block content %}{% endblock %}
