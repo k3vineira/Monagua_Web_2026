@@ -1,4 +1,4 @@
-# urls.py administrador 
+# urls.py — administrador (core)
 
 from django.contrib import admin
 from django.urls import path, include
@@ -7,11 +7,11 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 from administrador import views as views_gestion
-from usuario.views import * 
+from usuario.views import *
 from Experiencia_soporte import views as soporte_views
 from . import views
 
- 
+
 urlpatterns = [
 
     # 1. Admin de Django
@@ -20,7 +20,7 @@ urlpatterns = [
     # Dashboard de usuario logueado (desde core/views.py)
     path('inicio-usuario/', views.inicio, name='inicio_usuario'),
 
-    
+
     # 2. Tus aplicaciones
     path('', include('inicio.urls')),
     path('reservas/', include('reservas.urls')),
@@ -31,15 +31,13 @@ urlpatterns = [
 
 
     # 3. Autenticación y Gestión
-    # path('login/', login_view, name='login'),
     path('registro/', registro_view, name='registro'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('login/', auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/',   auth_views.LogoutView.as_view(), name='logout'),
+    path('login/',    auth_views.LoginView.as_view(template_name='inicio_sesion.html'), name='login'),
+    path('logout/',   auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
     path('gestion-admin/', views_gestion.dashboard_administrador, name='gestion_admin'),
 
-    
     # Dashboard de Guía
     path('inicio-guia/', dashboard_guia_view, name='inicio_guia'),
 
@@ -86,6 +84,16 @@ urlpatterns = [
     # Gestión de comentarios
     path('administrador/comentarios/', views_gestion.gestion_comentarios, name='gestion_comentarios'),
 
+
+    # ═══════════════════════════════════════
+    # REPORTES DE GUÍAS  ← NUEVO
+    # ═══════════════════════════════════════
+
+    path('administrador/reportes/',                      views_gestion.gestion_reportes,       name='gestion_reportes'),
+    path('administrador/reportes/guardar/',               views_gestion.reportes_guardar,        name='reportes_guardar'),
+    path('administrador/reportes/detalle/<int:pk>/',      views_gestion.reportes_detalle_json,   name='reportes_detalle_json'),
+    path('administrador/reportes/resolver/',              views_gestion.reportes_resolver,       name='reportes_resolver'),
+    path('administrador/reportes/eliminar/',              views_gestion.reportes_eliminar,       name='reportes_eliminar'),
 
 ]
 

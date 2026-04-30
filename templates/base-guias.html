@@ -9,8 +9,193 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+
+    <style>
+    /* ══════════════════════════════════════════════════════════════
+       PANEL FLOTANTE DE REPORTES
+    ════════════════════════════════════════════════════════════════ */
+    .btn-reportes-flotante {
+        position: fixed;
+        bottom: 5.5rem;
+        right: 1.5rem;
+        z-index: 1040;
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #318443, #005215);
+        color: #fff;
+        border: none;
+        font-size: 1.35rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 18px rgba(49,132,67,0.45);
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-reportes-flotante:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 24px rgba(49,132,67,0.6);
+    }
+    .reportes-badge {
+        position: absolute;
+        top: -4px; right: -4px;
+        background: #ef4444;
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 700;
+        min-width: 18px; height: 18px;
+        border-radius: 20px;
+        display: flex; align-items: center; justify-content: center;
+        padding: 0 4px;
+        border: 2px solid #fff;
+        font-family: 'Poppins', sans-serif;
+    }
+    .overlay-reportes {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.4);
+        z-index: 1041;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .overlay-reportes.activo { opacity: 1; pointer-events: all; }
+
+    .panel-reportes {
+        position: fixed;
+        top: 0; right: -420px;
+        width: 400px; max-width: 96vw;
+        height: 100vh;
+        background: #fff;
+        z-index: 1042;
+        display: flex;
+        flex-direction: column;
+        box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+        transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+        border-radius: 18px 0 0 18px;
+        overflow: hidden;
+    }
+    .panel-reportes.abierto { right: 0; }
+
+    .panel-reportes-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 1.1rem 1.3rem;
+        background: linear-gradient(135deg, #1a261f 0%, #2c4a2f 100%);
+        flex-shrink: 0;
+    }
+    .panel-reportes-titulo {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem; font-weight: 700;
+        color: #fff;
+        display: flex; align-items: center;
+    }
+    .panel-reportes-cerrar {
+        background: rgba(255,255,255,0.12);
+        border: none; color: #fff;
+        width: 32px; height: 32px;
+        border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 0.95rem;
+        transition: background 0.2s;
+    }
+    .panel-reportes-cerrar:hover { background: rgba(255,255,255,0.25); }
+
+    .panel-reportes-filtros {
+        display: flex; gap: 6px;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #f3f4f6;
+        background: #fafafa;
+        flex-shrink: 0;
+    }
+    .filtro-reporte-btn {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.75rem; font-weight: 600;
+        padding: 5px 13px;
+        border-radius: 20px;
+        border: 1px solid #e5e7eb;
+        background: #fff; color: #6b7280;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .filtro-reporte-btn:hover { border-color: #96DCAA; color: #318443; }
+    .filtro-reporte-btn.active { background: #318443; border-color: #318443; color: #fff; }
+
+    .panel-reportes-lista {
+        flex: 1; overflow-y: auto;
+        padding: 0.75rem 1rem;
+        display: flex; flex-direction: column; gap: 0.7rem;
+    }
+    .panel-reportes-lista::-webkit-scrollbar { width: 4px; }
+    .panel-reportes-lista::-webkit-scrollbar-track { background: #f3f4f6; }
+    .panel-reportes-lista::-webkit-scrollbar-thumb { background: #96DCAA; border-radius: 10px; }
+
+    .reporte-card-mini {
+        background: #fff;
+        border-radius: 12px;
+        padding: 0.9rem 1rem;
+        border: 1px solid #f0f0f0;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .reporte-card-mini:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .reporte-card-mini-top { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; }
+    .reporte-avatar-mini {
+        width: 34px; height: 34px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-weight: 700; font-size: 0.72rem; flex-shrink: 0;
+    }
+    .reporte-info-mini { flex: 1; min-width: 0; }
+    .reporte-guia-nombre { font-size: 0.83rem; font-weight: 600; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .reporte-fecha-mini  { font-size: 0.72rem; color: #9ca3af; display: flex; align-items: center; }
+    .badge-estado-reporte { font-size: 0.68rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; flex-shrink: 0; }
+    .badge-pendiente  { background: #fef3c7; color: #92400e; }
+    .badge-en-proceso { background: #dbeafe; color: #1d4ed8; }
+    .badge-resuelto   { background: #d1fae5; color: #065f46; }
+    .badge-rechazado  { background: #fee2e2; color: #991b1b; }
+    .reporte-tipo-mini { font-size: 0.75rem; font-weight: 500; color: #318443; background: #f0fdf4; border-radius: 6px; padding: 2px 8px; display: inline-block; margin-bottom: 6px; }
+    .reporte-texto-mini { font-size: 0.8rem; color: #4b5563; margin: 0 0 8px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .reporte-ver-mas { font-size: 0.75rem; font-weight: 600; color: #318443; text-decoration: none; display: flex; align-items: center; transition: color 0.2s; }
+    .reporte-ver-mas:hover { color: #005215; text-decoration: underline; }
+    .reportes-vacio { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 3rem 1rem; color: #9ca3af; text-align: center; }
+    .reportes-vacio i { font-size: 2.8rem; color: #d1d5db; }
+    .reportes-vacio p { font-size: 0.88rem; margin: 0; }
+
+    .panel-reportes-footer {
+        display: flex; gap: 8px;
+        padding: 0.85rem 1rem;
+        border-top: 1px solid #f3f4f6;
+        background: #fafafa;
+        flex-shrink: 0;
+    }
+    .btn-ver-todos-reportes {
+        flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+        padding: 9px; border-radius: 9px;
+        font-size: 0.8rem; font-weight: 600;
+        text-decoration: none;
+        background: #f0fdf4; color: #318443;
+        border: 1px solid #96DCAA;
+        transition: background 0.2s, color 0.2s;
+        font-family: 'Poppins', sans-serif;
+    }
+    .btn-ver-todos-reportes:hover { background: #318443; color: #fff; border-color: #318443; }
+    .btn-nuevo-reporte-panel {
+        flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+        padding: 9px; border-radius: 9px;
+        font-size: 0.8rem; font-weight: 600;
+        text-decoration: none;
+        background: #318443; color: #fff;
+        border: 1px solid #318443;
+        transition: background 0.2s;
+        font-family: 'Poppins', sans-serif;
+    }
+    .btn-nuevo-reporte-panel:hover { background: #005215; color: #fff; }
+
+    @media (max-width: 480px) {
+        .panel-reportes { width: 100%; border-radius: 0; }
+        .btn-reportes-flotante { right: 1rem; bottom: 5rem; width: 48px; height: 48px; font-size: 1.15rem; }
+    }
+    </style>
 
     {% block extra_head %}{% endblock %}
 </head>
@@ -23,8 +208,88 @@
 
 {% block content %}{% endblock %}
 
-<div class="toast-container position-fixed bottom-0 end-0 p-3"
-     style="margin-bottom:4.5rem;">
+<!-- ══════════════════════════════════════════════════════════════
+     PANEL FLOTANTE — REPORTES Y COMENTARIOS DE GUÍAS
+════════════════════════════════════════════════════════════════ -->
+
+<button id="btnAbrirReportes"
+        class="btn-reportes-flotante"
+        title="Ver reportes de guías"
+        aria-label="Abrir panel de reportes">
+    <i class="bi bi-chat-square-text-fill"></i>
+    <span class="reportes-badge" id="contadorReportesPendientes" style="display:none;">0</span>
+</button>
+
+<div id="panelReportes" class="panel-reportes" aria-hidden="true">
+
+    <div class="panel-reportes-header">
+        <div class="panel-reportes-titulo">
+            <i class="bi bi-chat-square-text-fill me-2"></i>
+            Reportes de Guías
+        </div>
+        <button class="panel-reportes-cerrar" id="btnCerrarReportes" aria-label="Cerrar panel">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+
+    <div class="panel-reportes-filtros">
+        <button class="filtro-reporte-btn active" data-filtro="todos">Todos</button>
+        <button class="filtro-reporte-btn" data-filtro="pendiente">Pendientes</button>
+        <button class="filtro-reporte-btn" data-filtro="resuelto">Resueltos</button>
+    </div>
+
+    <div class="panel-reportes-lista" id="listaReportesPanel">
+
+        {% for reporte in reportes_recientes %}
+        <div class="reporte-card-mini" data-estado="{{ reporte.estado|lower }}">
+            <div class="reporte-card-mini-top">
+                <div class="reporte-avatar-mini"
+                     style="background:{{ reporte.guia.color_avatar|default:'#2c6e3c' }};">
+                    {{ reporte.guia.nombre|slice:":1" }}{{ reporte.guia.apellido|slice:":1" }}
+                </div>
+                <div class="reporte-info-mini">
+                    <div class="reporte-guia-nombre">{{ reporte.guia.nombre }} {{ reporte.guia.apellido }}</div>
+                    <div class="reporte-fecha-mini">
+                        <i class="bi bi-clock me-1"></i>{{ reporte.fecha_creacion|timesince }} atrás
+                    </div>
+                </div>
+                <span class="badge-estado-reporte badge-{{ reporte.estado|lower }}">{{ reporte.estado }}</span>
+            </div>
+            <div class="reporte-tipo-mini">
+                <i class="bi bi-tag-fill me-1"></i>{{ reporte.tipo }}
+            </div>
+            <p class="reporte-texto-mini">{{ reporte.descripcion|truncatechars:100 }}</p>
+            <!-- Usamos la URL hardcodeada para no depender de nombres de URL aún no registrados -->
+            <a href="/administrador/reportes/" class="reporte-ver-mas">
+                Ver detalle <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+        {% empty %}
+        <div class="reportes-vacio" id="reportesVacioMsg">
+            <i class="bi bi-inbox"></i>
+            <p>No hay reportes recientes</p>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="panel-reportes-footer">
+        <a href="/administrador/reportes/" class="btn-ver-todos-reportes">
+            <i class="bi bi-list-ul me-1"></i> Ver todos los reportes
+        </a>
+        <a href="/administrador/reportes/" class="btn-nuevo-reporte-panel">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Reporte
+        </a>
+    </div>
+
+</div>
+
+<div id="overlayReportes" class="overlay-reportes"></div>
+
+<!-- ══ FIN PANEL REPORTES ═══════════════════════════════════════ -->
+
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="margin-bottom:4.5rem;">
     <div id="toastMsg" class="toast align-items-center text-white border-0"
          role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
@@ -37,6 +302,50 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'js/java.js' %}"></script>
+
+<script>
+(function () {
+    const btnAbrir  = document.getElementById('btnAbrirReportes');
+    const btnCerrar = document.getElementById('btnCerrarReportes');
+    const panel     = document.getElementById('panelReportes');
+    const overlay   = document.getElementById('overlayReportes');
+    const filtros   = document.querySelectorAll('.filtro-reporte-btn');
+
+    function abrirPanel() {
+        panel.classList.add('abierto');
+        overlay.classList.add('activo');
+        panel.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+    function cerrarPanel() {
+        panel.classList.remove('abierto');
+        overlay.classList.remove('activo');
+        panel.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    if (btnAbrir)  btnAbrir.addEventListener('click', abrirPanel);
+    if (btnCerrar) btnCerrar.addEventListener('click', cerrarPanel);
+    if (overlay)   overlay.addEventListener('click', cerrarPanel);
+
+    filtros.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filtros.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filtro = btn.dataset.filtro;
+            const cards  = document.querySelectorAll('.reporte-card-mini');
+            cards.forEach(card => {
+                card.style.display = (filtro === 'todos' || card.dataset.estado === filtro) ? '' : 'none';
+            });
+            const hayVisibles = [...cards].some(c => c.style.display !== 'none');
+            const vacioMsg = document.getElementById('reportesVacioMsg');
+            if (vacioMsg) vacioMsg.style.display = hayVisibles ? 'none' : 'flex';
+        });
+    });
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarPanel(); });
+})();
+</script>
 
 {% block extra_js %}{% endblock %}
 
