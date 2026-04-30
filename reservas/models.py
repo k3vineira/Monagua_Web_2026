@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 
-
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre de la Categoría')
     descripcion = models.TextField(verbose_name='Descripción')

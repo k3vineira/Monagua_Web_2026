@@ -23,6 +23,7 @@ def blog_view(request):
     posts = Blog.objects.all().order_by('-id') 
     return render(request, 'blog.html', {'posts': posts})
 
+
 def comentarios_view(request):
     return render(request, 'comentarios.html')
     """ Muestra la página principal del blog con las entradas de la BD """
