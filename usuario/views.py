@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Usuario, PerfilTurista  # Importamos tu modelo personalizado
-from django.contrib.auth.decorators import login_required, user_passes_test
-from administrador.models import Reserva
+from django.urls import reverse # Importar reverse para construir URLs
+from .models import Usuario, PerfilTurista
+from django.contrib.auth.decorators import login_required, user_passes_test # user_passes_test para control de acceso
+from administrador.models import Reserva, Guia # Importar el modelo Guia para el contexto de index-guias.html
 from django.http import HttpResponse
 import io
 from reportlab.pdfgen import canvas
@@ -46,6 +47,79 @@ def dashboard_view(request):
 def dashboard_guia_view(request):
     """ Apartado para que el guía vea sus rutas asignadas """
     return render(request, 'dashboard_guia.html')
+
+# ─── VISTAS DE GESTIÓN DE USUARIOS Y ROLES (ADMIN) ───
+
+@login_required
+@user_passes_test(lambda u: u.is_staff) # Solo miembros del staff (administradores) pueden acceder
+def gestion_usuarios_view(request):
+    """
+    Muestra una lista de todos los usuarios registrados para que el administrador
+    pueda gestionar sus roles, especialmente el de 'Guía Turístico'.
+    También proporciona el contexto necesario para la sección de gestión de guías existente.
+    """
+    # Datos para la sección de gestión de guías existente (de index-guias.html)
+    todas_las_guias = Guia.objects.all()
+    total_guias = todas_las_guias.count()
+    total_guias_activos = todas_las_guias.filter(estado='Activo').count()
+    total_guias_inactivos = todas_las_guias.filter(estado='Inactivo').count()
+    guias_asignados = todas_las_guias.filter(disponibilidad='Ocupado', estado='Activo').count()
+
+    # Datos para la nueva sección de gestión de usuarios
+    all_users = Usuario.objects.all().order_by('-is_staff', 'username')
+
+    context = {
+        # Enviamos solo los guías activos para la tabla principal
+        'guias': todas_las_guias.filter(estado='Activo'), 
+        'total_guias': total_guias,
+        'total_guias_activos': total_guias_activos,
+        'total_guias_inactivos': total_guias_inactivos,
+        'guias_asignados': guias_asignados,
+        'all_users': all_users,
+        'total_users': all_users.count(),
+    }
+    return render(request, 'index-guias.html', context)
+
+@login_required
+@user_passes_test(lambda u: u.is_staff) # Solo miembros del staff (administradores) pueden acceder
+def asignar_rol_guia(request, user_id):
+    """
+    Asigna o revoca el rol de 'Guía Turístico' a un usuario.
+    """
+    user_to_update = get_object_or_404(Usuario, id=user_id)
+
+    if request.method == 'POST':
+        user_to_update.es_guia = not user_to_update.es_guia # Alternar el estado
+        user_to_update.save()
+
+        if user_to_update.es_guia:
+            # Si se convierte en guía, creamos el perfil en el modelo Guia para que aparezca en la tabla superior
+            guia_perfil, created = Guia.objects.get_or_create(
+                correo=user_to_update.email,
+                defaults={
+                    'nombre': user_to_update.first_name or user_to_update.username,
+                    'apellido': user_to_update.last_name or "",
+                    'telefono': user_to_update.telefono or "Sin teléfono",
+                    'especialidad': 'Por asignar',
+                    'estado': 'Activo',
+                    'disponibilidad': 'Disponible'
+                }
+            )
+            # Si el perfil ya existía (estaba inactivo), lo reactivamos
+            if not created:
+                guia_perfil.estado = 'Activo'
+                guia_perfil.disponibilidad = 'Disponible'
+                guia_perfil.save()
+                
+        else:
+            # Opcional: Si se revoca, podemos marcar al guía como Inactivo
+            Guia.objects.filter(correo=user_to_update.email).update(estado='Inactivo')
+
+        messages.success(request, f"El rol de guía para {user_to_update.get_full_name() or user_to_update.username} ha sido actualizado.")
+        return redirect(f"{reverse('gestion_usuarios')}?msg=rol_asignado") # Redirigir con un parámetro para el toast
+    
+    messages.error(request, "Método no permitido para esta acción.")
+    return redirect('gestion_usuarios')
 
 @login_required
 def perfil_usuario_view(request):

@@ -1,16 +1,10 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views
-from . import views  
-from .views import registro_view, login_view
+from . import views
 
 urlpatterns = [
-    
-    
     path('dashboard/', views.dashboard_view, name='dashboard'),
-    
-    path('logout/', views.logout_view, name='logout_usuario'),
-    path('terminos-y-condiciones/', views.terminos_condiciones, name="terminos"),
+    path('gestion-usuarios/', views.gestion_usuarios_view, name='gestion_usuarios'),
+    path('asignar-rol-guia/<int:user_id>/', views.asignar_rol_guia, name='asignar_rol_guia'),
     path('perfil/', views.perfil_usuario_view, name='detalles'),
-    path('mis-pagos/', views.mis_pagos_view, name='mis_pagos'),
-    path('descargar-recibo/<int:reserva_id>/', views.descargar_recibo_view, name='descargar_recibo'),
+    path('logout/', views.logout_view, name='logout_usuario'),
 ]

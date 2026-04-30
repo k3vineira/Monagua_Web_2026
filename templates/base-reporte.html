@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Reportes de Guías | Monagua{% endblock %}</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+{% include "partials/aside-admin.html" %}
+{% include "partials/accesibilidad.html" %}
+
+{% block content %}{% endblock %}
+
+<!-- Toast global -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="margin-bottom:4.5rem;">
+    <div id="toastMsg" class="toast align-items-center text-white border-0"
+         role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastBody">Acción completada con éxito.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/java.js' %}"></script>
+
+<script>
+    /* Función global de toast disponible para todas las páginas que extiendan esta base */
+    function mostrarToast(mensaje, color) {
+        color = color || '#059669';
+        var toast = document.getElementById('toastMsg');
+        toast.style.background = color;
+        document.getElementById('toastBody').textContent = mensaje;
+        new bootstrap.Toast(toast, { delay: 4000 }).show();
+    }
+
+    /* Auto-mostrar toast según parámetro en la URL */
+    document.addEventListener('DOMContentLoaded', function () {
+        var params = new URLSearchParams(window.location.search);
+        var mensajes = {
+            'creado':    { txt: 'Reporte enviado exitosamente.',       color: '#059669' },
+            'editado':   { txt: 'Reporte actualizado correctamente.',  color: '#2563eb' },
+            'resuelto':  { txt: 'Reporte marcado como resuelto.',      color: '#059669' },
+            'eliminado': { txt: 'Reporte eliminado.',                  color: '#b91c1c' },
+            'error_bd':  { txt: 'Error al guardar en base de datos.',  color: '#b91c1c' }
+        };
+        var msg = params.get('msg');
+        if (msg && mensajes[msg]) {
+            mostrarToast(mensajes[msg].txt, mensajes[msg].color);
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+    });
+</script>
+
+{% block extra_js %}{% endblock %}
+
+</body>
+</html>
