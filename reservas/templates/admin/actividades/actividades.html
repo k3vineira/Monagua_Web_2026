@@ -21,7 +21,7 @@
                                 <tr style="color: var(--verde-oscuro); border-bottom: 1px solid var(--verde-claro);">
                                     <th class="ps-4 py-3">Actividad</th>
                                     <th class="py-3">Categoría</th>
-                                    <th class="py-3">Ubicación</th>
+                                    
                                     <th class="text-center py-3">Estado</th>
                                     <th class="text-end pe-4 py-3">Acciones</th>
                                 </tr>
@@ -37,17 +37,13 @@
                                             {{ actividad.categoria.nombre }}
                                         </span>
                                     </td>
-                                    <td class="py-3 small text-muted">
-                                        <i class="bi bi-geo-alt-fill me-1" style="color: var(--verde-medio);"></i>
-                                        {{ actividad.ubicacion }}
-                                    </td>
-                                    <td class="text-center py-3">
-                                        {% if actividad.activo %}
-                                            <span class="badge rounded-0" style="background-color: var(--verde-medio); color: white;">Activo</span>
-                                        {% else %}
-                                            <span class="badge rounded-0 bg-secondary text-white">Inactivo</span>
-                                        {% endif %}
-                                    </td>
+                                <td class="text-center">
+                                    {% if actividad.estado %} 
+                                        <span class="btn btn-sm btn-success">Activo</span>
+                                    {% else %}
+                                        <span class="btn btn-sm btn-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
                                     <td class="text-end pe-4 py-3">
                                         <a href="{% url 'editar_actividad' actividad.pk %}" class="text-primary text-decoration-none me-3 small fw-bold">EDITAR</a>
                                         <a href="{% url 'eliminar_actividad' actividad.pk %}" class="text-danger text-decoration-none small fw-bold">ELIMINAR</a>

@@ -27,13 +27,14 @@
                             {% for entrada in blogs %}
                             <tr style="border-bottom: 1px solid #f0f0f0;">
                                 <td class="ps-4 py-3 fw-medium text-secondary">{{ entrada.titulo }}</td>
-                                <td class="text-center py-3">
-                                    {% if entrada.publicado %}
-                                        <span class="badge rounded-0" style="background-color: var(--verde-medio); color: white;">Publicado</span>
+                                <td class="text-center">
+                                    {% if entrada.estado %} 
+                                        <span class="btn btn-sm btn-danger">borrado</span>
                                     {% else %}
-                                        <span class="badge rounded-0 bg-secondary text-white">Borrador</span>
+                                        <span class="btn btn-sm btn-success">publicado</span>
                                     {% endif %}
                                 </td>
+
                                 <td class="text-end pe-4 py-3">
                                     <a href="{% url 'editar_blog' entrada.pk %}" class="text-primary text-decoration-none me-3 small fw-bold">EDITAR</a>
                                     <a href="{% url 'eliminar_blog' entrada.pk %}" class="text-danger text-decoration-none small fw-bold">ELIMINAR</a>

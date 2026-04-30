@@ -6,6 +6,7 @@ class Categoria(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre de la Categoría')
     descripcion = models.TextField(verbose_name='Descripción')
     tipo = models.CharField(max_length=50, verbose_name='Tipo de Categoría')
+    estado = models.BooleanField(default=True, verbose_name='¿Está Activa?')
 
     class Meta:
         verbose_name = 'Categoría'
@@ -25,7 +26,7 @@ class Actividades(models.Model):
     duracion = models.CharField(max_length=50, verbose_name='Duración')
     nivel_dificultad = models.CharField(max_length=10, choices=NIVEL_CHOICES, verbose_name='Nivel de Dificultad')
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='actividades', verbose_name='Categoría')
-
+    estado = models.BooleanField(default=True, verbose_name='¿Está Activa?')
     class Meta:
         verbose_name = 'Actividad'
         verbose_name_plural = 'Actividades'
@@ -39,7 +40,7 @@ class Paquete(models.Model):
     descripcion = models.TextField(verbose_name='Descripción')
     precio = models.IntegerField(verbose_name='Precio Total')
     actividades = models.ManyToManyField(Actividades, related_name='paquetes', verbose_name='Actividades Incluidas')
-
+    estado = models.BooleanField(default=True, verbose_name='¿Está Activo?')
     class Meta:
         verbose_name = 'Paquete'
         verbose_name_plural = 'Paquetes'
@@ -82,7 +83,7 @@ class Reserva(models.Model):
     numero_personas = models.PositiveIntegerField(verbose_name='Número de Personas')
     
     # Monto total (se calculará automáticamente)
-    monto_total = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Monto Total', editable=False)
+    monto_total = models.IntegerField(verbose_name='Monto Total', editable=False)
 
     class Meta:
         verbose_name = 'Reserva'
@@ -123,7 +124,7 @@ class Blog(models.Model):
         titulo = models.CharField(max_length=200, verbose_name='Título del Blog')
         contenido = models.TextField(verbose_name='Contenido del Blog')
         imagen_destacada = models.ImageField(upload_to='blog/', null=True, blank=True, verbose_name='Imagen Destacada')
-
+        estado = models.BooleanField(default=True, verbose_name='¿Está Activo?')
         class Meta:
             verbose_name = 'Blog'
             verbose_name_plural = 'Blogs'
