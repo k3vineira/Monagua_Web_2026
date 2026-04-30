@@ -1,0 +1,733 @@
+{% extends 'base-reporte.html' %}
+{% load static %}
+
+{% block title %}Reportes de Guías | Monagua{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ══════════════════════════════════════════════════════════════
+   ESTILOS — index-reporte.html
+   Paleta Monagua: #005215 | #318443 | #5ABA73 | #96DCAA | #CFFFE3
+════════════════════════════════════════════════════════════════ */
+:root {
+    --verde-oscuro:  #005215;
+    --verde-bosque:  #318443;
+    --verde-medio:   #5ABA73;
+    --verde-claro:   #96DCAA;
+    --verde-menta:   #CFFFE3;
+    --col-pendiente: #f59e0b;
+    --col-en-proceso:#3b82f6;
+    --col-resuelto:  #10b981;
+    --col-rechazado: #ef4444;
+}
+
+/* ── Topbar ─────────────────────────────────────────────────── */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.topbar-title h2 { font-size: 1.45rem; font-weight: 700; color: #1a261f; margin: 0; }
+.topbar-title p  { font-size: 0.82rem; color: #6b7280; margin: 0; }
+.topbar-right    { display: flex; align-items: center; gap: 0.75rem; }
+
+.date-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 8px; padding: 6px 14px;
+    font-size: 0.8rem; color: #374151; font-weight: 500;
+}
+.btn-primary-custom {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--verde-bosque); color: #fff;
+    border: none; border-radius: 10px;
+    padding: 9px 20px; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; transition: background 0.2s, transform 0.15s;
+    font-family: 'Poppins', sans-serif; text-decoration: none;
+}
+.btn-primary-custom:hover { background: var(--verde-oscuro); transform: translateY(-1px); color: #fff; }
+
+/* ── KPI Grid ───────────────────────────────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem; margin-bottom: 1.5rem;
+}
+.kpi-card {
+    background: #fff; border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column; gap: 6px;
+    border-left: 4px solid transparent;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.kpi-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.kpi-card.green { border-left-color: var(--verde-bosque); }
+.kpi-card.amber { border-left-color: var(--col-pendiente); }
+.kpi-card.blue  { border-left-color: var(--col-en-proceso); }
+.kpi-card.rose  { border-left-color: var(--col-rechazado); }
+
+.kpi-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; margin-bottom: 4px;
+}
+.kpi-icon.green { background: #d1fae5; color: var(--verde-bosque); }
+.kpi-icon.amber { background: #fef3c7; color: #d97706; }
+.kpi-icon.blue  { background: #dbeafe; color: #2563eb; }
+.kpi-icon.rose  { background: #fee2e2; color: #dc2626; }
+
+.kpi-label { font-size: 0.75rem; color: #6b7280; font-weight: 500; }
+.kpi-value { font-size: 1.8rem; font-weight: 700; color: #111827; line-height: 1; }
+.kpi-sub   { font-size: 0.72rem; color: #9ca3af; display: flex; align-items: center; gap: 4px; }
+.kpi-sub.up   { color: var(--verde-bosque); }
+.kpi-sub.down { color: #dc2626; }
+
+/* ── Barra de filtros ───────────────────────────────────────── */
+.filter-bar {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+    background: #fff; border-radius: 12px;
+    padding: 0.85rem 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 1.2rem; align-items: center;
+}
+.search-wrap { position: relative; flex: 1; min-width: 200px; }
+.search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 0.9rem; }
+.search-wrap input {
+    width: 100%; padding: 8px 12px 8px 36px;
+    border: 1px solid #e5e7eb; border-radius: 8px;
+    font-size: 0.85rem; color: #374151;
+    font-family: 'Poppins', sans-serif; outline: none;
+    transition: border-color 0.2s;
+}
+.search-wrap input:focus { border-color: var(--verde-bosque); box-shadow: 0 0 0 3px rgba(49,132,67,0.1); }
+.filter-bar select {
+    padding: 8px 12px; border: 1px solid #e5e7eb;
+    border-radius: 8px; font-size: 0.83rem; color: #374151;
+    font-family: 'Poppins', sans-serif; outline: none;
+    background: #fafafa; cursor: pointer; transition: border-color 0.2s;
+}
+.filter-bar select:focus { border-color: var(--verde-bosque); }
+
+/* ── Tabla ──────────────────────────────────────────────────── */
+.table-card {
+    background: #1a261f; border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    margin-bottom: 1.5rem;
+}
+.table-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 1.4rem;
+    background: linear-gradient(135deg, #1a261f 0%, #2c4a2f 100%);
+}
+.table-card-header h5 { color: #fff; font-size: 0.95rem; font-weight: 600; margin: 0; }
+.table-responsive { overflow-x: auto; }
+.table-card table  { background: #fff; font-size: 0.85rem; margin: 0; }
+.table-card thead tr { background: #f8faf8; }
+.table-card thead th {
+    color: #374151; font-weight: 600; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 0.85rem 1rem; white-space: nowrap;
+}
+.table-card tbody tr { border-bottom: 1px solid #f3f4f6; transition: background 0.15s; }
+.table-card tbody tr:hover { background: #f0fdf4; }
+.table-card tbody td { padding: 0.8rem 1rem; color: #374151; vertical-align: middle; }
+
+/* ── Badges ─────────────────────────────────────────────────── */
+.badge-reporte {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 0.72rem; font-weight: 600;
+}
+.badge-pendiente  { background: #fef3c7; color: #92400e; }
+.badge-en-proceso { background: #dbeafe; color: #1d4ed8; }
+.badge-resuelto   { background: #d1fae5; color: #065f46; }
+.badge-rechazado  { background: #fee2e2; color: #991b1b; }
+.badge-tipo {
+    display: inline-block; padding: 3px 9px;
+    border-radius: 6px; font-size: 0.72rem; font-weight: 500;
+    background: #f0fdf4; color: var(--verde-bosque);
+    border: 1px solid var(--verde-claro);
+}
+
+/* ── Avatar ─────────────────────────────────────────────────── */
+.guide-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 0.78rem; flex-shrink: 0;
+}
+.guide-name  { font-weight: 600; font-size: 0.87rem; color: #111827; }
+.guide-email { font-size: 0.75rem; color: #6b7280; }
+
+/* ── Botones de acción ──────────────────────────────────────── */
+.btn-accion {
+    background: none; border: none;
+    width: 32px; height: 32px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.btn-accion.ver      { color: var(--verde-bosque); }
+.btn-accion.ver:hover      { background: #d1fae5; }
+.btn-accion.resolver { color: #2563eb; }
+.btn-accion.resolver:hover { background: #dbeafe; }
+.btn-accion.eliminar { color: #ef4444; }
+.btn-accion.eliminar:hover { background: #fee2e2; }
+
+/* ── Prioridad ──────────────────────────────────────────────── */
+.prioridad-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+.prioridad-label { font-size: 0.78rem; font-weight: 600; display: flex; align-items: center; }
+.prioridad-alta  .prioridad-dot   { background: #ef4444; }
+.prioridad-media .prioridad-dot   { background: #f59e0b; }
+.prioridad-baja  .prioridad-dot   { background: #10b981; }
+.prioridad-alta  .prioridad-label { color: #dc2626; }
+.prioridad-media .prioridad-label { color: #d97706; }
+.prioridad-baja  .prioridad-label { color: #059669; }
+
+/* ── Modal ──────────────────────────────────────────────────── */
+.modal-reporte .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+.modal-reporte .modal-header {
+    background: linear-gradient(135deg, #1a261f 0%, #2c4a2f 100%);
+    color: white; border-radius: 16px 16px 0 0; padding: 1.2rem 1.5rem;
+}
+.modal-reporte .modal-title { font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+.modal-reporte .modal-header .btn-close { filter: invert(1) brightness(2); }
+.modal-reporte .modal-body   { padding: 1.5rem; }
+.modal-reporte .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid #f3f4f6; }
+
+.form-label-custom { font-size: 0.8rem; font-weight: 600; color: #374151; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.form-control-reporte {
+    border: 1px solid #e5e7eb; border-radius: 8px;
+    font-size: 0.85rem; font-family: 'Poppins', sans-serif;
+    padding: 9px 12px; color: #374151;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control-reporte:focus { border-color: var(--verde-bosque); box-shadow: 0 0 0 3px rgba(49,132,67,0.12); outline: none; }
+
+.btn-save {
+    background: var(--verde-bosque); color: #fff;
+    border: none; border-radius: 8px; padding: 9px 22px;
+    font-size: 0.88rem; font-weight: 600;
+    font-family: 'Poppins', sans-serif; cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-save:hover { background: var(--verde-oscuro); }
+.btn-cancel {
+    background: #f3f4f6; color: #374151;
+    border: none; border-radius: 8px; padding: 9px 22px;
+    font-size: 0.88rem; font-weight: 600;
+    font-family: 'Poppins', sans-serif; cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-cancel:hover { background: #e5e7eb; }
+
+/* ── Detalle modal ──────────────────────────────────────────── */
+.detalle-campo { background: #f9fafb; border-radius: 10px; padding: 1rem; margin-bottom: 0.75rem; border-left: 3px solid var(--verde-claro); }
+.detalle-campo-label { font-size: 0.72rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.detalle-campo-valor { font-size: 0.9rem; color: #111827; font-weight: 500; }
+
+/* ── Vacío ──────────────────────────────────────────────────── */
+.tabla-vacia { text-align: center; padding: 3rem 1rem; color: #9ca3af; }
+.tabla-vacia i { font-size: 2.5rem; display: block; margin-bottom: 0.75rem; color: #d1d5db; }
+
+/* ── Spinner ────────────────────────────────────────────────── */
+.modal-loading-spinner {
+    display: none; position: absolute; inset: 0;
+    background: rgba(255,255,255,0.85);
+    border-radius: 0 0 16px 16px;
+    align-items: center; justify-content: center; z-index: 10;
+}
+.modal-loading-spinner.show { display: flex; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } .topbar { flex-direction: column; align-items: flex-start; } }
+@media (max-width: 480px) { .kpi-grid { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="main-content">
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-title">
+            <h2>
+                <i class="bi bi-chat-square-text-fill me-2" style="color:var(--verde-bosque);"></i>
+                Reportes y Comentarios de Guías
+            </h2>
+            <p>Gestiona los reportes enviados por los guías locales del sistema.</p>
+        </div>
+        <div class="topbar-right">
+            <div class="date-badge">
+                <i class="bi bi-calendar3" style="color:var(--verde-bosque);"></i>
+                <span id="currentDate">—</span>
+            </div>
+            <button class="btn-primary-custom"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalNuevoReporte">
+                <i class="bi bi-plus-circle-fill"></i> Nuevo Reporte
+            </button>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+        <div class="kpi-card green">
+            <div class="kpi-icon green"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="kpi-label">Reportes Resueltos</div>
+            <div class="kpi-value">{{ total_resueltos|default:"0" }}</div>
+            <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> Atendidos correctamente</div>
+        </div>
+        <div class="kpi-card amber">
+            <div class="kpi-icon amber"><i class="bi bi-hourglass-split"></i></div>
+            <div class="kpi-label">Pendientes</div>
+            <div class="kpi-value">{{ total_pendientes|default:"0" }}</div>
+            <div class="kpi-sub down"><i class="bi bi-exclamation-circle"></i> Requieren atención</div>
+        </div>
+        <div class="kpi-card blue">
+            <div class="kpi-icon blue"><i class="bi bi-arrow-repeat"></i></div>
+            <div class="kpi-label">En Proceso</div>
+            <div class="kpi-value">{{ total_en_proceso|default:"0" }}</div>
+            <div class="kpi-sub up"><i class="bi bi-person-fill"></i> Siendo gestionados</div>
+        </div>
+        <div class="kpi-card rose">
+            <div class="kpi-icon rose"><i class="bi bi-file-earmark-text-fill"></i></div>
+            <div class="kpi-label">Total Reportes</div>
+            <div class="kpi-value">{{ total_reportes|default:"0" }}</div>
+            <div class="kpi-sub up"><i class="bi bi-bar-chart-fill"></i> Registros en el sistema</div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filter-bar">
+        <div class="search-wrap">
+            <i class="bi bi-search"></i>
+            <input type="text" id="inputBuscar"
+                   placeholder="Buscar por guía, tipo o descripción…"
+                   oninput="filtrarTabla()">
+        </div>
+        <select id="filtroEstado" onchange="filtrarTabla()">
+            <option value="">Todos los estados</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="En proceso">En proceso</option>
+            <option value="Resuelto">Resuelto</option>
+            <option value="Rechazado">Rechazado</option>
+        </select>
+        <select id="filtroTipo" onchange="filtrarTabla()">
+            <option value="">Todos los tipos</option>
+            <option value="Incidente en ruta">Incidente en ruta</option>
+            <option value="Sugerencia">Sugerencia</option>
+            <option value="Queja de turista">Queja de turista</option>
+            <option value="Problema de equipamiento">Problema de equipamiento</option>
+            <option value="Reporte de seguridad">Reporte de seguridad</option>
+            <option value="Comentario general">Comentario general</option>
+        </select>
+        <select id="filtroPrioridad" onchange="filtrarTabla()">
+            <option value="">Toda prioridad</option>
+            <option value="Alta">Alta</option>
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
+        </select>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <h5><i class="bi bi-journal-text me-2"></i>Listado de Reportes</h5>
+            <span style="font-size:0.72rem;color:rgba(255,255,255,0.5);" id="contadorReportes">
+                {{ reportes|length|default:"0" }} registros
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0" id="tablaReportes">
+                <thead>
+                    <tr>
+                        <th style="width:45px;">#</th>
+                        <th>Guía</th>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Prioridad</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th style="width:120px;text-align:center;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyReportes">
+                    {% for reporte in reportes %}
+                    <tr data-estado="{{ reporte.estado }}"
+                        data-tipo="{{ reporte.tipo }}"
+                        data-prioridad="{{ reporte.prioridad }}">
+
+                        <td><span style="font-size:0.75rem;color:#bbb;font-weight:600;">{{ forloop.counter }}</span></td>
+
+                        <td>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div class="guide-avatar" style="background:{{ reporte.guia.color_avatar|default:'#2c6e3c' }};">
+                                    {{ reporte.guia.nombre|slice:":1" }}{{ reporte.guia.apellido|slice:":1" }}
+                                </div>
+                                <div>
+                                    <div class="guide-name">{{ reporte.guia.nombre }} {{ reporte.guia.apellido }}</div>
+                                    <div class="guide-email">{{ reporte.guia.correo }}</div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td><span class="badge-tipo">{{ reporte.tipo }}</span></td>
+
+                        <td style="max-width:220px;">
+                            <span style="font-size:0.82rem;color:#4b5563;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;"
+                                  title="{{ reporte.descripcion }}">
+                                {{ reporte.descripcion|truncatechars:80 }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="prioridad-{{ reporte.prioridad|lower }}">
+                                <span class="prioridad-label">
+                                    <span class="prioridad-dot"></span>{{ reporte.prioridad }}
+                                </span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span class="badge-reporte
+                                {% if reporte.estado == 'Pendiente' %}badge-pendiente
+                                {% elif reporte.estado == 'En proceso' %}badge-en-proceso
+                                {% elif reporte.estado == 'Resuelto' %}badge-resuelto
+                                {% else %}badge-rechazado{% endif %}">
+                                <i class="bi
+                                    {% if reporte.estado == 'Pendiente' %}bi-hourglass-split
+                                    {% elif reporte.estado == 'En proceso' %}bi-arrow-repeat
+                                    {% elif reporte.estado == 'Resuelto' %}bi-check-circle-fill
+                                    {% else %}bi-x-circle-fill{% endif %}"></i>
+                                {{ reporte.estado }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span style="font-size:0.8rem;color:#6b7280;white-space:nowrap;">
+                                <i class="bi bi-clock me-1" style="color:var(--verde-bosque);"></i>
+                                {{ reporte.fecha_creacion|date:"d/m/Y" }}
+                            </span>
+                        </td>
+
+                        <td style="text-align:center;">
+                            <button class="btn-accion ver"
+                                    onclick="verDetalleReporte({{ reporte.id }})"
+                                    title="Ver detalle">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            {% if reporte.estado != 'Resuelto' %}
+                            <button class="btn-accion resolver"
+                                    onclick="confirmarResolver({{ reporte.id }}, '{{ reporte.guia.nombre }}')"
+                                    title="Marcar como resuelto">
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+                            {% endif %}
+                            <button class="btn-accion eliminar"
+                                    onclick="confirmarEliminar({{ reporte.id }}, '{{ reporte.guia.nombre }}')"
+                                    title="Eliminar reporte">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">
+                            <div class="tabla-vacia">
+                                <i class="bi bi-inbox"></i>
+                                <p style="margin:0;font-size:0.9rem;">No hay reportes registrados aún.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div><!-- /main-content -->
+
+
+<!-- ══ MODAL NUEVO REPORTE ══════════════════════════════════════ -->
+<div class="modal fade modal-reporte" id="modalNuevoReporte"
+     tabindex="-1" aria-labelledby="modalNuevoReporteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNuevoReporteLabel">
+                    <i class="bi bi-plus-circle-fill"></i> Nuevo Reporte de Guía
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Usamos action con path directo para no depender de nombres de URL -->
+            <form id="formNuevoReporte" method="POST" action="/administrador/reportes/guardar/">
+                {% csrf_token %}
+                <div class="modal-body" style="position:relative;">
+                    <div class="modal-loading-spinner" id="spinnerNuevoReporte">
+                        <div class="spinner-border text-success" role="status"></div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Guía que reporta *</label>
+                            <select class="form-control-reporte form-select w-100" name="guia_id" required>
+                                <option value="">— Selecciona un guía —</option>
+                                {% for guia in guias_activos %}
+                                <option value="{{ guia.id }}">{{ guia.nombre }} {{ guia.apellido }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label-custom">Tipo de reporte *</label>
+                            <select class="form-control-reporte form-select w-100" name="tipo" required>
+                                <option value="">— Selecciona un tipo —</option>
+                                <option value="Incidente en ruta">Incidente en ruta</option>
+                                <option value="Sugerencia">Sugerencia</option>
+                                <option value="Queja de turista">Queja de turista</option>
+                                <option value="Problema de equipamiento">Problema de equipamiento</option>
+                                <option value="Reporte de seguridad">Reporte de seguridad</option>
+                                <option value="Comentario general">Comentario general</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Prioridad *</label>
+                            <select class="form-control-reporte form-select w-100" name="prioridad" required>
+                                <option value="Baja">Baja</option>
+                                <option value="Media" selected>Media</option>
+                                <option value="Alta">Alta</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Fecha del incidente</label>
+                            <input type="date" class="form-control-reporte w-100" name="fecha_incidente">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label-custom">Tour relacionado</label>
+                            <select class="form-control-reporte form-select w-100" name="tour_id">
+                                <option value="">— Ninguno —</option>
+                                {% for tour in tours %}
+                                <option value="{{ tour.id }}">{{ tour.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Descripción *</label>
+                            <textarea class="form-control-reporte w-100" name="descripcion" rows="4"
+                                      placeholder="Describe detalladamente el incidente, sugerencia o comentario…"
+                                      required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label-custom">Acciones tomadas (opcional)</label>
+                            <textarea class="form-control-reporte w-100" name="acciones_tomadas" rows="2"
+                                      placeholder="¿Qué medidas se tomaron en el momento?"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn-save" id="btnGuardarReporte">
+                        <i class="bi bi-send-fill me-1"></i> Enviar Reporte
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══ MODAL DETALLE ════════════════════════════════════════════ -->
+<div class="modal fade modal-reporte" id="modalDetalleReporte" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-eye-fill"></i> Detalle del Reporte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="position:relative;">
+                <div class="modal-loading-spinner" id="spinnerDetalle">
+                    <div class="spinner-border text-success" role="status"></div>
+                </div>
+                <div id="contenidoDetalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══ MODAL RESOLVER ═══════════════════════════════════════════ -->
+<div class="modal fade modal-reporte" id="modalResolver" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:440px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-check-circle-fill text-success me-2"></i> Marcar como Resuelto
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.9rem;color:#374151;margin:0;">
+                    ¿Confirmas que el reporte de <strong id="nombreGuiaResolver">—</strong> ha sido atendido y resuelto?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formResolver" method="POST" action="/administrador/reportes/resolver/" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="reporte_id" id="inputResolverId">
+                    <button type="submit" class="btn-save">
+                        <i class="bi bi-check-lg me-1"></i> Confirmar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══ MODAL ELIMINAR ═══════════════════════════════════════════ -->
+<div class="modal fade modal-reporte" id="modalEliminar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:440px;">
+        <div class="modal-content">
+            <div class="modal-header" style="background:linear-gradient(135deg,#7f1d1d,#991b1b);">
+                <h5 class="modal-title" style="color:#fff;">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> Eliminar Reporte
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        style="filter:invert(1) brightness(2);"></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.9rem;color:#374151;margin:0;">
+                    ¿Estás seguro de eliminar el reporte de <strong id="nombreGuiaEliminar">—</strong>? Esta acción no se puede deshacer.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formEliminar" method="POST" action="/administrador/reportes/eliminar/" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="reporte_id" id="inputEliminarId">
+                    <button type="submit" class="btn-save" style="background:#dc2626;">
+                        <i class="bi bi-trash3-fill me-1"></i> Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+/* Fecha actual */
+document.getElementById('currentDate').textContent =
+    new Date().toLocaleDateString('es-CO', { weekday:'short', year:'numeric', month:'short', day:'numeric' });
+
+/* Filtrado de tabla */
+function filtrarTabla() {
+    var buscar    = document.getElementById('inputBuscar').value.toLowerCase();
+    var estado    = document.getElementById('filtroEstado').value;
+    var tipo      = document.getElementById('filtroTipo').value;
+    var prioridad = document.getElementById('filtroPrioridad').value;
+    var filas     = document.querySelectorAll('#tbodyReportes tr[data-estado]');
+    var visibles  = 0;
+
+    filas.forEach(function(fila) {
+        var texto  = fila.textContent.toLowerCase();
+        var okBusc = !buscar    || texto.includes(buscar);
+        var okEst  = !estado    || fila.dataset.estado    === estado;
+        var okTipo = !tipo      || fila.dataset.tipo      === tipo;
+        var okPrio = !prioridad || fila.dataset.prioridad === prioridad;
+        var mostrar = okBusc && okEst && okTipo && okPrio;
+        fila.style.display = mostrar ? '' : 'none';
+        if (mostrar) visibles++;
+    });
+    document.getElementById('contadorReportes').textContent = visibles + ' registros';
+}
+
+/* Modal ver detalle — llama a la URL con path directo */
+function verDetalleReporte(id) {
+    var modal     = new bootstrap.Modal(document.getElementById('modalDetalleReporte'));
+    var spinner   = document.getElementById('spinnerDetalle');
+    var contenido = document.getElementById('contenidoDetalle');
+    contenido.innerHTML = '';
+    spinner.classList.add('show');
+    modal.show();
+
+    fetch('/administrador/reportes/detalle/' + id + '/')
+        .then(function(res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
+        .then(function(data) {
+            spinner.classList.remove('show');
+            var html = '<div class="row g-3">';
+            html += '<div class="col-md-6"><div class="detalle-campo"><div class="detalle-campo-label">Guía</div><div class="detalle-campo-valor">' + data.guia_nombre + '</div></div></div>';
+            html += '<div class="col-md-6"><div class="detalle-campo"><div class="detalle-campo-label">Tipo</div><div class="detalle-campo-valor">' + data.tipo + '</div></div></div>';
+            html += '<div class="col-md-4"><div class="detalle-campo"><div class="detalle-campo-label">Estado</div><div class="detalle-campo-valor">' + data.estado + '</div></div></div>';
+            html += '<div class="col-md-4"><div class="detalle-campo"><div class="detalle-campo-label">Prioridad</div><div class="detalle-campo-valor">' + data.prioridad + '</div></div></div>';
+            html += '<div class="col-md-4"><div class="detalle-campo"><div class="detalle-campo-label">Fecha</div><div class="detalle-campo-valor">' + data.fecha_creacion + '</div></div></div>';
+            html += '<div class="col-12"><div class="detalle-campo"><div class="detalle-campo-label">Descripción</div><div class="detalle-campo-valor" style="white-space:pre-wrap;">' + data.descripcion + '</div></div></div>';
+            if (data.acciones_tomadas) {
+                html += '<div class="col-12"><div class="detalle-campo"><div class="detalle-campo-label">Acciones Tomadas</div><div class="detalle-campo-valor" style="white-space:pre-wrap;">' + data.acciones_tomadas + '</div></div></div>';
+            }
+            if (data.tour_nombre) {
+                html += '<div class="col-12"><div class="detalle-campo"><div class="detalle-campo-label">Tour Relacionado</div><div class="detalle-campo-valor">' + data.tour_nombre + '</div></div></div>';
+            }
+            html += '</div>';
+            contenido.innerHTML = html;
+        })
+        .catch(function(err) {
+            spinner.classList.remove('show');
+            contenido.innerHTML = '<div class="text-center text-danger py-4"><i class="bi bi-exclamation-triangle-fill fs-3"></i><p class="mt-2">No se pudo cargar el reporte.</p></div>';
+        });
+}
+
+/* Modal resolver */
+function confirmarResolver(id, nombre) {
+    document.getElementById('inputResolverId').value          = id;
+    document.getElementById('nombreGuiaResolver').textContent = nombre;
+    new bootstrap.Modal(document.getElementById('modalResolver')).show();
+}
+
+/* Modal eliminar */
+function confirmarEliminar(id, nombre) {
+    document.getElementById('inputEliminarId').value          = id;
+    document.getElementById('nombreGuiaEliminar').textContent = nombre;
+    new bootstrap.Modal(document.getElementById('modalEliminar')).show();
+}
+
+/* Spinner al enviar formulario */
+document.getElementById('formNuevoReporte').addEventListener('submit', function() {
+    document.getElementById('spinnerNuevoReporte').classList.add('show');
+    document.getElementById('btnGuardarReporte').disabled = true;
+});
+
+/* Toast por parámetro URL */
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    var mensajes = {
+        'creado':    { txt: 'Reporte enviado exitosamente.',      color: '#059669' },
+        'editado':   { txt: 'Reporte actualizado correctamente.', color: '#2563eb' },
+        'resuelto':  { txt: 'Reporte marcado como resuelto.',     color: '#059669' },
+        'eliminado': { txt: 'Reporte eliminado.',                 color: '#b91c1c' },
+        'error_bd':  { txt: 'Error al guardar en la base de datos.', color: '#b91c1c' }
+    };
+    var msg = params.get('msg');
+    if (msg && mensajes[msg]) {
+        mostrarToast(mensajes[msg].txt, mensajes[msg].color);
+        window.history.replaceState({}, '', window.location.pathname);
+    }
+})();
+</script>
+{% endblock %}
