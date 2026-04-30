@@ -246,6 +246,105 @@
         </div>
     </div>
 
+    {% if request.user.is_staff %}
+    <!-- Sección de Gestión de Usuarios y Roles -->
+    <div class="topbar mt-5">
+        <div class="topbar-title">
+            <h2 id="page-h2-users">Gestión de Usuarios y Roles</h2>
+            <p id="page-sub-users">Administra los roles de todos los usuarios registrados.</p>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-header">
+            <h5><i class="bi bi-people-fill me-2"></i>Todos los Usuarios</h5>
+            <span style="font-size:0.72rem; color:rgba(255,255,255,0.5);">
+                {{ total_users|default:"0" }} usuarios registrados
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width:50px;">#</th>
+                        <th>Nombre de Usuario</th>
+                        <th>Nombre Completo</th>
+                        <th>Email</th>
+                        <th style="text-align:center;">Staff</th>
+                        <th style="text-align:center;">Estado</th>
+                        <th>Roles en Monagua</th>
+                        <th style="width:180px; text-align:center;">Gestión de Guía</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user_obj in all_users %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><span class="fw-bold text-dark">{{ user_obj.username }}</span></td>
+                        <td>{{ user_obj.get_full_name|default:"—" }}</td>
+                        <td><small>{{ user_obj.email }}</small></td>
+                        <td style="text-align:center;">
+                            {% if user_obj.is_staff %}
+                                <i class="bi bi-check-circle-fill text-success" title="Es Administrador"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle text-muted" title="Usuario Regular"></i>
+                            {% endif %}
+                        </td>
+                        <td style="text-align:center;">
+                            {% if user_obj.is_active %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle">Activo</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                {% if user_obj.es_guia %}
+                                    <span class="badge rounded-pill bg-primary" style="font-size: 0.65rem;">
+                                        <i class="bi bi-geo-alt-fill me-1"></i>GUÍA
+                                    </span>
+                                {% endif %}
+                                {% if user_obj.es_turista %}
+                                    <span class="badge rounded-pill bg-info text-dark" style="font-size: 0.65rem;">
+                                        <i class="bi bi-luggage-fill me-1"></i>TURISTA
+                                    </span>
+                                {% endif %}
+                            </div>
+                            {% if not user_obj.es_guia and not user_obj.es_turista %}
+                                <span class="text-muted" style="font-size: 0.7rem;">Sin roles</span>
+                            {% endif %}
+                        </td>
+                        <td style="text-align:center;">
+                            <form action="{% url 'asignar_rol_guia' user_obj.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                {% if user_obj.es_guia %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Revocar Rol de Guía">
+                                        <i class="bi bi-person-dash-fill"></i> Quitar Guía
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Asignar Rol de Guía">
+                                        <i class="bi bi-person-plus-fill"></i> Convertir en Guía
+                                    </button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="bi bi-people"></i>
+                                <p>No hay usuarios registrados en el sistema.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
 </div><!-- /main-content -->
 
 
@@ -487,7 +586,8 @@
         'baja':         { txt: 'Guía marcado como Inactivo.',                        color: '#b91c1c' },
         'reactivado':   { txt: 'Guía reactivado correctamente.',                     color: '#059669' },
         'error_correo': { txt: 'Error: Este correo electrónico ya está registrado.', color: '#b91c1c' },
-        'error_bd':     { txt: 'Ocurrió un error al guardar en la base de datos.',   color: '#b91c1c' }
+        'error_bd':     { txt: 'Ocurrió un error al guardar en la base de datos.',   color: '#b91c1c' },
+        'rol_asignado': { txt: 'Rol de guía asignado/revocado correctamente.',       color: '#059669' } // Nuevo mensaje para la gestión de roles
     };
     const msg = params.get('msg');
     if (msg && mensajes[msg]) {

@@ -2,6 +2,7 @@
 
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
 from django.contrib.auth import get_user_model
@@ -83,7 +84,7 @@ def guias_guardar(request):
     print("--- INICIANDO PROCESO DE GUARDAR GUÍA ---")
 
     if request.method != 'POST':
-        return redirect('gestion_guias')
+        return redirect('gestion_usuarios')
 
     guia_id = request.POST.get('guia_id', '').strip()
 
@@ -114,19 +115,19 @@ def guias_guardar(request):
             guia = get_object_or_404(Guia, pk=guia_id)
 
             if Guia.objects.exclude(pk=guia_id).filter(correo=campos['correo']).exists():
-                return redirect('gestion_guias')
+                return redirect(reverse('gestion_usuarios') + '?msg=error_correo')
 
             for attr, valor in campos.items():
                 setattr(guia, attr, valor)
 
             guia.save()
-            return redirect('gestion_guias')
+            return redirect(reverse('gestion_usuarios') + '?msg=editado')
 
         else:
             # ── CREAR ──
 
             if Guia.objects.filter(correo=campos['correo']).exists():
-                return redirect('gestion_guias')
+                return redirect(reverse('gestion_usuarios') + '?msg=error_correo')
 
             colores = Guia.COLORES_AVATAR
             total = Guia.objects.count()
@@ -135,14 +136,14 @@ def guias_guardar(request):
 
             Guia.objects.create(**campos)
 
-            return redirect('gestion_guias')
+            return redirect(reverse('gestion_usuarios') + '?msg=creado')
 
     except IntegrityError:
-        return redirect('gestion_guias')
+        return redirect(reverse('gestion_usuarios') + '?msg=error_bd')
 
     except Exception as e:
         print(f"Error detectado: {e}")
-        return redirect('gestion_guias')
+        return redirect(reverse('gestion_usuarios') + '?msg=error_bd')
 
 
 # ══════════════════════════════════════════════
@@ -162,7 +163,7 @@ def guias_baja(request):
         guia.disponibilidad = 'Ocupado'
         guia.save()
 
-    return redirect('gestion_guias')
+    return redirect(reverse('gestion_usuarios') + '?msg=baja')
 
 
 # ══════════════════════════════════════════════
@@ -182,7 +183,7 @@ def guias_reactivar(request):
         guia.disponibilidad = 'Disponible'
         guia.save()
 
-    return redirect('gestion_guias')
+    return redirect(reverse('gestion_usuarios') + '?msg=reactivado')
 
 
 # ══════════════════════════════════════════════

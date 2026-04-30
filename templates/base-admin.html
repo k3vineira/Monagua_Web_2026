@@ -59,11 +59,8 @@
         <i class="bi bi-bicycle"></i> Actividades
     </a>
     
-    <a href="guias" class="sidebar-link">
-        <i class="bi bi-people-fill"></i> Guías
-    </a>
-    <a href="#" class="sidebar-link">
-        <i class="bi bi-people-fill"></i> Usuarios
+    <a href="{% url 'gestion_usuarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gestion_usuarios' %}active{% endif %}">
+        <i class="bi bi-people-fill"></i> Guías y Usuarios
     </a>
     <a href="{% url 'admin_reservas' %}" class="sidebar-link">
         <i class="bi bi-calendar-check-fill"></i> Reservas

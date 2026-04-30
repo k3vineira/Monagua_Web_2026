@@ -1,6 +1,29 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import Tour, Reserva, Guia
+from usuario.models import Usuario
 
+# ══════════════════════════════════════════════
+#  GESTIÓN CENTRALIZADA DE USUARIOS Y ROLES
+# ══════════════════════════════════════════════
+
+try:
+    admin.site.unregister(Usuario)
+except admin.sites.NotRegistered:
+    pass
+
+@admin.register(Usuario)
+class CustomUserAdmin(UserAdmin):
+    # Añadimos los roles a la lista principal del admin
+    list_display = ('username', 'email', 'first_name', 'last_name', 'es_guia', 'es_turista', 'is_staff')
+    list_filter = ('es_guia', 'es_turista', 'is_staff', 'is_active')
+    
+    # Agregamos una sección específica de "Roles" en el formulario de edición
+    fieldsets = UserAdmin.fieldsets + (
+        ('Roles de Monagua', {
+            'fields': ('es_guia', 'es_turista'),
+        }),
+    )
 
 # ══════════════════════════════════════════════
 #  TOUR

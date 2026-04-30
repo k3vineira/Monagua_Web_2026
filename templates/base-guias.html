@@ -17,6 +17,8 @@
 <body>
 
 {% include "partials/aside-admin.html" %}
+{# TODO: Añade un enlace a 'gestion_usuarios' en partials/aside-admin.html para usuarios staff #}
+{# Ejemplo: <a href="{% url 'gestion_usuarios' %}" class="sidebar-link"><i class="bi bi-people"></i> Gestión de Usuarios</a> #}
 {% include "partials/accesibilidad.html" %}
 
 {% block content %}{% endblock %}
