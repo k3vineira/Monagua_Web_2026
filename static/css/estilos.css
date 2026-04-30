@@ -2359,3 +2359,9 @@ body.highlight-links a {
         right: 20px;
     }
 }
+
+.main-content {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    padding: 1.5rem !important;
+}
