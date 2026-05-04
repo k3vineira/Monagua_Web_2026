@@ -111,7 +111,9 @@ class PQRS(models.Model):
      asunto = models.CharField(max_length=200, verbose_name='Asunto')
      descripcion = models.TextField(verbose_name='Descripción')
      evidencia = models.FileField(upload_to='pqrs/', null=True, blank=True, verbose_name='Adjuntar Evidencia')
-
+     respuesta = models.TextField(null=True, blank=True)
+     
+    
      class Meta:
         verbose_name = 'PQRS'
         verbose_name_plural = 'PQRS'

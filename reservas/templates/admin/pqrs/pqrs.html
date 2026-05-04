@@ -2,10 +2,10 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Administración de PQRS</h2>
+    <div class="d-flex justify-content-between align-items-end p-3 shadow-sm" 
+         style="background-color: var(--verde-bosque); border-radius: 8px 8px 0 0; border-bottom: 2px solid rgba(255,255,255,0.2);">
+        <h3 class="text-white mb-0 fw-bold">Administración de PQRS</h3>
     </div>
-
     <div class="card shadow-sm">
         <div class="card-body">
             <table class="table table-hover">
@@ -38,14 +38,38 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-primary">Gestionar</a>
+                            <!-- CORRECCIÓN: Se usa pqr.id para que coincida con el alias del for -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalContestar{{ pqr.id }}">Contestar</button>
                         </td>
                     </tr>
-                    {% empty %}
+
+                    
+                    <div class="modal fade" id="modalContestar{{ pqr.id }}" tabindex="-1">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <form action="{% url 'contestar_pqrs' pqr.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="modal-header">
+                              <h5 class="modal-title">Contestar a: {{ pqr.nombre_solicitante }}</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                              <p><strong>Asunto:</strong> {{ pqr.asunto }}</p>
+                              <textarea name="respuesta" class="form-control" rows="4" placeholder="Escribe tu respuesta aquí..." required></textarea>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="submit" class="btn btn-success" style="background-color: var(--verde-bosque)">Enviar Respuesta</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+
+                  {% empty %}
                     <tr>
                         <td colspan="6" class="text-center">No se han recibido PQRS hasta el momento.</td>
                     </tr>
-                    {% endfor %}
+                  {% endfor %}
                 </tbody>
             </table>
         </div>

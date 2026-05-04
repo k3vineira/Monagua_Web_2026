@@ -8,6 +8,7 @@ urlpatterns = [
     path('promociones/', views.promociones_view, name='promociones'),
 
     path('confirmar-reserva/<int:paquete_id>/', views.guardar_reserva, name='guardar_reserva'),
+    path('guardar-pqrs/', views.guardar_pqrs, name='guardar_pqrs'),
    
     path('categorias/crear/', views.crear_categoria, name='crear_categoria'),
     path('categorias/editar/<int:pk>/', views.editar_categoria, name='editar_categoria'),
@@ -30,7 +31,8 @@ urlpatterns = [
     path('blog/crear/', views.crear_blog, name='crear_blog'),
     path('blog/editar/<int:pk>/', views.editar_blog, name='editar_blog'),
     path('blog/eliminar/<int:pk>/', views.eliminar_blog, name='eliminar_blog'),
-    
+
+    path('contestar-pqrs/<int:pqrs_id>/', views.contestar_pqrs, name='contestar_pqrs'),
     
     path('admin/blog/', views.lista_blog, name='admin_blog'),
     path('admin/actividades/', views.lista_actividades, name='admin_actividades'),

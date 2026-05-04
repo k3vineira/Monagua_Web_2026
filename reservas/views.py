@@ -424,7 +424,31 @@ def guardar_reserva(request, paquete_id):
 
     return redirect('reservas')
 
+def guardar_pqrs(request):
+    if request.method == 'POST':
+        form = PQRSForm(request.POST)
+        if form.is_valid():
+            pqrs = form.save()
+            messages.success(request, f"PQRS '{pqrs.nombre_solicitante}' enviada.")
+            return redirect('crear_pqrs')
+        else:
+            messages.error(request, "Error al enviar la PQRS. Verifica los datos.")
+    return redirect('crear_pqrs')
 
+def contestar_pqrs(request, pqrs_id):
+    if request.method == 'POST':
+        pqrs = get_object_or_404(PQRS, id=pqrs_id)
+        respuesta_texto = request.POST.get('respuesta')
+        
+        if respuesta_texto:
+            pqrs.respuesta = respuesta_texto
+            pqrs.estado = 'Contestado'
+            pqrs.save()
+            messages.success(request, "Respuesta enviada correctamente.")
+        else:
+            messages.error(request, "La respuesta no puede estar vacía.")
+            
+    return redirect('lista_pqrs') 
 
 
 

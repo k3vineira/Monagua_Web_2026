@@ -58,12 +58,16 @@
     <a href="{% url 'admin_actividades' %}" class="sidebar-link">
         <i class="bi bi-bicycle"></i> Actividades
     </a>
+     <a href="{% url 'admin_reservas' %}" class="sidebar-link">
+        <i class="bi bi-calendar-check-fill"></i> Reservas
+    </a>
+     <a href="{% url 'lista_pqrs' %}" class="sidebar-link">
+        <i class="bi bi-calendar-check-fill"></i> PQRS
+    </a>
+    
     
     <a href="{% url 'gestion_usuarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gestion_usuarios' %}active{% endif %}">
         <i class="bi bi-people-fill"></i> Guías y Usuarios
-    </a>
-    <a href="{% url 'admin_reservas' %}" class="sidebar-link">
-        <i class="bi bi-calendar-check-fill"></i> Reservas
     </a>
     <a href="{% url 'gestion_promociones' %}" class="sidebar-link {% if 'promociones' in request.path %}active{% endif %}">
         <i class="bi bi-megaphone-fill"></i> Promociones
