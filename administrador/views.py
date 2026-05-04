@@ -10,7 +10,9 @@ from django.views.decorators.http import require_POST
 # IMPORTAMOS LOS MODELOS DESDE LA APP RESERVAS
 from reservas.models import Promocion, Reserva, Paquete
 from reservas.forms import PromocionForm, PromocionEditarForm
-from .models import Guia
+from .models import Tour, Reserva, Guia
+from .forms import GuiaForm
+from .models import Paquete
 
 User = get_user_model()
 
@@ -58,20 +60,25 @@ def dashboard_administrador(request):
 # ══════════════════════════════════════════════
 @login_required
 def gestion_guias(request):
-
+    # 1. Obtener los datos base desde los modelos
     guias = Guia.objects.all()
+    paquetes = Paquete.objects.all()
+    form = GuiaForm()
 
+    # 2. Construir el contexto con los contadores y el formulario
     context = {
         'guias': guias,
+        'paquetes': paquetes,
+        'form': form,
         'total_guias': guias.count(),
         'total_guias_activos': guias.filter(estado='Activo').count(),
         'total_guias_inactivos': guias.filter(estado='Inactivo').count(),
-        'guias_asignados': guias.filter(
-            estado='Activo',
-            disponibilidad='Ocupado'
-        ).count(),
+        
+        # Este contador filtra los guías que ya tienen un paquete de Mongua asignado
+        'guias_asignados': guias.exclude(paquete_asignado__isnull=True).count(),
     }
 
+    # 3. Renderizar hacia el archivo que estás usando
     return render(request, 'index-guias.html', context)
 
 

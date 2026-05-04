@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from reservas.models import Paquete
 
 # ══════════════════════════════════════════════
 #  GUÍA
@@ -43,7 +44,14 @@ class Guia(models.Model):
     estado          = models.CharField(max_length=10, choices=ESTADOS, default='Activo', verbose_name="Estado")
     color_avatar    = models.CharField(max_length=10, default='#2c6e3c', verbose_name="Color Avatar")
     fecha_registro  = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
-
+    paquete_asignado = models.ForeignKey(
+        Paquete, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name="guias_del_paquete",
+        verbose_name="Asignar Paquete Turístico" 
+    )
     class Meta:
         verbose_name = "Guía"
         verbose_name_plural = "Guías"
