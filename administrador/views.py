@@ -1,5 +1,3 @@
-# views.py administrador
-
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -7,10 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError
+from django.views.decorators.http import require_POST
 
-from reservas.models import Promocion
+# IMPORTAMOS LOS MODELOS DESDE LA APP RESERVAS
+from reservas.models import Promocion, Reserva, Paquete
 from reservas.forms import PromocionForm, PromocionEditarForm
-from .models import Tour, Reserva, Guia
+from .models import Guia
 
 User = get_user_model()
 
@@ -23,20 +23,20 @@ def dashboard_administrador(request):
     # Total usuarios registrados
     total_usuarios = User.objects.count()
 
-    # Total ventas
+    # Total ventas (Usando monto_total de reservas.models.Reserva)
     total_ventas = Reserva.objects.aggregate(
-        t=Sum('total_pagado')
+        t=Sum('monto_total')
     )['t'] or 0.00
 
     # Total reservas
     total_reservas = Reserva.objects.count()
 
-    # Total tours
-    total_tours = Tour.objects.count()
+    # Total tours (Ahora usamos Paquete de la app reservas)
+    total_tours = Paquete.objects.count()
 
-    # Top 5 tours más populares
-    tours_populares = Tour.objects.annotate(
-        numero_reservas=Count('reservas')
+    # Top 5 tours más populares (Basado en Paquete)
+    tours_populares = Paquete.objects.annotate(
+        numero_reservas=Count('reserva')
     ).order_by('-numero_reservas')[:5]
 
     total_promociones = Promocion.objects.count()
@@ -303,21 +303,11 @@ def gestion_comentarios(request):
         'administrador',
         {'msg': 'Sección de comentarios en desarrollo'}
     )
-    # ══════════════════════════════════════════════════════════════════
-# VISTAS DE REPORTES DE GUÍAS
-# Agrega estas funciones a tu archivo administrador/views.py
+
+
 # ══════════════════════════════════════════════════════════════════
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
-
-# Importa tus modelos según como los tengas definidos.
-# Ajusta el nombre del modelo y los campos según tu models.py
-# Ejemplo: from administrador.models import ReporteGuia, Guia, Tour
-# from .models import ReporteGuia, Guia, Tour
-
+# VISTAS DE REPORTES DE GUÍAS
+# ══════════════════════════════════════════════════════════════════
 
 # ── 1. Listado de reportes (index-reporte.html) ────────────────
 @login_required
@@ -325,30 +315,21 @@ def gestion_reportes(request):
     """
     Muestra la página principal de reportes.
     Renderiza: index-reporte.html
-    Extiende:  base-reporte.html
     """
     # Descomenta y ajusta cuando tengas el modelo ReporteGuia
-    # reportes        = ReporteGuia.objects.select_related('guia', 'tour').order_by('-fecha_creacion')
+    # reportes        = ReporteGuia.objects.select_related('guia', 'paquete').order_by('-fecha_creacion')
     # guias_activos   = Guia.objects.filter(estado='Activo').order_by('nombre')
-    # tours           = Tour.objects.filter(activo=True).order_by('nombre')
+    # paquetes        = Paquete.objects.filter(estado=True).order_by('nombre')
     # total_resueltos  = reportes.filter(estado='Resuelto').count()
     # total_pendientes = reportes.filter(estado='Pendiente').count()
     # total_en_proceso = reportes.filter(estado='En proceso').count()
     # total_reportes   = reportes.count()
 
     context = {
-        # 'reportes':         reportes,
-        # 'guias_activos':    guias_activos,
-        # 'tours':            tours,
-        # 'total_resueltos':  total_resueltos,
-        # 'total_pendientes': total_pendientes,
-        # 'total_en_proceso': total_en_proceso,
-        # 'total_reportes':   total_reportes,
-
         # Valores por defecto mientras creas el modelo
         'reportes':         [],
         'guias_activos':    [],
-        'tours':            [],
+        'tours':            [], # Se mantiene el nombre 'tours' por si la plantilla lo usa así
         'total_resueltos':  0,
         'total_pendientes': 0,
         'total_en_proceso': 0,
@@ -363,8 +344,6 @@ def gestion_reportes(request):
 def reportes_guardar(request):
     """
     Recibe el formulario del modal 'Nuevo Reporte' y guarda en BD.
-    Redirige a /administrador/reportes/?msg=creado  (éxito)
-           o a /administrador/reportes/?msg=error_bd (error)
     """
     try:
         guia_id         = request.POST.get('guia_id')
@@ -373,7 +352,7 @@ def reportes_guardar(request):
         descripcion     = request.POST.get('descripcion')
         acciones_tomadas= request.POST.get('acciones_tomadas', '')
         fecha_incidente = request.POST.get('fecha_incidente') or None
-        tour_id         = request.POST.get('tour_id') or None
+        paquete_id      = request.POST.get('tour_id') or None # Mantienes tour_id en el formulario HTML, pero lo asignas a paquete_id
 
         # Descomenta cuando tengas el modelo:
         # ReporteGuia.objects.create(
@@ -383,7 +362,7 @@ def reportes_guardar(request):
         #     descripcion     = descripcion,
         #     acciones_tomadas= acciones_tomadas,
         #     fecha_incidente = fecha_incidente,
-        #     tour_id         = tour_id,
+        #     paquete_id      = paquete_id,
         #     estado          = 'Pendiente',
         # )
 
@@ -399,23 +378,7 @@ def reportes_guardar(request):
 def reportes_detalle_json(request, pk):
     """
     Devuelve los datos de un reporte en formato JSON.
-    Es llamado por el fetch() de JavaScript en index-reporte.html
     """
-    # Descomenta cuando tengas el modelo:
-    # reporte = get_object_or_404(ReporteGuia, pk=pk)
-    # data = {
-    #     'id':              reporte.id,
-    #     'guia_nombre':     f'{reporte.guia.nombre} {reporte.guia.apellido}',
-    #     'tipo':            reporte.tipo,
-    #     'estado':          reporte.estado,
-    #     'prioridad':       reporte.prioridad,
-    #     'descripcion':     reporte.descripcion,
-    #     'acciones_tomadas':reporte.acciones_tomadas or '',
-    #     'tour_nombre':     reporte.tour.nombre if reporte.tour else '',
-    #     'fecha_creacion':  reporte.fecha_creacion.strftime('%d/%m/%Y %H:%M'),
-    # }
-    # return JsonResponse(data)
-
     # Respuesta de ejemplo mientras creas el modelo
     return JsonResponse({
         'id':               pk,
@@ -436,14 +399,9 @@ def reportes_detalle_json(request, pk):
 def reportes_resolver(request):
     """
     Cambia el estado de un reporte a 'Resuelto'.
-    Redirige a /administrador/reportes/?msg=resuelto
     """
     reporte_id = request.POST.get('reporte_id')
     try:
-        # Descomenta cuando tengas el modelo:
-        # reporte = get_object_or_404(ReporteGuia, pk=reporte_id)
-        # reporte.estado = 'Resuelto'
-        # reporte.save()
         return redirect('/administrador/reportes/?msg=resuelto')
     except Exception as e:
         print('Error al resolver reporte:', e)
@@ -456,13 +414,9 @@ def reportes_resolver(request):
 def reportes_eliminar(request):
     """
     Elimina un reporte de la base de datos.
-    Redirige a /administrador/reportes/?msg=eliminado
     """
     reporte_id = request.POST.get('reporte_id')
     try:
-        # Descomenta cuando tengas el modelo:
-        # reporte = get_object_or_404(ReporteGuia, pk=reporte_id)
-        # reporte.delete()
         return redirect('/administrador/reportes/?msg=eliminado')
     except Exception as e:
         print('Error al eliminar reporte:', e)
