@@ -1,3 +1,5 @@
+# usuario/views.py
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
@@ -5,7 +7,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.urls import reverse # Importar reverse para construir URLs
 from .models import Usuario, PerfilTurista
 from django.contrib.auth.decorators import login_required, user_passes_test # user_passes_test para control de acceso
-from administrador.models import Reserva, Guia # Importar el modelo Guia para el contexto de index-guias.html
+
+# --- CORRECCIÓN DE IMPORTACIONES ---
+from administrador.models import Guia # Importar el modelo Guia
+from reservas.models import Reserva # Importar el modelo Reserva desde su app correcta
+# -----------------------------------
+
 from django.http import HttpResponse
 import io
 from reportlab.pdfgen import canvas
@@ -143,6 +150,7 @@ def perfil_usuario_view(request):
             
         return redirect('detalles')
     return render(request, 'detalles.html')
+
 def registro_view(request):
     if request.method == 'POST':
         # 1. Capturamos los datos del POST (Coinciden con los 'name' de tu HTML)

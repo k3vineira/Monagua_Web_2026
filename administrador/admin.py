@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Tour, Reserva, Guia
+from .models import Guia
 from usuario.models import Usuario
 
 # ══════════════════════════════════════════════
@@ -26,44 +26,13 @@ class CustomUserAdmin(UserAdmin):
     )
 
 # ══════════════════════════════════════════════
-#  TOUR
-# ══════════════════════════════════════════════
-@admin.register(Tour)
-class TourAdmin(admin.ModelAdmin):
-    list_display         = ('nombre', 'destino', 'duracion_dias', 'precio', 'guia_asignado')
-    list_filter          = ('destino',)
-    search_fields        = ('nombre', 'destino')
-    list_select_related  = ('guia',)
-    autocomplete_fields  = ['guia']
-
-    def guia_asignado(self, obj):
-        return obj.guia if obj.guia else '— Sin guía'
-    guia_asignado.short_description = 'Guía Asignado'
-
-
-# ══════════════════════════════════════════════
-#  RESERVA
-# ══════════════════════════════════════════════
-@admin.register(Reserva)
-class ReservaAdmin(admin.ModelAdmin):
-    list_display        = ('usuario', 'tour', 'estado', 'cantidad_personas', 'total_pagado', 'fecha_reserva')
-    list_filter         = ('estado',)
-    search_fields       = ('usuario__username', 'tour__nombre')
-    list_select_related = ('usuario', 'tour')
-    readonly_fields     = ('fecha_reserva',)
-
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('usuario', 'tour')
-
-
-# ══════════════════════════════════════════════
-#  GUÍA  ← Este es el que falta en tu admin
+#  GUÍA  
 # ══════════════════════════════════════════════
 @admin.register(Guia)
 class GuiaAdmin(admin.ModelAdmin):
     list_display   = (
         'nombre', 'apellido', 'especialidad',
-        'disponibilidad', 'estado', 'num_tours', 'fecha_registro'
+        'disponibilidad', 'estado', 'fecha_registro'
     )
     list_filter    = ('estado', 'especialidad', 'disponibilidad')
     search_fields  = ('nombre', 'apellido', 'correo', 'telefono', 'documento')
