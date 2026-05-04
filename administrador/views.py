@@ -1,3 +1,5 @@
+# views.py administrador
+
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -7,12 +9,9 @@ from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.views.decorators.http import require_POST
 
-# IMPORTAMOS LOS MODELOS DESDE LA APP RESERVAS
 from reservas.models import Promocion, Reserva, Paquete
 from reservas.forms import PromocionForm, PromocionEditarForm
-from .models import Tour, Reserva, Guia
-from .forms import GuiaForm
-from .models import Paquete
+from .models import Guia
 
 User = get_user_model()
 
@@ -25,7 +24,7 @@ def dashboard_administrador(request):
     # Total usuarios registrados
     total_usuarios = User.objects.count()
 
-    # Total ventas (Usando monto_total de reservas.models.Reserva)
+    # Total ventas
     total_ventas = Reserva.objects.aggregate(
         t=Sum('monto_total')
     )['t'] or 0.00
@@ -33,10 +32,10 @@ def dashboard_administrador(request):
     # Total reservas
     total_reservas = Reserva.objects.count()
 
-    # Total tours (Ahora usamos Paquete de la app reservas)
+    # Total tours
     total_tours = Paquete.objects.count()
 
-    # Top 5 tours más populares (Basado en Paquete)
+    # Top 5 tours más populares
     tours_populares = Paquete.objects.annotate(
         numero_reservas=Count('reserva')
     ).order_by('-numero_reservas')[:5]
@@ -60,25 +59,20 @@ def dashboard_administrador(request):
 # ══════════════════════════════════════════════
 @login_required
 def gestion_guias(request):
-    # 1. Obtener los datos base desde los modelos
-    guias = Guia.objects.all()
-    paquetes = Paquete.objects.all()
-    form = GuiaForm()
 
-    # 2. Construir el contexto con los contadores y el formulario
+    guias = Guia.objects.all()
+
     context = {
         'guias': guias,
-        'paquetes': paquetes,
-        'form': form,
         'total_guias': guias.count(),
         'total_guias_activos': guias.filter(estado='Activo').count(),
         'total_guias_inactivos': guias.filter(estado='Inactivo').count(),
-        
-        # Este contador filtra los guías que ya tienen un paquete de Mongua asignado
-        'guias_asignados': guias.exclude(paquete_asignado__isnull=True).count(),
+        'guias_asignados': guias.filter(
+            estado='Activo',
+            disponibilidad='Ocupado'
+        ).count(),
     }
 
-    # 3. Renderizar hacia el archivo que estás usando
     return render(request, 'index-guias.html', context)
 
 
@@ -95,7 +89,6 @@ def guias_guardar(request):
 
     guia_id = request.POST.get('guia_id', '').strip()
 
-    # Manejo seguro del número
     exp_str = request.POST.get('experiencia', '').strip()
     exp_val = int(exp_str) if exp_str.isdigit() else 0
 
@@ -113,12 +106,9 @@ def guias_guardar(request):
         'notas': request.POST.get('notas', '').strip() or None,
     }
 
-    print("DATOS CAPTURADOS:", campos)
-
     try:
 
         if guia_id:
-            # ── EDITAR ──
             guia = get_object_or_404(Guia, pk=guia_id)
 
             if Guia.objects.exclude(pk=guia_id).filter(correo=campos['correo']).exists():
@@ -131,23 +121,18 @@ def guias_guardar(request):
             return redirect(reverse('gestion_usuarios') + '?msg=editado')
 
         else:
-            # ── CREAR ──
-
             if Guia.objects.filter(correo=campos['correo']).exists():
                 return redirect(reverse('gestion_usuarios') + '?msg=error_correo')
 
             colores = Guia.COLORES_AVATAR
             total = Guia.objects.count()
-
             campos['color_avatar'] = colores[total % len(colores)]
 
             Guia.objects.create(**campos)
-
             return redirect(reverse('gestion_usuarios') + '?msg=creado')
 
     except IntegrityError:
         return redirect(reverse('gestion_usuarios') + '?msg=error_bd')
-
     except Exception as e:
         print(f"Error detectado: {e}")
         return redirect(reverse('gestion_usuarios') + '?msg=error_bd')
@@ -160,12 +145,7 @@ def guias_guardar(request):
 def guias_baja(request):
 
     if request.method == 'POST':
-
-        guia = get_object_or_404(
-            Guia,
-            pk=request.POST.get('guia_id')
-        )
-
+        guia = get_object_or_404(Guia, pk=request.POST.get('guia_id'))
         guia.estado = 'Inactivo'
         guia.disponibilidad = 'Ocupado'
         guia.save()
@@ -180,12 +160,7 @@ def guias_baja(request):
 def guias_reactivar(request):
 
     if request.method == 'POST':
-
-        guia = get_object_or_404(
-            Guia,
-            pk=request.POST.get('guia_id')
-        )
-
+        guia = get_object_or_404(Guia, pk=request.POST.get('guia_id'))
         guia.estado = 'Activo'
         guia.disponibilidad = 'Disponible'
         guia.save()
@@ -200,7 +175,6 @@ def guias_reactivar(request):
 def guia_detalle_json(request, guia_id):
 
     guia = get_object_or_404(Guia, pk=guia_id)
-
     return JsonResponse({
         'id': guia.id,
         'nombre': guia.nombre,
@@ -220,15 +194,11 @@ def guia_detalle_json(request, guia_id):
 
 # ══════════════════════════════════════════════
 #  GESTIÓN DE PROMOCIONES
-#══════════════════════════════════════════════
+# ══════════════════════════════════════════════
 @login_required
 def gestion_promociones(request):
 
-    promociones = Promocion.objects.all().order_by(
-        'prioridad',
-        '-id'
-    )
-
+    promociones = Promocion.objects.all().order_by('prioridad', '-id')
     form = PromocionForm()
 
     return render(
@@ -245,42 +215,20 @@ def gestion_promociones(request):
 def guardar_promocion(request):
 
     if request.method == 'POST':
-
         promocion_id = request.POST.get('promocion_id')
-
         try:
-
             if promocion_id:
-
-                promocion = get_object_or_404(
-                    Promocion,
-                    pk=promocion_id
-                )
-
-                form = PromocionEditarForm(
-                    request.POST,
-                    request.FILES,
-                    instance=promocion
-                )
-
+                promocion = get_object_or_404(Promocion, pk=promocion_id)
+                form = PromocionEditarForm(request.POST, request.FILES, instance=promocion)
             else:
-
-                form = PromocionForm(
-                    request.POST,
-                    request.FILES
-                )
+                form = PromocionForm(request.POST, request.FILES)
 
             if form.is_valid():
-
                 form.save()
                 return redirect('gestion_promociones')
-
             else:
-
                 print("Errores del formulario:", form.errors)
-
         except Exception as e:
-
             print(f"Error al guardar promoción: {e}")
 
     return redirect('gestion_promociones')
@@ -289,11 +237,7 @@ def guardar_promocion(request):
 @login_required
 def eliminar_promocion(request, pk):
 
-    promocion = get_object_or_404(
-        Promocion,
-        pk=pk
-    )
-
+    promocion = get_object_or_404(Promocion, pk=pk)
     promocion.delete()
 
     return redirect('gestion_promociones')
@@ -316,27 +260,13 @@ def gestion_comentarios(request):
 # VISTAS DE REPORTES DE GUÍAS
 # ══════════════════════════════════════════════════════════════════
 
-# ── 1. Listado de reportes (index-reporte.html) ────────────────
 @login_required
 def gestion_reportes(request):
-    """
-    Muestra la página principal de reportes.
-    Renderiza: index-reporte.html
-    """
-    # Descomenta y ajusta cuando tengas el modelo ReporteGuia
-    # reportes        = ReporteGuia.objects.select_related('guia', 'paquete').order_by('-fecha_creacion')
-    # guias_activos   = Guia.objects.filter(estado='Activo').order_by('nombre')
-    # paquetes        = Paquete.objects.filter(estado=True).order_by('nombre')
-    # total_resueltos  = reportes.filter(estado='Resuelto').count()
-    # total_pendientes = reportes.filter(estado='Pendiente').count()
-    # total_en_proceso = reportes.filter(estado='En proceso').count()
-    # total_reportes   = reportes.count()
 
     context = {
-        # Valores por defecto mientras creas el modelo
         'reportes':         [],
         'guias_activos':    [],
-        'tours':            [], # Se mantiene el nombre 'tours' por si la plantilla lo usa así
+        'tours':            [],
         'total_resueltos':  0,
         'total_pendientes': 0,
         'total_en_proceso': 0,
@@ -345,48 +275,28 @@ def gestion_reportes(request):
     return render(request, 'index-reporte.html', context)
 
 
-# ── 2. Guardar nuevo reporte (POST desde modal) ────────────────
 @login_required
 @require_POST
 def reportes_guardar(request):
-    """
-    Recibe el formulario del modal 'Nuevo Reporte' y guarda en BD.
-    """
-    try:
-        guia_id         = request.POST.get('guia_id')
-        tipo            = request.POST.get('tipo')
-        prioridad       = request.POST.get('prioridad', 'Media')
-        descripcion     = request.POST.get('descripcion')
-        acciones_tomadas= request.POST.get('acciones_tomadas', '')
-        fecha_incidente = request.POST.get('fecha_incidente') or None
-        paquete_id      = request.POST.get('tour_id') or None # Mantienes tour_id en el formulario HTML, pero lo asignas a paquete_id
 
-        # Descomenta cuando tengas el modelo:
-        # ReporteGuia.objects.create(
-        #     guia_id         = guia_id,
-        #     tipo            = tipo,
-        #     prioridad       = prioridad,
-        #     descripcion     = descripcion,
-        #     acciones_tomadas= acciones_tomadas,
-        #     fecha_incidente = fecha_incidente,
-        #     paquete_id      = paquete_id,
-        #     estado          = 'Pendiente',
-        # )
+    try:
+        guia_id          = request.POST.get('guia_id')
+        tipo             = request.POST.get('tipo')
+        prioridad        = request.POST.get('prioridad', 'Media')
+        descripcion      = request.POST.get('descripcion')
+        acciones_tomadas = request.POST.get('acciones_tomadas', '')
+        fecha_incidente  = request.POST.get('fecha_incidente') or None
+        paquete_id       = request.POST.get('tour_id') or None
 
         return redirect('/administrador/reportes/?msg=creado')
-
     except Exception as e:
         print('Error al guardar reporte:', e)
         return redirect('/administrador/reportes/?msg=error_bd')
 
 
-# ── 3. Detalle de reporte en JSON (para el modal de detalle) ───
 @login_required
 def reportes_detalle_json(request, pk):
-    """
-    Devuelve los datos de un reporte en formato JSON.
-    """
-    # Respuesta de ejemplo mientras creas el modelo
+
     return JsonResponse({
         'id':               pk,
         'guia_nombre':      'Guía de ejemplo',
@@ -400,13 +310,10 @@ def reportes_detalle_json(request, pk):
     })
 
 
-# ── 4. Marcar reporte como Resuelto ───────────────────────────
 @login_required
 @require_POST
 def reportes_resolver(request):
-    """
-    Cambia el estado de un reporte a 'Resuelto'.
-    """
+
     reporte_id = request.POST.get('reporte_id')
     try:
         return redirect('/administrador/reportes/?msg=resuelto')
@@ -415,13 +322,10 @@ def reportes_resolver(request):
         return redirect('/administrador/reportes/?msg=error_bd')
 
 
-# ── 5. Eliminar reporte ────────────────────────────────────────
 @login_required
 @require_POST
 def reportes_eliminar(request):
-    """
-    Elimina un reporte de la base de datos.
-    """
+
     reporte_id = request.POST.get('reporte_id')
     try:
         return redirect('/administrador/reportes/?msg=eliminado')
