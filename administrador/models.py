@@ -1,67 +1,6 @@
 from django.db import models
 from django.conf import settings
-
-
-# ══════════════════════════════════════════════
-#  TOUR
-# ══════════════════════════════════════════════
-class Tour(models.Model):
-    nombre        = models.CharField(max_length=200, verbose_name="Nombre del Tour")
-    destino       = models.CharField(max_length=150, default="Sogamoso, Boyacá", verbose_name="Lugar de Destino")
-    duracion_dias = models.PositiveIntegerField(default=1, verbose_name="Duración (Días)")
-    precio        = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Precio Base")
-    descripcion   = models.TextField(blank=True, null=True, verbose_name="Descripción del recorrido")
-
-    # Relación con Guia — un tour puede tener un guía asignado (opcional)
-    guia = models.ForeignKey(
-        'Guia',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='tours_asignados',
-        verbose_name="Guía Asignado"
-    )
-
-    class Meta:
-        verbose_name = "Tour"
-        verbose_name_plural = "Tours"
-
-    def __str__(self):
-        return f"{self.nombre} - {self.destino}"
-
-
-# ══════════════════════════════════════════════
-#  RESERVA
-# ══════════════════════════════════════════════
-class Reserva(models.Model):
-    ESTADOS = (
-        ('PENDIENTE',  'Pendiente de Pago'),
-        ('CONFIRMADA', 'Confirmada'),
-        ('CANCELADA',  'Cancelada'),
-    )
-
-    usuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="reservas"
-    )
-    tour = models.ForeignKey(
-        Tour,
-        on_delete=models.CASCADE,
-        related_name="reservas"
-    )
-    fecha_reserva      = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Reserva")
-    cantidad_personas  = models.PositiveIntegerField(default=1, verbose_name="Número de Personas")
-    total_pagado       = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, verbose_name="Total Pagado")
-    estado             = models.CharField(max_length=20, choices=ESTADOS, default='PENDIENTE')
-
-    class Meta:
-        verbose_name = "Reserva"
-        verbose_name_plural = "Reservas"
-
-    def __str__(self):
-        return f"Reserva de {self.usuario} - {self.tour.nombre}"
-
+from reservas.models import Paquete
 
 # ══════════════════════════════════════════════
 #  GUÍA
@@ -105,7 +44,14 @@ class Guia(models.Model):
     estado          = models.CharField(max_length=10, choices=ESTADOS, default='Activo', verbose_name="Estado")
     color_avatar    = models.CharField(max_length=10, default='#2c6e3c', verbose_name="Color Avatar")
     fecha_registro  = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Registro")
-
+    paquete_asignado = models.ForeignKey(
+        Paquete, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name="guias_del_paquete",
+        verbose_name="Asignar Paquete Turístico" 
+    )
     class Meta:
         verbose_name = "Guía"
         verbose_name_plural = "Guías"
@@ -113,7 +59,3 @@ class Guia(models.Model):
 
     def __str__(self):
         return f"{self.nombre} {self.apellido} - {self.especialidad}"
-    @property
-    def num_tours(self):
-        # Cuenta los tours que tienen este guía asignado
-        return self.tours_asignados.count()
