@@ -211,7 +211,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('inicio_usuario') # Redirige al dashboard personal
+                return redirect('dashboard') # Redirige al dashboard personal
         else:
             messages.error(request, "Correo o contraseña incorrectos.")
     else:
