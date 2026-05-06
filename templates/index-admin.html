@@ -1,355 +1,552 @@
 {% extends 'base-admin.html' %}
 {% load static %}
 
-{% block title %}Dashboard Administrador | Monagua{% endblock %}
+{% block title %}Dashboard | Monagua Admin{% endblock %}
 
 {% block extra_head %}
-    <!-- Chart.js — solo necesario en el dashboard -->
+    {# Chart.js — solo en el dashboard #}
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <!-- CSS específico del Dashboard -->
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+    {# html2canvas + jsPDF para exportar el dashboard a PDF #}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 {% endblock %}
 
 {% block content %}
-<div class="main-content">
 
-    <!-- Top Bar -->
-    <div class="topbar">
-        <div class="topbar-title">
-            <h2>Tablero de Rendimiento</h2>
-            <p>Visión general del negocio y métricas clave.</p>
+<div class="topbar" id="dashboardTopbar">
+    <div class="topbar-title">
+        <h2>Tablero de Rendimiento</h2>
+        <p class="text-muted">Visión general del negocio y métricas clave.</p>
+    </div>
+
+    <div class="topbar-right">
+        {# Accesos rápidos — solo en pantallas grandes #}
+        <div class="d-none d-lg-flex gap-2 me-2">
+            <a href="{% url 'gestion_promociones' %}"
+               class="btn btn-sm btn-outline-success rounded-pill px-3 d-flex align-items-center gap-1">
+                <i class="bi bi-megaphone-fill"></i> Banners
+            </a>
+            <a href="{% url 'comentarios' %}"
+               class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1">
+                <i class="bi bi-chat-left-text"></i> Comentarios
+            </a>
         </div>
-        <div class="topbar-right">
-            <!-- Accesos Rápidos -->
-            <div class="d-none d-lg-flex gap-2 me-3">
-                <a href="{% url 'gestion_promociones' %}" class="btn btn-sm btn-outline-success rounded-pill px-3 d-flex align-items-center gap-1">
-                    <i class="bi bi-megaphone-fill"></i> Banners
-                </a>
-                <a href="{% url 'comentarios' %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1">
-                    <i class="bi bi-chat-left-text"></i> Comentarios
-                </a>
-            </div>
-            <div class="date-badge">
-                <i class="bi bi-calendar3" style="color: var(--verde-main);"></i>
-                <span id="currentDate">—</span>
-            </div>
-            <button class="btn-export">
-                <i class="bi bi-download"></i> Exportar
-            </button>
+
+        {# Fecha #}
+        <div class="date-badge d-none d-md-flex">
+            <i class="bi bi-calendar3" style="color:var(--verde-main);"></i>
+            <span id="currentDate">—</span>
+        </div>
+
+        {# Botón exportar PDF — completamente funcional #}
+        <button class="btn-export" id="btnExportPdf">
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+            <span id="exportLabel">Exportar PDF</span>
+        </button>
+    </div>
+</div>
+
+
+<div class="kpi-grid" id="kpiSection">
+
+    <div class="kpi-card green">
+        <div class="kpi-icon green"><i class="bi bi-currency-dollar"></i></div>
+        <div class="kpi-label">Ingresos Totales</div>
+        <div class="kpi-value">$ {{ total_ventas|floatformat:2|default:"0.00" }}</div>
+        <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> Reservas confirmadas</div>
+    </div>
+
+    <div class="kpi-card blue">
+        <div class="kpi-icon blue"><i class="bi bi-people-fill"></i></div>
+        <div class="kpi-label">Usuarios Registrados</div>
+        <div class="kpi-value">{{ total_usuarios|default:"0" }}</div>
+        <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> Clientes activos</div>
+    </div>
+
+    <div class="kpi-card amber">
+        <div class="kpi-icon amber"><i class="bi bi-calendar-check-fill"></i></div>
+        <div class="kpi-label">Reservas Totales</div>
+        <div class="kpi-value">{{ total_reservas|default:"0" }}</div>
+        <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> Paquetes vendidos</div>
+    </div>
+
+    <div class="kpi-card rose">
+        <div class="kpi-icon rose"><i class="bi bi-map-fill"></i></div>
+        <div class="kpi-label">Tours Activos</div>
+        <div class="kpi-value">{{ total_tours|default:"0" }}</div>
+        <div class="kpi-sub"><i class="bi bi-dot"></i> Disponibles ahora</div>
+    </div>
+
+    <div class="kpi-card" style="--kpi-accent:#6366f1;">
+        <div class="kpi-card-bar" style="position:absolute;top:0;left:0;right:0;height:3px;background:#6366f1;border-radius:14px 14px 0 0;"></div>
+        <div class="kpi-icon" style="background:#e0e7ff;color:#6366f1;">
+            <i class="bi bi-megaphone-fill"></i>
+        </div>
+        <div class="kpi-label">Anuncios / Banners</div>
+        <div class="kpi-value">{{ total_promociones|default:"0" }}</div>
+        <div class="kpi-sub">
+            <a href="{% url 'gestion_promociones' %}" class="text-decoration-none text-muted">
+                Configurar <i class="bi bi-arrow-right"></i>
+            </a>
         </div>
     </div>
 
-    <!-- KPI Cards -->
-    <div class="kpi-grid">
-        <div class="kpi-card green">
-            <div class="kpi-icon green"><i class="bi bi-currency-dollar"></i></div>
-            <div class="kpi-label">Ingresos Totales</div>
-            <div class="kpi-value">$ {{ total_ventas|floatformat:2|default:"0.00" }}</div>
-            <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> Reservas confirmadas</div>
+</div>{# /kpi-grid #}
+
+
+<div class="charts-grid" id="chartsSection">
+
+    {# Ingresos mensuales #}
+    <div class="chart-card">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Ingresos Mensuales</div>
+                <div class="chart-subtitle">Evolución de ventas en el año</div>
+            </div>
+            <span class="chart-badge">{{ "now"|date:"Y" }}</span>
         </div>
-        <div class="kpi-card blue">
-            <div class="kpi-icon blue"><i class="bi bi-people-fill"></i></div>
-            <div class="kpi-label">Usuarios Registrados</div>
-            <div class="kpi-value">{{ total_usuarios|default:"0" }}</div>
-            <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> Clientes activos</div>
-        </div>
-        <div class="kpi-card amber">
-            <div class="kpi-icon amber"><i class="bi bi-calendar-check-fill"></i></div>
-            <div class="kpi-label">Reservas Totales</div>
-            <div class="kpi-value">{{ total_reservas|default:"0" }}</div>
-            <div class="kpi-sub up"><i class="bi bi-arrow-up-right"></i> Paquetes vendidos</div>
-        </div>
-        <div class="kpi-card rose">
-            <div class="kpi-icon rose"><i class="bi bi-map-fill"></i></div>
-            <div class="kpi-label">Tours Activos</div>
-            <div class="kpi-value">{{ total_tours|default:"0" }}</div>
-            <div class="kpi-sub"><i class="bi bi-dot"></i> Disponibles ahora</div>
-        </div>
-        <div class="kpi-card rose" style="border-top-color: #6366f1;">
-            <div class="kpi-icon" style="background: #e0e7ff; color: #6366f1;"><i class="bi bi-megaphone-fill"></i></div>
-            <div class="kpi-label">Anuncios / Banners</div>
-            <div class="kpi-value">{{ total_promociones|default:"0" }}</div>
-            <div class="kpi-sub"><a href="{% url 'gestion_promociones' %}" class="text-decoration-none text-muted">Configurar promociones <i class="bi bi-arrow-right"></i></a></div>
+        <div class="chart-container ingresos">
+            <canvas id="chartIngresos"></canvas>
         </div>
     </div>
 
-    <!-- Charts -->
-    <div class="charts-grid">
-        <!-- Ingresos mensuales -->
+    {# Estado de reservas (dona) #}
+    <div class="chart-card">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Estado de Reservas</div>
+                <div class="chart-subtitle">Distribución actual</div>
+            </div>
+        </div>
+        <div class="chart-container estado">
+            <canvas id="chartEstado"></canvas>
+        </div>
+        {# Leyenda manual (sin usar Chart.js legend para evitar overflow) #}
+        <div class="d-flex justify-content-center gap-3 mt-3" style="font-size:0.72rem;color:#666;">
+            <span class="d-flex align-items-center gap-1">
+                <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2c6e3c;"></span>
+                Confirmadas
+            </span>
+            <span class="d-flex align-items-center gap-1">
+                <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f59e0b;"></span>
+                Pendientes
+            </span>
+            <span class="d-flex align-items-center gap-1">
+                <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f43f5e;"></span>
+                Canceladas
+            </span>
+        </div>
+    </div>
+
+</div>{# /charts-grid #}
+
+
+<div class="bottom-grid" id="bottomSection">
+
+    {# Actividad reciente #}
+    <div class="chart-card">
+        <div class="chart-header">
+            <div>
+                <div class="chart-title">Actividad Reciente</div>
+                <div class="chart-subtitle">Últimas acciones en el sistema</div>
+            </div>
+            <i class="bi bi-clock-history" style="color:#bbb;font-size:1.1rem;"></i>
+        </div>
+
+        <div class="activity-item">
+            <div class="activity-dot green"></div>
+            <div>
+                <div class="activity-text">Nueva reserva confirmada — <strong>Tour Laguna Verde</strong></div>
+                <div class="activity-time">Hace 5 minutos</div>
+            </div>
+        </div>
+        <div class="activity-item">
+            <div class="activity-dot blue"></div>
+            <div>
+                <div class="activity-text">Nuevo usuario registrado — <strong>carlos@email.com</strong></div>
+                <div class="activity-time">Hace 18 minutos</div>
+            </div>
+        </div>
+        <div class="activity-item">
+            <div class="activity-dot amber"></div>
+            <div>
+                <div class="activity-text">Pago pendiente — <strong>Reserva #1042</strong></div>
+                <div class="activity-time">Hace 34 minutos</div>
+            </div>
+        </div>
+        <div class="activity-item">
+            <div class="activity-dot green"></div>
+            <div>
+                <div class="activity-text">Tour actualizado — <strong>Sendero del Cóndor</strong></div>
+                <div class="activity-time">Hace 1 hora</div>
+            </div>
+        </div>
+        <div class="activity-item">
+            <div class="activity-dot blue"></div>
+            <div>
+                <div class="activity-text">Nuevo usuario registrado — <strong>ana@email.com</strong></div>
+                <div class="activity-time">Hace 2 horas</div>
+            </div>
+        </div>
+    </div>{# /actividad #}
+
+    {# Mini-stats + gráfica semanal #}
+    <div>
+        <div class="mini-stats">
+            <div class="mini-stat">
+                <div class="mini-stat-val" style="color:#2c6e3c;">94%</div>
+                <div class="mini-stat-lbl">Tasa de confirmación</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-val" style="color:#2563eb;">4.8★</div>
+                <div class="mini-stat-lbl">Valoración promedio</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-val" style="color:#d97706;">$182</div>
+                <div class="mini-stat-lbl">Ingreso por reserva</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-val" style="color:#e11d48;">3</div>
+                <div class="mini-stat-lbl">Cancelaciones hoy</div>
+            </div>
+        </div>
+
         <div class="chart-card">
             <div class="chart-header">
                 <div>
-                    <div class="chart-title">Ingresos Mensuales</div>
-                    <div class="chart-subtitle">Evolución de ventas en el año</div>
-                </div>
-                <span class="chart-badge">2024</span>
-            </div>
-            <div class="chart-container ingresos">
-                <canvas id="chartIngresos"></canvas>
-            </div>
-        </div>
-
-        <!-- Distribución reservas -->
-        <div class="chart-card">
-            <div class="chart-header">
-                <div>
-                    <div class="chart-title">Estado de Reservas</div>
-                    <div class="chart-subtitle">Distribución actual</div>
+                    <div class="chart-title">Reservas esta semana</div>
+                    <div class="chart-subtitle">Últimos 7 días</div>
                 </div>
             </div>
-            <div class="chart-container estado">
-                <canvas id="chartEstado"></canvas>
-            </div>
-            <div style="display:flex; justify-content:center; gap:16px; margin-top:12px; font-size:0.72rem; color:#666;">
-                <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2c6e3c;margin-right:4px;"></span>Confirmadas</span>
-                <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f59e0b;margin-right:4px;"></span>Pendientes</span>
-                <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#f43f5e;margin-right:4px;"></span>Canceladas</span>
+            <div class="chart-container semana">
+                <canvas id="chartSemana"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Bottom: Activity + Mini-stats -->
-    <div class="bottom-grid">
+</div>{# /bottom-grid #}
 
-        <!-- Actividad reciente -->
-        <div class="chart-card">
-            <div class="chart-header">
-                <div>
-                    <div class="chart-title">Actividad Reciente</div>
-                    <div class="chart-subtitle">Últimas acciones en el sistema</div>
-                </div>
-                <i class="bi bi-clock-history" style="color:#bbb; font-size:1.1rem;"></i>
-            </div>
-            <div class="activity-item">
-                <div class="activity-dot green"></div>
-                <div>
-                    <div class="activity-text">Nueva reserva confirmada — <strong>Tour Laguna Verde</strong></div>
-                    <div class="activity-time">Hace 5 minutos</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-dot blue"></div>
-                <div>
-                    <div class="activity-text">Nuevo usuario registrado — <strong>carlos@email.com</strong></div>
-                    <div class="activity-time">Hace 18 minutos</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-dot amber"></div>
-                <div>
-                    <div class="activity-text">Pago pendiente — <strong>Reserva #1042</strong></div>
-                    <div class="activity-time">Hace 34 minutos</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-dot green"></div>
-                <div>
-                    <div class="activity-text">Tour actualizado — <strong>Sendero del Cóndor</strong></div>
-                    <div class="activity-time">Hace 1 hora</div>
-                </div>
-            </div>
-            <div class="activity-item">
-                <div class="activity-dot blue"></div>
-                <div>
-                    <div class="activity-text">Nuevo usuario registrado — <strong>ana@email.com</strong></div>
-                    <div class="activity-time">Hace 2 horas</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Mini-stats + gráfica semanal -->
-        <div>
-            <div class="mini-stats">
-                <div class="mini-stat">
-                    <div class="mini-stat-val" style="color:#2c6e3c;">94%</div>
-                    <div class="mini-stat-lbl">Tasa de confirmación</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="mini-stat-val" style="color:#2563eb;">4.8★</div>
-                    <div class="mini-stat-lbl">Valoración promedio</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="mini-stat-val" style="color:#d97706;">$182</div>
-                    <div class="mini-stat-lbl">Ingreso por reserva</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="mini-stat-val" style="color:#e11d48;">3</div>
-                    <div class="mini-stat-lbl">Cancelaciones hoy</div>
-                </div>
-            </div>
-
-            <!-- Reservas por día -->
-            <div class="chart-card" style="margin-top:0;">
-                <div class="chart-header">
-                    <div>
-                        <div class="chart-title">Reservas esta semana</div>
-                        <div class="chart-subtitle">Últimos 7 días</div>
-                    </div>
-                </div>
-                <div class="chart-container semana">
-                    <canvas id="chartSemana"></canvas>
-                </div>
-            </div>
-        </div>
+<div class="table-card" id="toursSection">
+    <div class="table-card-header">
+        <h5><i class="bi bi-trophy-fill text-warning me-2"></i>Tours Más Populares</h5>
+        <span class="text-white-50" style="font-size:0.72rem;">Ordenado por reservas</span>
     </div>
-
-    <!-- Tours Populares -->
-    <div class="table-card">
-        <div class="table-card-header">
-            <h5><i class="bi bi-trophy-fill text-warning me-2"></i>Tours Más Populares</h5>
-            <span style="font-size:0.72rem; color:rgba(255,255,255,0.5);">Ordenado por reservas</span>
-        </div>
-        <div class="table-responsive">
-            <table class="table mb-0">
-                <thead>
-                    <tr>
-                        <th style="width:60px;">Pos.</th>
-                        <th>Tour</th>
-                        <th>Precio</th>
-                        <th>Reservas</th>
-                        <th>Popularidad</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                   
-                    <tr>
-                        <td>
-                            <div class="rank-badge {% if forloop.counter == 1 %}rank-1{% elif forloop.counter == 2 %}rank-2{% elif forloop.counter == 3 %}rank-3{% else %}rank-n{% endif %}">
-                                {% if forloop.counter == 1 %}🥇{% elif forloop.counter == 2 %}🥈{% elif forloop.counter == 3 %}🥉{% else %}#{{ forloop.counter }}{% endif %}
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th style="width:60px;">Pos.</th>
+                    <th>Tour</th>
+                    <th>Precio</th>
+                    <th>Reservas</th>
+                    <th>Popularidad</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tour in tours_populares %}
+                <tr>
+                    <td>
+                        <div class="rank-badge
+                            {% if forloop.counter == 1 %}rank-1
+                            {% elif forloop.counter == 2 %}rank-2
+                            {% elif forloop.counter == 3 %}rank-3
+                            {% else %}rank-n{% endif %}">
+                            {% if forloop.counter == 1 %}🥇
+                            {% elif forloop.counter == 2 %}🥈
+                            {% elif forloop.counter == 3 %}🥉
+                            {% else %}#{{ forloop.counter }}{% endif %}
+                        </div>
+                    </td>
+                    <td><span class="fw-semibold" style="color:#1a251e;">{{ tour.nombre }}</span></td>
+                    <td><span class="fw-semibold" style="color:#2c6e3c;">${{ tour.precio|floatformat:2 }}</span></td>
+                    <td>
+                        <span class="badge rounded-pill"
+                              style="background:#d1fae5;color:#065f46;font-size:0.78rem;padding:4px 10px;">
+                            {{ tour.numero_reservas }} <i class="bi bi-ticket-detailed ms-1"></i>
+                        </span>
+                    </td>
+                    <td style="min-width:130px;">
+                        {# Bootstrap progress bar #}
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="progress flex-grow-1" style="height:5px;border-radius:99px;">
+                                <div class="progress-bar bg-success"
+                                     style="width:{{ tour.numero_reservas }}%;border-radius:99px;">
+                                </div>
                             </div>
-                        </td>
-                        <td><span class="fw-medium" style="color:#1a251e;">{{ tour.nombre }}</span></td>
-                        <td><span style="color:#2c6e3c; font-weight:600;">${{ tour.precio|floatformat:2 }}</span></td>
-                        <td>
-                            <span class="badge rounded-pill" style="background:#d1fae5; color:#065f46; font-size:0.78rem; padding:4px 10px;">
-                                {{ tour.numero_reservas }} <i class="bi bi-ticket-detailed ms-1"></i>
-                            </span>
-                        </td>
-                        <td style="min-width:120px;">
-                            <div style="font-size:0.7rem; color:#aaa; margin-bottom:3px;">{{ tour.numero_reservas }} reservas</div>
-                            <div class="progress-mini">
-                                <div class="progress-mini-bar" style="width: {{ tour.numero_reservas }}%;"></div>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="badge rounded-pill" style="background:#d1fae5; color:#065f46; font-size:0.72rem; padding:4px 10px;">
-                                <i class="bi bi-circle-fill me-1" style="font-size:0.45rem;"></i>Activo
-                            </span>
-                        </td>
-                    </tr>
-                    
-                    <tr>
-                        <td colspan="6" class="text-center py-5">
-                            <i class="bi bi-inbox" style="font-size:2rem; color:#ccc; display:block; margin-bottom:8px;"></i>
-                            <span style="color:#aaa; font-size:0.82rem;">Aún no hay datos de reservas registradas.</span>
-                        </td>
-                    </tr>
-                   
-                </tbody>
-            </table>
-        </div>
+                            <small class="text-muted" style="font-size:0.68rem;white-space:nowrap;">
+                                {{ tour.numero_reservas }}
+                            </small>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="badge rounded-pill"
+                              style="background:#d1fae5;color:#065f46;font-size:0.72rem;padding:4px 10px;">
+                            <i class="bi bi-circle-fill me-1" style="font-size:0.45rem;"></i>Activo
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5">
+                        <i class="bi bi-inbox d-block mb-2" style="font-size:2rem;color:#ccc;"></i>
+                        <span class="text-muted" style="font-size:0.82rem;">
+                            Aún no hay datos de reservas registradas.
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+</div>{# /table-card #}
 
-</div><!-- /main-content -->
-{% endblock %}
+{% endblock %}{# /content #}
+
 
 {% block extra_js %}
 <script>
-    // Fecha actual
-    document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-CO', {
+/* ──────────────────────────────────────────────────────
+   FECHA ACTUAL
+────────────────────────────────────────────────────── */
+document.getElementById('currentDate').textContent =
+    new Date().toLocaleDateString('es-CO', {
         weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
     });
 
-    const green1 = '#2c6e3c';
-    const green2 = '#4caf70';
-    const greenLight = 'rgba(76,175,112,0.12)';
 
-    // ── Gráfica ingresos mensuales (línea) ──
-    new Chart(document.getElementById('chartIngresos'), {
-        type: 'line',
-        data: {
-            labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-            datasets: [{
-                label: 'Ingresos',
-                data: [1200, 1900, 1500, 2400, 2100, 2800, 3200, 2900, 3500, 3100, 3800, 4200],
-                borderColor: green1,
-                backgroundColor: greenLight,
-                borderWidth: 2.5,
-                tension: 0.4,
-                fill: true,
-                pointBackgroundColor: green1,
-                pointRadius: 3,
-                pointHoverRadius: 6
-            }]
+/* ──────────────────────────────────────────────────────
+   PALETA
+────────────────────────────────────────────────────── */
+const C = {
+    green      : '#2c6e3c',
+    greenMid   : '#4caf70',
+    greenLight : 'rgba(76,175,112,0.12)',
+    amber      : '#f59e0b',
+    rose       : '#f43f5e',
+    gray       : '#f0f0f0',
+    textMuted  : '#aaa',
+};
+
+
+/* ──────────────────────────────────────────────────────
+   GRÁFICA 1 — Ingresos mensuales (línea)
+────────────────────────────────────────────────────── */
+const ctxIngresos = document.getElementById('chartIngresos');
+const chartIngresos = new Chart(ctxIngresos, {
+    type: 'line',
+    data: {
+        labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+        datasets: [{
+            label: 'Ingresos ($)',
+            data: [1200, 1900, 1500, 2400, 2100, 2800, 3200, 2900, 3500, 3100, 3800, 4200],
+            borderColor: C.green,
+            backgroundColor: C.greenLight,
+            borderWidth: 2.5,
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: C.green,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+        }],
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ' $' + ctx.parsed.y.toLocaleString('es-CO'),
+                }
+            }
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#aaa' } },
-                y: {
-                    grid: { color: '#f0f0f0' },
-                    ticks: {
-                        font: { size: 11 }, color: '#aaa',
-                        callback: v => '$' + v.toLocaleString()
-                    }
+        scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 11 }, color: C.textMuted } },
+            y: {
+                grid: { color: C.gray },
+                ticks: {
+                    font: { size: 11 }, color: C.textMuted,
+                    callback: v => '$' + v.toLocaleString('es-CO'),
                 }
             }
         }
-    });
+    }
+});
 
-    // ── Gráfica estado reservas (dona) ──
-    new Chart(document.getElementById('chartEstado'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Confirmadas', 'Pendientes', 'Canceladas'],
-            datasets: [{
-                data: [68, 24, 8],
-                backgroundColor: [green1, '#f59e0b', '#f43f5e'],
-                borderWidth: 0,
-                hoverOffset: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '68%',
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '%' }
+
+/* ──────────────────────────────────────────────────────
+   GRÁFICA 2 — Estado de reservas (dona)
+────────────────────────────────────────────────────── */
+const ctxEstado = document.getElementById('chartEstado');
+const chartEstado = new Chart(ctxEstado, {
+    type: 'doughnut',
+    data: {
+        labels: ['Confirmadas', 'Pendientes', 'Canceladas'],
+        datasets: [{
+            data: [
+                {{ reservas_confirmadas|default:68 }},
+                {{ reservas_pendientes|default:24 }},
+                {{ reservas_canceladas|default:8  }},
+            ],
+            backgroundColor: [C.green, C.amber, C.rose],
+            borderWidth: 0,
+            hoverOffset: 8,
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '68%',
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: {
+                    label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '%',
                 }
             }
         }
-    });
+    }
+});
 
-    // ── Gráfica reservas esta semana (barras) ──
-    new Chart(document.getElementById('chartSemana'), {
-        type: 'bar',
-        data: {
-            labels: ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],
-            datasets: [{
-                data: [4, 7, 5, 9, 6, 12, 8],
-                backgroundColor: [
-                    greenLight, greenLight, greenLight,
-                    greenLight, greenLight,
-                    green1, greenLight
-                ],
-                borderRadius: 6,
-                borderSkipped: false
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#aaa' } },
-                y: { display: false }
+
+/* ──────────────────────────────────────────────────────
+   GRÁFICA 3 — Reservas por día (barras)
+────────────────────────────────────────────────────── */
+const ctxSemana = document.getElementById('chartSemana');
+const dataSemana = [4, 7, 5, 9, 6, 12, 8];
+const maxSemana  = Math.max(...dataSemana);
+
+const chartSemana = new Chart(ctxSemana, {
+    type: 'bar',
+    data: {
+        labels: ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],
+        datasets: [{
+            label: 'Reservas',
+            data: dataSemana,
+            backgroundColor: dataSemana.map(v => v === maxSemana ? C.green : C.greenLight),
+            borderRadius: 6,
+            borderSkipped: false,
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                callbacks: { label: ctx => ' ' + ctx.parsed.y + ' reservas' }
             }
+        },
+        scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 11 }, color: C.textMuted } },
+            y: { display: false }
         }
-    });
+    }
+});
+
+
+/* ──────────────────────────────────────────────────────
+   EXPORTAR A PDF
+   Usa html2canvas para capturar el main-content
+   y jsPDF para generar el PDF en A4 horizontal.
+────────────────────────────────────────────────────── */
+document.getElementById('btnExportPdf').addEventListener('click', async function () {
+    const btn   = this;
+    const label = document.getElementById('exportLabel');
+
+    // Estado de carga
+    btn.classList.add('loading');
+    btn.querySelector('i').className = 'bi bi-hourglass-split';
+    label.textContent = 'Generando…';
+
+    try {
+        // Capturar el main-content completo
+        const target = document.querySelector('.main-content');
+
+        const canvas = await html2canvas(target, {
+            scale       : 2,          // alta resolución
+            useCORS     : true,
+            backgroundColor: '#f0f4f1',
+            logging     : false,
+            scrollY     : -window.scrollY,  // captura desde el top
+            windowWidth : target.scrollWidth,
+            windowHeight: target.scrollHeight,
+        });
+
+        const imgData  = canvas.toDataURL('image/jpeg', 0.92);
+        const { jsPDF } = window.jspdf;
+
+        // Crear PDF A4 horizontal
+        const pdf      = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+        const pdfW     = pdf.internal.pageSize.getWidth();
+        const pdfH     = pdf.internal.pageSize.getHeight();
+
+        const imgW     = canvas.width;
+        const imgH     = canvas.height;
+        const ratio    = pdfW / imgW;
+        const totalH   = imgH * ratio;   // alto total en mm
+        let   posY     = 0;
+
+        // Encabezado en cada página
+        const addHeader = (pageNum, totalPages) => {
+            pdf.setFillColor(26, 37, 30);
+            pdf.rect(0, 0, pdfW, 10, 'F');
+            pdf.setTextColor(255, 255, 255);
+            pdf.setFontSize(8);
+            pdf.setFont('helvetica', 'bold');
+            pdf.text('MONAGUA — Tablero de Rendimiento', 8, 6.5);
+            const fecha = new Date().toLocaleDateString('es-CO', { year:'numeric', month:'long', day:'numeric' });
+            pdf.text('Generado: ' + fecha + '   |   Página ' + pageNum + ' / ' + totalPages, pdfW - 8, 6.5, { align: 'right' });
+        };
+
+        // Cuántas páginas necesitamos
+        const totalPages = Math.ceil(totalH / pdfH);
+        let   pageNum    = 1;
+
+        while (posY < totalH) {
+            if (pageNum > 1) pdf.addPage();
+            addHeader(pageNum, totalPages);
+
+            // Altura de este "slice" de imagen
+            const sliceH = Math.min(pdfH - 10, totalH - posY);
+
+            // Recortar canvas para este slice
+            const sliceCanvas  = document.createElement('canvas');
+            const scaleRatio   = canvas.width / imgW; // siempre 1, pero explícito
+            sliceCanvas.width  = canvas.width;
+            sliceCanvas.height = Math.round((sliceH / ratio));
+
+            const sliceCtx = sliceCanvas.getContext('2d');
+            sliceCtx.drawImage(
+                canvas,
+                0, Math.round(posY / ratio),    // sx, sy (en px)
+                canvas.width, sliceCanvas.height,// sw, sh
+                0, 0,
+                sliceCanvas.width, sliceCanvas.height
+            );
+
+            const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
+            pdf.addImage(sliceData, 'JPEG', 0, 10, pdfW, sliceH);
+
+            posY    += sliceH;
+            pageNum += 1;
+        }
+
+        // Nombre de archivo con fecha
+        const fecha = new Date().toISOString().slice(0, 10);
+        pdf.save('monagua-dashboard-' + fecha + '.pdf');
+
+    } catch (err) {
+        console.error('Error al exportar:', err);
+        alert('Ocurrió un error al generar el PDF. Por favor intenta de nuevo.');
+    } finally {
+        // Restaurar botón
+        btn.classList.remove('loading');
+        btn.querySelector('i').className = 'bi bi-file-earmark-pdf-fill';
+        label.textContent = 'Exportar PDF';
+    }
+});
 </script>
 {% endblock %}

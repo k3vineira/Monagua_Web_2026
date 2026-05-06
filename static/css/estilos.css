@@ -1,22 +1,120 @@
+/* ============================================================
+   estilos.css — Monagua | CSS unificado y corregido
+   Estructura:
+     0. Variables Bootstrap + Custom
+     1. Reset y Body
+     2. Navbar (público)
+     3. Hero / Secciones públicas
+     4. Footer
+     5. Sidebar Admin
+     6. Main Content Admin
+     7. Top Bar
+     8. KPI Cards
+     9. Charts
+    10. Tables
+    11. Modals / Forms
+    12. Accesibilidad (botón + panel)
+    13. Panel Reportes Flotante
+    14. Responsive
+============================================================ */
+
+
+/* ── 0. VARIABLES ──────────────────────────────────────────── */
+
 :root {
+    /* Paleta Monagua - Verde */
     --verde-oscuro: #005215;
-    --verde-bosque: #318443;
+    --verde-bosque: #1a261f;
+    --verde-deep: #1a251e;
+    --verde-main: #2c6e3c;
+    --verde-mid: #406d46;
     --verde-medio: #5ABA73;
+    --verde-accent: #4caf70;
     --verde-claro: #96DCAA;
     --verde-menta: #CFFFE3;
+    --verde-light: #d1e7dd;
+    /* Layout */
+    --sidebar-w: 240px;
+    --bg-page: #f0f4f1;
+    /* Accesibilidad (tema oscuro por defecto) */
+    --a11y-bg: #0d1117;
+    --a11y-bg-surface: #161b22;
+    --a11y-bg-panel: #1c2128;
+    --a11y-bg-card: #21262d;
+    --a11y-bg-hover: #2d333b;
+    --a11y-border: rgba(255, 255, 255, 0.08);
+    --a11y-border-active: rgba(255, 255, 255, 0.2);
+    --a11y-text-primary: #e6edf3;
+    --a11y-text-secondary: #8b949e;
+    --a11y-text-muted: #484f58;
+    --a11y-accent: #3fb950;
+    --a11y-accent-dim: rgba(63, 185, 80, 0.15);
+    --a11y-accent-glow: rgba(63, 185, 80, 0.35);
+    --a11y-blue: #58a6ff;
+    --a11y-red: #f85149;
+    --a11y-red-dim: rgba(248, 81, 73, 0.12);
+    --a11y-radius: 10px;
+    --a11y-radius-sm: 6px;
+    --a11y-radius-lg: 14px;
+    --a11y-font-sans: 'DM Sans', sans-serif;
+    --a11y-font-mono: 'DM Mono', monospace;
+    --a11y-transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Barra de pagos (mantener compatibilidad) */
+    --primary-monagua: #ec5b13;
+    --fondo-sidebar: #151b2b;
+    --borde-gris: #e2e8f0;
 }
 
 
-/*  1. VARIABLES Y ESTILOS GLOBALES */
+/* ── Sobrescrituras Bootstrap para que use nuestra paleta ── */
+
+:root {
+    --bs-success: #2c6e3c;
+    --bs-success-rgb: 44, 110, 60;
+    --bs-link-color: #2c6e3c;
+    --bs-link-hover-color: #1a251e;
+    --bs-border-radius: 0.5rem;
+    --bs-border-radius-lg: 0.75rem;
+}
+
+
+/* ── 1. RESET Y BODY ─────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+
+/*
+  IMPORTANTE: el body global no lleva padding-top.
+  La página pública lo añade con la clase .pagina-publica.
+  El admin nunca lo necesita porque usa sidebar fijo.
+*/
 
 body {
     font-family: 'Poppins', sans-serif;
+    background-color: var(--bg-page);
     color: #333;
-    /* Crea el espacio necesario para que el menú no tape el contenido */
-    padding-top: 90px;
     margin: 0;
-    background-color: #f8f9fa;
     overflow-x: hidden;
+}
+
+
+/* Solo páginas públicas (las que tienen navbar fija) */
+
+body.pagina-publica {
+    padding-top: 90px;
+    background-color: #f8f9fa;
+}
+
+
+/* Solo admin (sidebar) — sin padding-top extra */
+
+body.pagina-admin {
+    padding-top: 0;
+    background-color: var(--bg-page);
 }
 
 .text-brand {
@@ -27,8 +125,12 @@ body {
     background-color: #1a261f;
 }
 
+.fw-black {
+    font-weight: 900;
+}
 
-/* 2. NAVEGACIÓN (NAVBAR)*/
+
+/* ── 2. NAVBAR (público) ─────────────────────────────────── */
 
 .navbar-custom {
     position: fixed;
@@ -36,7 +138,6 @@ body {
     width: 100%;
     z-index: 1050;
     padding: 10px 0;
-    /* Color actualizado a #1a261f */
     background-color: #1a261f !important;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
@@ -51,22 +152,18 @@ body {
 
 .navbar-custom .nav-link:hover {
     color: #4ade80 !important;
-    transition: 0.3s;
 }
 
 .navbar-toggler-icono-light {
     filter: invert(1);
 }
 
-
-/* Añade esto en tu sección 2 de NAVEGACIÓN */
-
 .barra-oculta {
     top: -120px !important;
 }
 
 
-/* 3. SECCIÓN HERO (SOLO PARA INDEX.HTML */
+/* ── 3. HERO / SECCIONES PÚBLICAS ────────────────────────── */
 
 .hero-section {
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/Fondo.jpg');
@@ -78,14 +175,11 @@ body {
     justify-content: center;
     text-align: center;
     width: 100%;
-    /* Sube la imagen para que ignore el padding del body solo en esta sección */
     margin-top: -90px;
-    /* Optimización de transición */
-    transition: filter 0.8s ease-in-out, background-image 0.1s ease-in;
+    transition: filter 0.8s ease-in-out;
     filter: brightness(1);
     will-change: filter;
     background-color: #000;
-    /* Fondo negro de seguridad mientras carga la siguiente imagen */
 }
 
 .hero-subtitle {
@@ -98,7 +192,7 @@ body {
 }
 
 
-/*  4. BOTONES */
+/* Botones públicos */
 
 .btn-brand {
     background-color: #3B643F;
@@ -120,7 +214,7 @@ body {
 }
 
 
-/* 5. TARJETAS Y EXPERIENCIAS */
+/* Tarjetas */
 
 .card-hover {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -143,7 +237,6 @@ body {
     justify-content: center;
     font-size: 1.5rem;
     margin-bottom: 1rem;
-    font-style: normal;
 }
 
 .tour-img {
@@ -156,7 +249,60 @@ body {
 }
 
 
-/* 6. FOOTER (PIE DE PÁGINA) */
+/* Formulario reserva */
+
+.titulo-principal {
+    color: #1a261f;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+}
+
+.img-full {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 400px;
+}
+
+.card-reserva {
+    border-radius: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.header-reserva {
+    color: #1a261f;
+    font-size: 1.5rem;
+}
+
+.subtitulo-formulario {
+    color: #3B643F;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.btn-confirmar {
+    background-color: #3B643F;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-confirmar:hover {
+    background-color: #2c4a2f;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.link-verde {
+    color: #3B643F;
+    font-weight: 600;
+}
+
+
+/* ── 4. FOOTER ───────────────────────────────────────────── */
 
 .footer {
     background-color: #1a261f;
@@ -195,9 +341,6 @@ body {
     color: #fff;
 }
 
-
-/* Estilo personalizado para el input y el botón */
-
 .footer .form-control {
     background-color: #7d8a7db6;
     border: 1px solid #505750b3;
@@ -208,7 +351,7 @@ body {
     background-color: #eaedef;
     border-color: #20c997;
     box-shadow: none;
-    color: #000000;
+    color: #000;
 }
 
 .btn-outline-custom {
@@ -226,87 +369,7 @@ body {
 }
 
 
-/* 2. ESTILOS DE LA SECCIÓN DE RESERVA */
-
-.titulo-principal {
-    color: #1a261f;
-    letter-spacing: 1px;
-    margin-bottom: 2rem;
-}
-
-.img-full {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    min-height: 400px;
-}
-
-
-/* 3. Estilos del Formulario de Reserva */
-
-.card-reserva {
-    border-radius: 15px;
-    border: 1px solid #e0e0e0;
-}
-
-.header-reserva {
-    color: #1a261f;
-    font-size: 1.5rem;
-}
-
-.subtitulo-formulario {
-    color: #3B643F;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: block;
-    margin-bottom: 10px;
-}
-
-
-/* 4. Inputs y Botón */
-
-.form-control-sm {
-    border-radius: 6px;
-    border: 1px solid #ced4da;
-    padding: 0.5rem;
-}
-
-.form-control-sm:focus {
-    border-color: #3B643F;
-    box-shadow: 0 0 0 0.25rem rgba(59, 100, 63, 0.1);
-}
-
-.btn-confirmar {
-    background-color: #3B643F;
-    color: white;
-    border: none;
-    transition: all 0.3s ease;
-}
-
-.btn-confirmar:hover {
-    background-color: #2c4a2f;
-    color: white;
-    transform: translateY(-2px);
-}
-
-.link-verde {
-    color: #3B643F;
-    font-weight: 600;
-}
-
-
-/*Estilos de pago
-            /* --- Variables --- */
-
- :root {
-    --primary-monagua: #ec5b13;
-    --fondo-sidebar: #151b2b;
-    --borde-gris: #e2e8f0;
-}
-
-
-/* --- Utilidades --- */
+/* Pagos */
 
 .text-primary-monagua {
     color: var(--primary-monagua) !important;
@@ -324,9 +387,6 @@ body {
     color: white;
 }
 
-
-/* --- Estilos de Pestañas (Tabs) --- */
-
 .nav-tabs .nav-link {
     border: none;
     color: #64748b;
@@ -339,24 +399,9 @@ body {
     border-bottom-color: var(--primary-monagua) !important;
 }
 
-
-/* --- Formulario --- */
-
-.form-control:focus {
-    border-color: var(--primary-monagua);
-    box-shadow: 0 0 0 0.25rem rgba(236, 91, 19, 0.1);
-}
-
 .alerta-seguridad {
     background-color: rgba(236, 91, 19, 0.05);
     border-color: rgba(236, 91, 19, 0.1) !important;
-}
-
-
-/* --- Resumen --- */
-
-.fw-black {
-    font-weight: 900;
 }
 
 .resumen-compra {
@@ -364,38 +409,7 @@ body {
 }
 
 
-/* --- Ajuste Sidebar (Mantenemos tu arreglo anterior) --- */
-
-.barra-lateral {
-    width: 260px;
-    min-width: 260px;
-    min-height: 100vh;
-    background-color: var(--fondo-sidebar);
-    position: sticky;
-    top: 0;
-}
-
-.enlace-menu {
-    text-decoration: none;
-    color: #9ca3af;
-    padding: 12px 15px;
-    border-radius: 10px;
-    margin: 0 10px 5px;
-}
-
-.enlace-menu.activo {
-    background-color: var(--primary-monagua);
-    color: white !important;
-}
-
-.icono-menu {
-    width: 30px;
-    text-align: center;
-    margin-right: 10px;
-}
-
-
-/* --- Historial de Pagos --- */
+/* Historial de pagos */
 
 .tabla-pagos {
     background: white;
@@ -433,522 +447,38 @@ body {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   GUIAS.CSS — Estilos específicos de la página Gestión de Guías
-   Requiere: base.css
-   Monagua Admin Panel
-   ═══════════════════════════════════════════════════════════ */
+/* Sidebar pagos */
 
-
-/* ─── SEARCH & FILTER BAR ─── */
-
-.filter-bar {
-    background: #fff;
-    border-radius: 14px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
+.barra-lateral {
+    width: 260px;
+    min-width: 260px;
+    min-height: 100vh;
+    background-color: var(--fondo-sidebar);
+    position: sticky;
+    top: 0;
 }
 
-.filter-bar .search-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 220px;
+.enlace-menu {
+    text-decoration: none;
+    color: #9ca3af;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin: 0 10px 5px;
 }
 
-.filter-bar .search-wrap i {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #aaa;
-    font-size: 0.9rem;
+.enlace-menu.activo {
+    background-color: var(--primary-monagua);
+    color: white !important;
 }
 
-.filter-bar input[type="text"] {
-    width: 100%;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 0.45rem 0.9rem 0.45rem 2.2rem;
-    font-size: 0.82rem;
-    color: #444;
-    font-family: 'Poppins', sans-serif;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.filter-bar input[type="text"]:focus {
-    border-color: var(--verde-accent);
-}
-
-.filter-bar select {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 0.45rem 0.9rem;
-    font-size: 0.82rem;
-    color: #444;
-    font-family: 'Poppins', sans-serif;
-    outline: none;
-    background: #fff;
-    cursor: pointer;
-    transition: border-color 0.2s;
-}
-
-.filter-bar select:focus {
-    border-color: var(--verde-accent);
-}
-
-
-/* ─── GUIDE AVATAR & INFO ─── */
-
-.guide-avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #fff;
-    flex-shrink: 0;
-}
-
-.guide-name {
-    font-weight: 600;
-    color: var(--verde-deep);
-    font-size: 0.85rem;
-}
-
-.guide-email {
-    font-size: 0.72rem;
-    color: #aaa;
-}
-
-
-/* ─── BADGES ESPECIALIDAD ─── */
-
-.badge-especialidad {
-    font-size: 0.7rem;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-}
-
-.badge-activo {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.badge-inactivo {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.badge-esp-montana {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.badge-esp-flora {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.badge-esp-cultura {
-    background: #ede9fe;
-    color: #5b21b6;
-}
-
-.badge-esp-aventura {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.badge-esp-avifauna {
-    background: #e0f2fe;
-    color: #075985;
-}
-
-.badge-esp-historia {
-    background: #fce7f3;
-    color: #9d174d;
-}
-
-
-/* ─── ACTION BUTTONS ─── */
-
-.btn-action {
-    border: none;
-    border-radius: 7px;
-    padding: 5px 9px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.18s;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-family: 'Poppins', sans-serif;
-}
-
-.btn-edit {
-    background: #dbeafe;
-    color: #1d4ed8;
-}
-
-.btn-edit:hover {
-    background: #bfdbfe;
-}
-
-.btn-deact {
-    background: #fef3c7;
-    color: #b45309;
-}
-
-.btn-deact:hover {
-    background: #fde68a;
-}
-
-.btn-act {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.btn-act:hover {
-    background: #a7f3d0;
-}
-
-
-/* ─── LOADING SPINNER EN MODAL ─── */
-
-.modal-loading {
-    display: none;
+.icono-menu {
+    width: 30px;
     text-align: center;
-    padding: 2rem;
-    color: var(--verde-main);
-}
-
-.modal-loading.show {
-    display: block;
-}
-
-.modal-form-body {
-    transition: opacity 0.2s;
-}
-
-.modal-form-body.loading {
-    opacity: 0.3;
-    pointer-events: none;
+    margin-right: 10px;
 }
 
 
-/* ─── PAGINATION ─── */
-
-.pagination-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.9rem 1.25rem;
-    border-top: 1px solid #f0f0f0;
-}
-
-.pagination-info {
-    font-size: 0.78rem;
-    color: #aaa;
-}
-
-.pagination .page-link {
-    font-size: 0.78rem;
-    color: var(--verde-main);
-    border-color: #e5e7eb;
-    border-radius: 7px !important;
-    margin: 0 2px;
-    padding: 5px 11px;
-}
-
-.pagination .page-item.active .page-link {
-    background: var(--verde-main);
-    border-color: var(--verde-main);
-    color: #fff;
-}
-
-
-/* ─── DISPONIBILIDAD DOT ─── */
-
-.disponibilidad-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
-}
-
-.disp-disponible {
-    background: #10b981;
-}
-
-.disp-ocupado {
-    background: #f59e0b;
-}
-
-.disp-inactivo {
-    background: #9ca3af;
-}
-
-
-/* ═══════════════════════════════════════════════════════════
-   DASHBOARD.CSS — Estilos específicos del Dashboard
-   Requiere: base.css
-   Monagua Admin Panel
-   ═══════════════════════════════════════════════════════════ */
-
-
-/* ─── CHARTS GRID ─── */
-
-.charts-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.chart-card {
-    background: #fff;
-    border-radius: 14px;
-    padding: 1.25rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.chart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.chart-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--verde-deep);
-}
-
-.chart-subtitle {
-    font-size: 0.72rem;
-    color: #aaa;
-}
-
-.chart-badge {
-    font-size: 0.7rem;
-    background: var(--verde-light);
-    color: var(--verde-main);
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 600;
-}
-
-
-/* Contenedores fijos para gráficas (evita crecimiento infinito) */
-
-.chart-container {
-    position: relative;
-    width: 100%;
-    margin-top: 12px;
-}
-
-.chart-container.ingresos {
-    height: 320px;
-}
-
-.chart-container.estado {
-    height: 320px;
-}
-
-.chart-container.semana {
-    height: 220px;
-}
-
-
-/* ─── BOTTOM ROW ─── */
-
-.bottom-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-
-/* ─── ACTIVITY FEED ─── */
-
-.activity-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid #f1f1f1;
-}
-
-.activity-item:last-child {
-    border-bottom: none;
-}
-
-.activity-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-top: 5px;
-    flex-shrink: 0;
-}
-
-.activity-dot.green {
-    background: var(--verde-accent);
-}
-
-.activity-dot.blue {
-    background: #3b82f6;
-}
-
-.activity-dot.amber {
-    background: #f59e0b;
-}
-
-.activity-text {
-    font-size: 0.8rem;
-    color: #444;
-    line-height: 1.4;
-}
-
-.activity-time {
-    font-size: 0.7rem;
-    color: #bbb;
-    margin-top: 2px;
-}
-
-
-/* ─── MINI STAT CARDS ─── */
-
-.mini-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-}
-
-.mini-stat {
-    background: #fff;
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-    text-align: center;
-}
-
-.mini-stat-val {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--verde-deep);
-}
-
-.mini-stat-lbl {
-    font-size: 0.7rem;
-    color: #aaa;
-    margin-top: 2px;
-}
-
-
-/* ─── POPULAR TOURS TABLE (específico del dashboard) ─── */
-
-.rank-badge {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.72rem;
-    font-weight: 700;
-}
-
-.rank-1 {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.rank-2 {
-    background: #f1f5f9;
-    color: #475569;
-}
-
-.rank-3 {
-    background: #fce7f3;
-    color: #9d174d;
-}
-
-.rank-n {
-    background: #f3f4f6;
-    color: #6b7280;
-}
-
-.progress-mini {
-    height: 5px;
-    border-radius: 99px;
-    background: #f0f0f0;
-    margin-top: 4px;
-}
-
-.progress-mini-bar {
-    height: 5px;
-    border-radius: 99px;
-    background: linear-gradient(90deg, var(--verde-accent), var(--verde-main));
-}
-
-
-/* ─── RESPONSIVE DASHBOARD ─── */
-
-@media (max-width: 1100px) {
-    .charts-grid {
-        grid-template-columns: 1fr;
-    }
-    .bottom-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-
-/* ═══════════════════════════════════════════════════════════
-   BASE.CSS — Estilos compartidos para todas las páginas admin
-   Monagua Admin Panel
-   ═══════════════════════════════════════════════════════════ */
-
-
-/* ─── VARIABLES DE COLOR ─── */
-
-:root {
-    --verde-deep: #1a251e;
-    --verde-main: #2c6e3c;
-    --verde-mid: #406d46;
-    --verde-light: #d1e7dd;
-    --verde-accent: #4caf70;
-    --bg-page: #f0f4f1;
-    --sidebar-w: 240px;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--bg-page);
-    margin: 0;
-    overflow-x: hidden;
-}
-
-
-/* ─── SIDEBAR ─── */
+/* ── 5. SIDEBAR ADMIN ────────────────────────────────────── */
 
 .sidebar {
     position: fixed;
@@ -959,46 +489,33 @@ body {
     background: linear-gradient(180deg, var(--verde-deep) 0%, #1f3326 60%, #162b1e 100%);
     display: flex;
     flex-direction: column;
-    z-index: 100;
+    z-index: 1030;
+    /* mismo nivel que Bootstrap navbar */
     padding: 0 0 1rem;
     box-shadow: 4px 0 20px rgba(0, 0, 0, 0.18);
-}
-
-
-/* 1. Habilitar el scroll vertical en el sidebar */
-
-.sidebar {
-    /* Asegúrate de tener un alto definido, por ejemplo: */
-    height: 100vh;
-    /* Esta es la regla mágica que habilita la barrita cuando el contenido se desborda: */
     overflow-y: auto;
-    /* Para evitar que el scroll horizontal aparezca por accidente: */
     overflow-x: hidden;
+    transition: transform 0.3s ease;
 }
 
 
-/* 2. Personalizar la "barrita" para que se vea moderna (Estilos para navegadores WebKit como Chrome/Edge/Safari) */
+/* Scrollbar del sidebar */
 
 .sidebar::-webkit-scrollbar {
-    width: 6px;
-    /* Hace la barra más delgada y estética */
+    width: 4px;
 }
 
 .sidebar::-webkit-scrollbar-track {
     background: transparent;
-    /* Fondo transparente para no dañar tu diseño */
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background-color: rgba(150, 150, 150, 0.4);
-    /* Color gris semitransparente. Cámbialo si tu sidebar es oscuro (ej: rgba(255,255,255,0.2)) */
+    background-color: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
-    /* Bordes redondeados */
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(150, 150, 150, 0.7);
-    /* Se oscurece un poco cuando pasas el mouse */
+    background-color: rgba(255, 255, 255, 0.35);
 }
 
 .sidebar-brand {
@@ -1008,6 +525,7 @@ body {
     padding: 1.4rem 1.4rem 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     margin-bottom: 0.5rem;
+    text-decoration: none;
 }
 
 .sidebar-brand img {
@@ -1135,22 +653,63 @@ body {
 }
 
 
-/* ─── MAIN CONTENT ─── */
+/* Botón hamburguesa (móvil) */
+
+#sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 1040;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--verde-main);
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: background 0.2s;
+}
+
+#sidebar-toggle:hover {
+    background: var(--verde-deep);
+}
+
+
+/* Overlay para cerrar sidebar en móvil */
+
+#sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1029;
+}
+
+
+/* ── 6. MAIN CONTENT ADMIN ───────────────────────────────── */
 
 .main-content {
     margin-left: var(--sidebar-w);
     min-height: 100vh;
     padding: 2rem;
+    /* Sin padding-top extra — el topbar lo gestiona */
 }
 
 
-/* ─── TOP BAR ─── */
+/* ── 7. TOP BAR ──────────────────────────────────────────── */
 
 .topbar {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    margin-bottom: 2rem;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .topbar-title h2 {
@@ -1170,6 +729,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .date-badge {
@@ -1184,6 +744,38 @@ body {
     gap: 6px;
 }
 
+
+/* Botón exportar — ahora activa la descarga PDF */
+
+.btn-export {
+    background: var(--verde-main);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.45rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.btn-export:hover {
+    background: var(--verde-mid);
+    color: #fff;
+}
+
+.btn-export:active {
+    transform: scale(0.97);
+}
+
+.btn-export.loading {
+    opacity: 0.75;
+    pointer-events: none;
+}
+
 .btn-primary-custom {
     background: var(--verde-main);
     color: #fff;
@@ -1192,7 +784,7 @@ body {
     padding: 0.45rem 1.1rem;
     font-size: 0.82rem;
     font-weight: 500;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
     cursor: pointer;
@@ -1206,33 +798,11 @@ body {
 }
 
 
-/* btn-export (usado en dashboard) */
-
-.btn-export {
-    background: var(--verde-main);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 0.45rem 1rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-export:hover {
-    background: var(--verde-mid);
-}
-
-
-/* ─── KPI CARDS (compartido entre dashboard y todas las secciones) ─── */
+/* ── 8. KPI CARDS ────────────────────────────────────────── */
 
 .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
@@ -1246,6 +816,7 @@ body {
     position: relative;
     overflow: hidden;
     transition: transform 0.25s, box-shadow 0.25s;
+    animation: fadeUp 0.4s ease both;
 }
 
 .kpi-card:hover {
@@ -1277,6 +848,26 @@ body {
 
 .kpi-card.rose::before {
     background: #f43f5e;
+}
+
+.kpi-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.kpi-card:nth-child(2) {
+    animation-delay: 0.10s;
+}
+
+.kpi-card:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.kpi-card:nth-child(4) {
+    animation-delay: 0.20s;
+}
+
+.kpi-card:nth-child(5) {
+    animation-delay: 0.25s;
 }
 
 .kpi-icon {
@@ -1344,7 +935,157 @@ body {
 }
 
 
-/* ─── TABLE CARD BASE (cabecera verde compartida) ─── */
+/* ── 9. CHARTS ───────────────────────────────────────────── */
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.chart-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    animation: fadeUp 0.4s 0.25s ease both;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.chart-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--verde-deep);
+}
+
+.chart-subtitle {
+    font-size: 0.72rem;
+    color: #aaa;
+}
+
+.chart-badge {
+    font-size: 0.7rem;
+    background: var(--verde-light);
+    color: var(--verde-main);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+
+/* Contenedores de canvas con altura fija (evita redimensionado infinito) */
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    margin-top: 12px;
+}
+
+.chart-container.ingresos {
+    height: 300px;
+}
+
+.chart-container.estado {
+    height: 300px;
+}
+
+.chart-container.semana {
+    height: 200px;
+}
+
+
+/* Mini stats */
+
+.mini-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.mini-stat {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    text-align: center;
+}
+
+.mini-stat-val {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--verde-deep);
+}
+
+.mini-stat-lbl {
+    font-size: 0.7rem;
+    color: #aaa;
+    margin-top: 2px;
+}
+
+
+/* Activity feed */
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+}
+
+.activity-dot.green {
+    background: var(--verde-accent);
+}
+
+.activity-dot.blue {
+    background: #3b82f6;
+}
+
+.activity-dot.amber {
+    background: #f59e0b;
+}
+
+.activity-text {
+    font-size: 0.8rem;
+    color: #444;
+    line-height: 1.4;
+}
+
+.activity-time {
+    font-size: 0.7rem;
+    color: #bbb;
+    margin-top: 2px;
+}
+
+
+/* ── 10. TABLES ──────────────────────────────────────────── */
 
 .table-card {
     background: #fff;
@@ -1352,6 +1093,7 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     margin-bottom: 1.5rem;
+    animation: fadeUp 0.4s 0.30s ease both;
 }
 
 .table-card-header {
@@ -1397,7 +1139,279 @@ body {
 }
 
 
-/* ─── MODAL BASE ─── */
+/* Rank badges */
+
+.rank-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.rank-1 {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.rank-2 {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.rank-3 {
+    background: #fce7f3;
+    color: #9d174d;
+}
+
+.rank-n {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+
+/* Progress bars */
+
+.progress-mini {
+    height: 5px;
+    border-radius: 99px;
+    background: #f0f0f0;
+    margin-top: 4px;
+}
+
+.progress-mini-bar {
+    height: 5px;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--verde-accent), var(--verde-main));
+}
+
+
+/* ── GUÍAS ──────────────────────────────────────────────── */
+
+.filter-bar {
+    background: #fff;
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.4s 0.22s ease both;
+}
+
+.filter-bar .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-bar .search-wrap i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+.filter-bar input[type="text"] {
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.45rem 0.9rem 0.45rem 2.2rem;
+    font-size: 0.82rem;
+    color: #444;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.filter-bar input[type="text"]:focus {
+    border-color: var(--verde-accent);
+}
+
+.filter-bar select {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.82rem;
+    color: #444;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+    background: #fff;
+    cursor: pointer;
+}
+
+.filter-bar select:focus {
+    border-color: var(--verde-accent);
+}
+
+.guide-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.guide-name {
+    font-weight: 600;
+    color: var(--verde-deep);
+    font-size: 0.85rem;
+}
+
+.guide-email {
+    font-size: 0.72rem;
+    color: #aaa;
+}
+
+.badge-especialidad {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-activo {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge-inactivo {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.badge-esp-montana {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-esp-flora {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge-esp-cultura {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+.badge-esp-aventura {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-esp-avifauna {
+    background: #e0f2fe;
+    color: #075985;
+}
+
+.badge-esp-historia {
+    background: #fce7f3;
+    color: #9d174d;
+}
+
+.btn-action {
+    border: none;
+    border-radius: 7px;
+    padding: 5px 9px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-edit {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.btn-edit:hover {
+    background: #bfdbfe;
+}
+
+.btn-deact {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.btn-deact:hover {
+    background: #fde68a;
+}
+
+.btn-act {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.btn-act:hover {
+    background: #a7f3d0;
+}
+
+.disponibilidad-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.disp-disponible {
+    background: #10b981;
+}
+
+.disp-ocupado {
+    background: #f59e0b;
+}
+
+.disp-inactivo {
+    background: #9ca3af;
+}
+
+.pagination-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1.25rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.pagination-info {
+    font-size: 0.78rem;
+    color: #aaa;
+}
+
+.pagination .page-link {
+    font-size: 0.78rem;
+    color: var(--verde-main);
+    border-color: #e5e7eb;
+    border-radius: 7px !important;
+    margin: 0 2px;
+    padding: 5px 11px;
+}
+
+.pagination .page-item.active .page-link {
+    background: var(--verde-main);
+    border-color: var(--verde-main);
+    color: #fff;
+}
+
+
+/* ── 11. MODALS / FORMS ──────────────────────────────────── */
 
 .modal-content {
     border-radius: 16px;
@@ -1432,6 +1446,26 @@ body {
     border-top: 1px solid #f0f0f0;
 }
 
+.modal-loading {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+    color: var(--verde-main);
+}
+
+.modal-loading.show {
+    display: block;
+}
+
+.modal-form-body {
+    transition: opacity 0.2s;
+}
+
+.modal-form-body.loading {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
 .form-label {
     font-size: 0.78rem;
     font-weight: 600;
@@ -1455,6 +1489,17 @@ body {
 .form-select:focus {
     border-color: var(--verde-accent);
     box-shadow: 0 0 0 3px rgba(76, 175, 112, 0.15);
+}
+
+.form-control-sm {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 0.5rem;
+}
+
+.form-control-sm:focus {
+    border-color: #3B643F;
+    box-shadow: 0 0 0 0.25rem rgba(59, 100, 63, 0.1);
 }
 
 .form-section-title {
@@ -1481,7 +1526,6 @@ body {
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s;
-    font-family: 'Poppins', sans-serif;
 }
 
 .btn-save:hover {
@@ -1498,22 +1542,15 @@ body {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
-    font-family: 'Poppins', sans-serif;
 }
 
 .btn-cancel:hover {
     background: #e5e7eb;
 }
 
-
-/* ─── TOAST ─── */
-
 .toast-container {
     z-index: 9999;
 }
-
-
-/* ─── EMPTY STATE ─── */
 
 .empty-state {
     text-align: center;
@@ -1534,109 +1571,10 @@ body {
 }
 
 
-/* ─── ANIMATIONS ─── */
-
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.kpi-card {
-    animation: fadeUp 0.4s ease both;
-}
-
-.kpi-card:nth-child(1) {
-    animation-delay: 0.05s;
-}
-
-.kpi-card:nth-child(2) {
-    animation-delay: 0.10s;
-}
-
-.kpi-card:nth-child(3) {
-    animation-delay: 0.15s;
-}
-
-.kpi-card:nth-child(4) {
-    animation-delay: 0.20s;
-}
-
-.filter-bar {
-    animation: fadeUp 0.4s 0.22s ease both;
-}
-
-.table-card {
-    animation: fadeUp 0.4s 0.30s ease both;
-}
-
-.chart-card {
-    animation: fadeUp 0.4s 0.25s ease both;
-}
+/* ── 12. ACCESIBILIDAD ───────────────────────────────────── */
 
 
-/* ─── RESPONSIVE ─── */
-
-@media (max-width: 1100px) {
-    .kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        display: none;
-    }
-    .main-content {
-        margin-left: 0;
-        padding: 1rem;
-    }
-    .kpi-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-
-/* ============================================================
-   estilos.css — Monagua Admin
-   Panel de accesibilidad — versión corregida
-   ============================================================ */
-
-
-/* ── VARIABLES BASE (tema oscuro por defecto) ─────────────────── */
-
-:root {
-    --a11y-bg: #0d1117;
-    --a11y-bg-surface: #161b22;
-    --a11y-bg-panel: #1c2128;
-    --a11y-bg-card: #21262d;
-    --a11y-bg-hover: #2d333b;
-    --a11y-border: rgba(255, 255, 255, 0.08);
-    --a11y-border-active: rgba(255, 255, 255, 0.2);
-    --a11y-text-primary: #e6edf3;
-    --a11y-text-secondary: #8b949e;
-    --a11y-text-muted: #484f58;
-    --a11y-accent: #3fb950;
-    --a11y-accent-dim: rgba(63, 185, 80, 0.15);
-    --a11y-accent-glow: rgba(63, 185, 80, 0.35);
-    --a11y-blue: #58a6ff;
-    --a11y-red: #f85149;
-    --a11y-red-dim: rgba(248, 81, 73, 0.12);
-    --a11y-radius: 10px;
-    --a11y-radius-sm: 6px;
-    --a11y-radius-lg: 14px;
-    --a11y-font-sans: 'DM Sans', sans-serif;
-    --a11y-font-mono: 'DM Mono', monospace;
-    --a11y-transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-
-/* ── TEMAS ────────────────────────────────────────────────────── */
+/* Temas */
 
 body.theme-light {
     --a11y-bg: #f6f8fa;
@@ -1684,17 +1622,17 @@ body.theme-sepia {
 }
 
 body.theme-contrast {
-    --a11y-bg: #000000;
+    --a11y-bg: #000;
     --a11y-bg-surface: #0a0a0a;
     --a11y-bg-panel: #0a0a0a;
-    --a11y-bg-card: #111111;
+    --a11y-bg-card: #111;
     --a11y-bg-hover: #1a1a1a;
     --a11y-border: rgba(255, 255, 255, 0.3);
-    --a11y-border-active: #ffffff;
-    --a11y-text-primary: #ffffff;
-    --a11y-text-secondary: #dddddd;
-    --a11y-text-muted: #aaaaaa;
-    --a11y-accent: #ffff00;
+    --a11y-border-active: #fff;
+    --a11y-text-primary: #fff;
+    --a11y-text-secondary: #ddd;
+    --a11y-text-muted: #aaa;
+    --a11y-accent: #ff0;
     --a11y-accent-dim: rgba(255, 255, 0, 0.15);
 }
 
@@ -1714,7 +1652,7 @@ body.theme-dalton {
 }
 
 
-/* ── CLASES DE ACCESIBILIDAD (afectan tu sitio) ───────────────── */
+/* Clases de accesibilidad */
 
 body.font-serif .a11y-target {
     font-family: 'Georgia', serif;
@@ -1725,13 +1663,13 @@ body.font-mono .a11y-target {
 }
 
 body.font-dyslexia .a11y-target {
-    font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+    font-family: 'Comic Sans MS', cursive;
     letter-spacing: 0.05em;
     word-spacing: 0.15em;
 }
 
 body.font-humanist .a11y-target {
-    font-family: 'Verdana', 'Geneva', sans-serif;
+    font-family: 'Verdana', sans-serif;
 }
 
 body.spacing-compact .a11y-target {
@@ -1782,24 +1720,26 @@ body.highlight-links a {
 }
 
 
-/* ── BOTÓN FLOTANTE ───────────────────────────────────────────── */
+/* Botón accesibilidad — z-index por encima del sidebar pero debajo de los modals */
 
 #a11y-btn {
     position: fixed;
     bottom: 28px;
     right: 28px;
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     background: var(--a11y-accent);
     border: none;
     cursor: pointer;
-    z-index: 9999;
+    z-index: 1035;
+    /* por encima del sidebar (1030) pero debajo de modal (1055) */
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform var(--a11y-transition), box-shadow var(--a11y-transition);
     animation: a11y-pulse 2.5s ease-out infinite;
+    box-shadow: 0 4px 14px rgba(63, 185, 80, 0.4);
 }
 
 @keyframes a11y-pulse {
@@ -1829,25 +1769,21 @@ body.highlight-links a {
 }
 
 
-/* ── PANEL ────────────────────────────────────────────────────── */
+/* Panel accesibilidad */
 
 #a11y-panel {
     position: fixed;
     right: 24px;
-    bottom: 96px;
-    /* posición base — JS la ajusta si no cabe */
+    bottom: 92px;
     width: 340px;
-    /* ✅ CORRECCIÓN CLAVE: altura máxima dinámica según el viewport    */
-    /* Nunca puede superar la pantalla menos 16px de margen arriba/abajo */
-    max-height: calc(100vh - 112px);
+    max-height: calc(100vh - 120px);
     display: flex;
     flex-direction: column;
-    /* permite que el body haga scroll sin cortar tabs/header */
     background: var(--a11y-bg-panel);
     border: 1px solid var(--a11y-border-active);
     border-radius: var(--a11y-radius-lg);
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
-    z-index: 9998;
+    z-index: 1036;
     overflow: hidden;
     transform: translateY(16px) scale(0.97);
     opacity: 0;
@@ -1862,13 +1798,9 @@ body.highlight-links a {
     pointer-events: all;
 }
 
-
-/* Tabs — fijos arriba, nunca se cortan */
-
 .a11y-panel-tabs {
     display: flex;
     flex-shrink: 0;
-    /* ✅ no se encoge cuando el panel es pequeño */
     background: var(--a11y-bg-card);
     border-bottom: 1px solid var(--a11y-border);
 }
@@ -1900,14 +1832,10 @@ body.highlight-links a {
     background: var(--a11y-bg-panel);
 }
 
-
-/* Header — fijo, no se encoge */
-
 .a11y-panel-header {
     padding: 1rem 1.1rem 0.75rem;
     display: flex;
     flex-shrink: 0;
-    /* ✅ */
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--a11y-border);
@@ -1951,18 +1879,13 @@ body.highlight-links a {
     background: var(--a11y-red-dim);
 }
 
-
-/* Body — ✅ ocupa el espacio restante y hace scroll si el contenido no cabe */
-
 .a11y-panel-body {
     padding: 1rem 1.1rem;
     flex: 1;
-    /* ocupa todo el espacio entre header y status bar */
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: var(--a11y-border-active) transparent;
-    /* sin max-height fijo — el panel padre lo controla */
 }
 
 .a11y-tab-content {
@@ -1972,9 +1895,6 @@ body.highlight-links a {
 .a11y-tab-content.active {
     display: block;
 }
-
-
-/* Secciones */
 
 .a11y-section {
     margin-bottom: 1.25rem;
@@ -1995,9 +1915,6 @@ body.highlight-links a {
     align-items: center;
     gap: 6px;
 }
-
-
-/* Chips de tema */
 
 .a11y-theme-grid-wrap {
     padding-bottom: 1.4rem;
@@ -2067,9 +1984,6 @@ body.highlight-links a {
     pointer-events: none;
 }
 
-
-/* Sliders */
-
 .a11y-slider-row {
     display: flex;
     align-items: center;
@@ -2118,9 +2032,6 @@ body.highlight-links a {
     transform: scale(1.2);
 }
 
-
-/* Botones de opción */
-
 .a11y-opt-group {
     display: flex;
     gap: 6px;
@@ -2152,9 +2063,6 @@ body.highlight-links a {
     border-color: var(--a11y-accent);
     color: var(--a11y-accent);
 }
-
-
-/* Toggles */
 
 .a11y-toggle-row {
     display: flex;
@@ -2230,9 +2138,6 @@ body.highlight-links a {
     transform: translateX(16px);
 }
 
-
-/* Atajos */
-
 .a11y-shortcut-row {
     display: flex;
     align-items: center;
@@ -2267,13 +2172,9 @@ body.highlight-links a {
     letter-spacing: 0.04em;
 }
 
-
-/* Status bar — fija abajo, no se encoge */
-
 .a11y-status-bar {
     display: flex;
     flex-shrink: 0;
-    /* ✅ */
     align-items: center;
     gap: 6px;
     padding: 0.6rem 1.1rem;
@@ -2304,9 +2205,6 @@ body.highlight-links a {
         opacity: 0.3;
     }
 }
-
-
-/* Toast */
 
 #a11y-toast {
     position: fixed;
@@ -2345,41 +2243,13 @@ body.highlight-links a {
 }
 
 
-/* ── RESPONSIVE ───────────────────────────────────────────────── */
-
-@media (max-width: 600px) {
-    #a11y-panel {
-        right: 12px;
-        left: 12px;
-        width: auto;
-        max-height: calc(100vh - 100px);
-    }
-    #a11y-btn {
-        bottom: 20px;
-        right: 20px;
-    }
-}
-
-.main-content {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-    padding: 1.5rem !important;
-}
-
-
-/* ══════════════════════════════════════════════════════════════
-   reportes.css — Estilos del Panel Flotante de Reportes
-   Complementa estilos.css. Paleta Monagua verde.
-════════════════════════════════════════════════════════════════ */
-
-
-/* ── Botón flotante de apertura ───────────────────────────── */
+/* ── 13. PANEL REPORTES FLOTANTE ─────────────────────────── */
 
 .btn-reportes-flotante {
     position: fixed;
     bottom: 5.5rem;
     right: 1.5rem;
-    z-index: 1040;
+    z-index: 1034;
     width: 54px;
     height: 54px;
     border-radius: 50%;
@@ -2393,16 +2263,12 @@ body.highlight-links a {
     box-shadow: 0 4px 18px rgba(49, 132, 67, 0.45);
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    position: fixed;
 }
 
 .btn-reportes-flotante:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 24px rgba(49, 132, 67, 0.6);
 }
-
-
-/* Contador de reportes pendientes (badge rojo) */
 
 .reportes-badge {
     position: absolute;
@@ -2420,11 +2286,7 @@ body.highlight-links a {
     justify-content: center;
     padding: 0 4px;
     border: 2px solid #fff;
-    font-family: 'Poppins', sans-serif;
 }
-
-
-/* ── Overlay oscuro ───────────────────────────────────────── */
 
 .overlay-reportes {
     position: fixed;
@@ -2441,14 +2303,10 @@ body.highlight-links a {
     pointer-events: all;
 }
 
-
-/* ── Panel lateral ────────────────────────────────────────── */
-
 .panel-reportes {
     position: fixed;
     top: 0;
     right: -420px;
-    /* Oculto fuera de pantalla */
     width: 400px;
     max-width: 96vw;
     height: 100vh;
@@ -2466,9 +2324,6 @@ body.highlight-links a {
     right: 0;
 }
 
-
-/* ── Cabecera ─────────────────────────────────────────────── */
-
 .panel-reportes-header {
     display: flex;
     align-items: center;
@@ -2479,7 +2334,6 @@ body.highlight-links a {
 }
 
 .panel-reportes-titulo {
-    font-family: 'Poppins', sans-serif;
     font-size: 0.95rem;
     font-weight: 700;
     color: #fff;
@@ -2507,9 +2361,6 @@ body.highlight-links a {
     background: rgba(255, 255, 255, 0.25);
 }
 
-
-/* ── Filtros rápidos ──────────────────────────────────────── */
-
 .panel-reportes-filtros {
     display: flex;
     gap: 6px;
@@ -2520,7 +2371,6 @@ body.highlight-links a {
 }
 
 .filtro-reporte-btn {
-    font-family: 'Poppins', sans-serif;
     font-size: 0.75rem;
     font-weight: 600;
     padding: 5px 13px;
@@ -2543,9 +2393,6 @@ body.highlight-links a {
     color: #fff;
 }
 
-
-/* ── Lista de reportes ────────────────────────────────────── */
-
 .panel-reportes-lista {
     flex: 1;
     overflow-y: auto;
@@ -2567,9 +2414,6 @@ body.highlight-links a {
     background: #96DCAA;
     border-radius: 10px;
 }
-
-
-/* ── Tarjeta de reporte mini ──────────────────────────────── */
 
 .reporte-card-mini {
     background: #fff;
@@ -2622,12 +2466,7 @@ body.highlight-links a {
 .reporte-fecha-mini {
     font-size: 0.72rem;
     color: #9ca3af;
-    display: flex;
-    align-items: center;
 }
-
-
-/* Badges de estado mini */
 
 .badge-estado-reporte {
     font-size: 0.68rem;
@@ -2644,11 +2483,6 @@ body.highlight-links a {
     color: #92400e;
 }
 
-.badge-en\ proceso {
-    background: #dbeafe;
-    color: #1d4ed8;
-}
-
 .badge-resuelto {
     background: #d1fae5;
     color: #065f46;
@@ -2658,9 +2492,6 @@ body.highlight-links a {
     background: #fee2e2;
     color: #991b1b;
 }
-
-
-/* Tipo mini */
 
 .reporte-tipo-mini {
     font-size: 0.75rem;
@@ -2673,9 +2504,6 @@ body.highlight-links a {
     margin-bottom: 6px;
 }
 
-
-/* Texto de descripción mini */
-
 .reporte-texto-mini {
     font-size: 0.8rem;
     color: #4b5563;
@@ -2686,9 +2514,6 @@ body.highlight-links a {
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-
-
-/* Enlace ver más */
 
 .reporte-ver-mas {
     font-size: 0.75rem;
@@ -2704,9 +2529,6 @@ body.highlight-links a {
     color: #005215;
     text-decoration: underline;
 }
-
-
-/* Estado vacío del panel */
 
 .reportes-vacio {
     display: flex;
@@ -2728,9 +2550,6 @@ body.highlight-links a {
     font-size: 0.88rem;
     margin: 0;
 }
-
-
-/* ── Footer del panel ─────────────────────────────────────── */
 
 .panel-reportes-footer {
     display: flex;
@@ -2756,7 +2575,6 @@ body.highlight-links a {
     color: #318443;
     border: 1px solid #96DCAA;
     transition: background 0.2s, color 0.2s;
-    font-family: 'Poppins', sans-serif;
 }
 
 .btn-ver-todos-reportes:hover {
@@ -2780,7 +2598,6 @@ body.highlight-links a {
     color: #fff;
     border: 1px solid #318443;
     transition: background 0.2s;
-    font-family: 'Poppins', sans-serif;
 }
 
 .btn-nuevo-reporte-panel:hover {
@@ -2789,9 +2606,107 @@ body.highlight-links a {
 }
 
 
-/* ── Responsive ───────────────────────────────────────────── */
+/* ── ANIMACIONES ─────────────────────────────────────────── */
 
-@media (max-width: 480px) {
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ── 14. RESPONSIVE ──────────────────────────────────────── */
+
+
+/* Tablets grandes: colapsar charts a 1 columna */
+
+@media (max-width: 1100px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    .bottom-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Tablets */
+
+@media (max-width: 992px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .mini-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+    /* El sidebar se desliza en vez de desaparecer */
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 1045;
+        /* por encima de todo en móvil */
+    }
+    .sidebar.sidebar-open {
+        transform: translateX(0);
+    }
+    #sidebar-toggle {
+        display: flex;
+    }
+    #sidebar-overlay.active {
+        display: block;
+    }
+    .main-content {
+        margin-left: 0;
+        padding: 1.25rem;
+        /* Pequeño espacio arriba para el botón hamburguesa */
+        padding-top: 4rem;
+    }
+    /* Topbar se adapta */
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .topbar-right {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
+
+
+/* Móviles */
+
+@media (max-width: 576px) {
+    .main-content {
+        padding: 1rem;
+        padding-top: 4rem;
+    }
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+    .mini-stats {
+        grid-template-columns: 1fr;
+    }
+    .topbar-title h2 {
+        font-size: 1.4rem;
+    }
+    .date-badge {
+        display: none;
+    }
+    /* muy estrecho, se oculta */
+    #a11y-panel {
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-height: calc(100vh - 100px);
+    }
+    #a11y-btn {
+        bottom: 20px;
+        right: 20px;
+    }
     .panel-reportes {
         width: 100%;
         border-radius: 0;

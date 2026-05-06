@@ -7,65 +7,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Admin Panel | Monagua{% endblock %}</title>
 
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
-
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+    <!-- CSS principal -->
     <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
-
-    <style>
-        /* Fix: eliminar espacio superior excesivo en el contenido principal */
-        .main-content {
-            padding-top: 0 !important;
-            margin-top: 0 !important;
-        }
-    </style>
 
     {% block extra_head %}{% endblock %}
 </head>
-<body>
 
-<aside class="sidebar">
-    <a href="/" class="sidebar-brand text-decoration-none">
-        <img src="{% static 'img/logo_monagua.png' %}" alt="Logo">
+{# Clase pagina-admin: evita el padding-top que usa el navbar público #}
+<body class="pagina-admin">
+
+<!-- ── Botón hamburguesa (solo visible en móvil/tablet) ── -->
+<button id="sidebar-toggle" aria-label="Abrir menú">
+    <i class="bi bi-list"></i>
+</button>
+
+<!-- ── Overlay oscuro (cierra sidebar al tocar afuera) ── -->
+<div id="sidebar-overlay"></div>
+
+<!-- ── SIDEBAR ─────────────────────────────────────────── -->
+<aside class="sidebar" id="mainSidebar">
+    <a href="/" class="sidebar-brand">
+        <img src="{% static 'img/logo_monagua.png' %}" alt="Logo Monagua">
         <div>
             <div class="brand-name">MONAGUA</div>
             <div class="brand-sub">Admin Panel</div>
         </div>
     </a>
 
-   <div class="sidebar-section">Principal</div>
-    <a href="{% url 'administrador' %}" class="sidebar-link {% if request.resolver_match.url_name == 'administrador' %}active{% endif %}">
+    <div class="sidebar-section">Principal</div>
+    <a href="{% url 'administrador' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'administrador' %}active{% endif %}">
         <i class="bi bi-grid-1x2-fill"></i> Dashboard
     </a>
     <a href="#" class="sidebar-link">
         <i class="bi bi-graph-up-arrow"></i> Estadísticas
     </a>
-    <a href="{% url 'comentarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'comentarios' %}active{% endif %}">
+    <a href="{% url 'comentarios' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'comentarios' %}active{% endif %}">
         <i class="bi bi-chat-left-dots-fill"></i> Comentarios
     </a>
 
     <div class="sidebar-section">Gestión</div>
-    <a href="{% url 'admin_paquetes' %}" class="sidebar-link">
+    <a href="{% url 'admin_paquetes' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_paquetes' %}active{% endif %}">
         <i class="bi bi-box-seam-fill"></i> Paquetes Turísticos
     </a>
-    <a href="{% url 'admin_blog' %}" class="sidebar-link">
+    <a href="{% url 'admin_blog' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_blog' %}active{% endif %}">
         <i class="bi bi-journal-text"></i> Blog
     </a>
-    <a href="{% url 'admin_categorias' %}" class="sidebar-link">
+    <a href="{% url 'admin_categorias' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_categorias' %}active{% endif %}">
         <i class="bi bi-tags-fill"></i> Categorías
     </a>
-    <a href="{% url 'admin_actividades' %}" class="sidebar-link">
+    <a href="{% url 'admin_actividades' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_actividades' %}active{% endif %}">
         <i class="bi bi-bicycle"></i> Actividades
     </a>
-    
-    <a href="{% url 'gestion_usuarios' %}" class="sidebar-link {% if request.resolver_match.url_name == 'gestion_usuarios' %}active{% endif %}">
+    <a href="{% url 'gestion_usuarios' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'gestion_usuarios' %}active{% endif %}">
         <i class="bi bi-people-fill"></i> Guías y Usuarios
     </a>
-    <a href="{% url 'admin_reservas' %}" class="sidebar-link">
+    <a href="{% url 'admin_reservas' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_reservas' %}active{% endif %}">
         <i class="bi bi-calendar-check-fill"></i> Reservas
     </a>
-    <a href="{% url 'gestion_promociones' %}" class="sidebar-link {% if 'promociones' in request.path %}active{% endif %}">
+    <a href="{% url 'gestion_promociones' %}"
+       class="sidebar-link {% if 'promociones' in request.path %}active{% endif %}">
         <i class="bi bi-megaphone-fill"></i> Promociones
     </a>
 
@@ -77,36 +86,70 @@
         <i class="bi bi-gear-fill"></i> Configuración
     </a>
 
+    <!-- Footer del sidebar -->
     <div class="sidebar-footer">
         <div class="admin-avatar">
             <img src="{% if user.imagen_perfil %}{{ user.imagen_perfil.url }}{% else %}{% static 'img/avatar_pred.png' %}{% endif %}"
                  alt="{{ user.first_name|default:'Admin' }}"
                  class="rounded-circle" width="34" height="34"
-                 style="object-fit: cover; border: 2px solid var(--verde-accent);">
+                 style="object-fit:cover; border:2px solid var(--verde-accent);">
             <div>
                 <div class="admin-name">{{ user.first_name|default:'Administrador' }}</div>
                 <div class="admin-role">Super Admin</div>
             </div>
         </div>
-        <form action="{% url 'logout_usuario' %}" method="post" class="d-inline">
+        <form action="{% url 'logout_usuario' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="btn-logout border-0 bg-transparent text-white p-0">
+            <button type="submit" class="btn-logout w-100">
                 <i class="bi bi-power"></i> Cerrar Sesión
             </button>
         </form>
     </div>
 </aside>
 
+<!-- ── Panel de Accesibilidad ─── -->
 {% include 'partials/accesibilidad.html' %}
 
+<!-- ── CONTENIDO PRINCIPAL ─────────────────────────────── -->
 <main class="main-content">
     {% block content %}{% endblock %}
 </main>
 
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JS global -->
 <script src="{% static 'js/java.js' %}"></script>
 
-{% block extra_js %}{% endblock %}
+<!-- ── Sidebar toggle (móvil) ── -->
+<script>
+(function () {
+    const toggle   = document.getElementById('sidebar-toggle');
+    const sidebar  = document.getElementById('mainSidebar');
+    const overlay  = document.getElementById('sidebar-overlay');
 
+    function openSidebar() {
+        sidebar.classList.add('sidebar-open');
+        overlay.classList.add('active');
+        toggle.innerHTML = '<i class="bi bi-x-lg"></i>';
+    }
+    function closeSidebar() {
+        sidebar.classList.remove('sidebar-open');
+        overlay.classList.remove('active');
+        toggle.innerHTML = '<i class="bi bi-list"></i>';
+    }
+
+    toggle.addEventListener('click', function () {
+        sidebar.classList.contains('sidebar-open') ? closeSidebar() : openSidebar();
+    });
+    overlay.addEventListener('click', closeSidebar);
+
+    // Cerrar al cambiar a pantalla grande
+    window.addEventListener('resize', function () {
+        if (window.innerWidth > 992) closeSidebar();
+    });
+})();
+</script>
+
+{% block extra_js %}{% endblock %}
 </body>
 </html>
