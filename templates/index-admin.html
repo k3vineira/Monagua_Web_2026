@@ -38,7 +38,7 @@
             <span id="currentDate">—</span>
         </div>
 
-        {# Botón exportar PDF — completamente funcional #}
+        {# Botón exportar PDF #}
         <button class="btn-export" id="btnExportPdf">
             <i class="bi bi-file-earmark-pdf-fill"></i>
             <span id="exportLabel">Exportar PDF</span>
@@ -47,6 +47,7 @@
 </div>
 
 
+{# ── KPI CARDS ─────────────────────────────────────────────── #}
 <div class="kpi-grid" id="kpiSection">
 
     <div class="kpi-card green">
@@ -94,6 +95,7 @@
 </div>{# /kpi-grid #}
 
 
+{# ── CHARTS ────────────────────────────────────────────────── #}
 <div class="charts-grid" id="chartsSection">
 
     {# Ingresos mensuales #}
@@ -121,7 +123,7 @@
         <div class="chart-container estado">
             <canvas id="chartEstado"></canvas>
         </div>
-        {# Leyenda manual (sin usar Chart.js legend para evitar overflow) #}
+        {# Leyenda manual #}
         <div class="d-flex justify-content-center gap-3 mt-3" style="font-size:0.72rem;color:#666;">
             <span class="d-flex align-items-center gap-1">
                 <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#2c6e3c;"></span>
@@ -141,9 +143,10 @@
 </div>{# /charts-grid #}
 
 
+{# ── BOTTOM GRID ───────────────────────────────────────────── #}
 <div class="bottom-grid" id="bottomSection">
 
-    {# Actividad reciente #}
+    {# Actividad reciente — vacía si no hay datos reales #}
     <div class="chart-card">
         <div class="chart-header">
             <div>
@@ -153,60 +156,49 @@
             <i class="bi bi-clock-history" style="color:#bbb;font-size:1.1rem;"></i>
         </div>
 
-        <div class="activity-item">
-            <div class="activity-dot green"></div>
-            <div>
-                <div class="activity-text">Nueva reserva confirmada — <strong>Tour Laguna Verde</strong></div>
-                <div class="activity-time">Hace 5 minutos</div>
+        {% if actividad_reciente %}
+            {% for item in actividad_reciente %}
+            <div class="activity-item">
+                <div class="activity-dot {{ item.color|default:'green' }}"></div>
+                <div>
+                    <div class="activity-text">{{ item.texto }}</div>
+                    <div class="activity-time">{{ item.tiempo }}</div>
+                </div>
             </div>
+            {% endfor %}
+        {% else %}
+        <div class="empty-state py-4">
+            <i class="bi bi-clock-history"></i>
+            <p>Sin actividad reciente registrada.</p>
         </div>
-        <div class="activity-item">
-            <div class="activity-dot blue"></div>
-            <div>
-                <div class="activity-text">Nuevo usuario registrado — <strong>carlos@email.com</strong></div>
-                <div class="activity-time">Hace 18 minutos</div>
-            </div>
-        </div>
-        <div class="activity-item">
-            <div class="activity-dot amber"></div>
-            <div>
-                <div class="activity-text">Pago pendiente — <strong>Reserva #1042</strong></div>
-                <div class="activity-time">Hace 34 minutos</div>
-            </div>
-        </div>
-        <div class="activity-item">
-            <div class="activity-dot green"></div>
-            <div>
-                <div class="activity-text">Tour actualizado — <strong>Sendero del Cóndor</strong></div>
-                <div class="activity-time">Hace 1 hora</div>
-            </div>
-        </div>
-        <div class="activity-item">
-            <div class="activity-dot blue"></div>
-            <div>
-                <div class="activity-text">Nuevo usuario registrado — <strong>ana@email.com</strong></div>
-                <div class="activity-time">Hace 2 horas</div>
-            </div>
-        </div>
+        {% endif %}
     </div>{# /actividad #}
 
     {# Mini-stats + gráfica semanal #}
     <div>
         <div class="mini-stats">
             <div class="mini-stat">
-                <div class="mini-stat-val" style="color:#2c6e3c;">94%</div>
+                <div class="mini-stat-val" style="color:#2c6e3c;">
+                    {{ tasa_confirmacion|default:"0" }}%
+                </div>
                 <div class="mini-stat-lbl">Tasa de confirmación</div>
             </div>
             <div class="mini-stat">
-                <div class="mini-stat-val" style="color:#2563eb;">4.8★</div>
+                <div class="mini-stat-val" style="color:#2563eb;">
+                    {{ valoracion_promedio|default:"0.0" }}★
+                </div>
                 <div class="mini-stat-lbl">Valoración promedio</div>
             </div>
             <div class="mini-stat">
-                <div class="mini-stat-val" style="color:#d97706;">$182</div>
+                <div class="mini-stat-val" style="color:#d97706;">
+                    ${{ ingreso_por_reserva|floatformat:0|default:"0" }}
+                </div>
                 <div class="mini-stat-lbl">Ingreso por reserva</div>
             </div>
             <div class="mini-stat">
-                <div class="mini-stat-val" style="color:#e11d48;">3</div>
+                <div class="mini-stat-val" style="color:#e11d48;">
+                    {{ cancelaciones_hoy|default:"0" }}
+                </div>
                 <div class="mini-stat-lbl">Cancelaciones hoy</div>
             </div>
         </div>
@@ -227,6 +219,7 @@
 </div>{# /bottom-grid #}
 
 
+{# ── TABLA TOURS POPULARES ─────────────────────────────────── #}
 <div class="table-card" id="toursSection">
     <div class="table-card-header">
         <h5><i class="bi bi-trophy-fill text-warning me-2"></i>Tours Más Populares</h5>
@@ -268,11 +261,14 @@
                         </span>
                     </td>
                     <td style="min-width:130px;">
-                        {# Bootstrap progress bar #}
+                        {#
+                            La barra de popularidad usa el porcentaje relativo al tour con más reservas.
+                            Si max_reservas viene del contexto lo usamos; si no, fallback a numero_reservas directo.
+                        #}
                         <div class="d-flex align-items-center gap-2">
                             <div class="progress flex-grow-1" style="height:5px;border-radius:99px;">
                                 <div class="progress-bar bg-success"
-                                     style="width:{{ tour.numero_reservas }}%;border-radius:99px;">
+                                     style="width:{% if max_reservas and max_reservas > 0 %}{{ tour.numero_reservas|divisibleby:max_reservas }}{% else %}{{ tour.numero_reservas }}{% endif %}%;border-radius:99px;">
                                 </div>
                             </div>
                             <small class="text-muted" style="font-size:0.68rem;white-space:nowrap;">
@@ -292,7 +288,7 @@
                     <td colspan="6" class="text-center py-5">
                         <i class="bi bi-inbox d-block mb-2" style="font-size:2rem;color:#ccc;"></i>
                         <span class="text-muted" style="font-size:0.82rem;">
-                            Aún no hay datos de reservas registradas.
+                            Aún no hay datos de tours registrados.
                         </span>
                     </td>
                 </tr>
@@ -331,6 +327,16 @@ const C = {
 
 
 /* ──────────────────────────────────────────────────────
+   DATOS DESDE DJANGO (con fallback a ceros)
+────────────────────────────────────────────────────── */
+const ingresosData  = {{ ingresos_mensuales|default:"[0,0,0,0,0,0,0,0,0,0,0,0]"|safe }};
+const reservasConf  = {{ reservas_confirmadas|default:0 }};
+const reservasPend  = {{ reservas_pendientes|default:0 }};
+const reservasCan   = {{ reservas_canceladas|default:0 }};
+const dataSemana    = {{ reservas_semana|default:"[0,0,0,0,0,0,0]"|safe }};
+
+
+/* ──────────────────────────────────────────────────────
    GRÁFICA 1 — Ingresos mensuales (línea)
 ────────────────────────────────────────────────────── */
 const ctxIngresos = document.getElementById('chartIngresos');
@@ -340,7 +346,7 @@ const chartIngresos = new Chart(ctxIngresos, {
         labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
         datasets: [{
             label: 'Ingresos ($)',
-            data: [1200, 1900, 1500, 2400, 2100, 2800, 3200, 2900, 3500, 3100, 3800, 4200],
+            data: ingresosData,
             borderColor: C.green,
             backgroundColor: C.greenLight,
             borderWidth: 2.5,
@@ -378,21 +384,24 @@ const chartIngresos = new Chart(ctxIngresos, {
 
 /* ──────────────────────────────────────────────────────
    GRÁFICA 2 — Estado de reservas (dona)
+   Si no hay datos se muestra un estado vacío neutro.
 ────────────────────────────────────────────────────── */
 const ctxEstado = document.getElementById('chartEstado');
+const totalReservasChart = reservasConf + reservasPend + reservasCan;
+
 const chartEstado = new Chart(ctxEstado, {
     type: 'doughnut',
     data: {
         labels: ['Confirmadas', 'Pendientes', 'Canceladas'],
         datasets: [{
-            data: [
-                {{ reservas_confirmadas|default:68 }},
-                {{ reservas_pendientes|default:24 }},
-                {{ reservas_canceladas|default:8  }},
-            ],
-            backgroundColor: [C.green, C.amber, C.rose],
+            data: totalReservasChart > 0
+                ? [reservasConf, reservasPend, reservasCan]
+                : [1],                                   // slice neutro cuando todo es 0
+            backgroundColor: totalReservasChart > 0
+                ? [C.green, C.amber, C.rose]
+                : ['#e5e7eb'],
             borderWidth: 0,
-            hoverOffset: 8,
+            hoverOffset: totalReservasChart > 0 ? 8 : 0,
         }]
     },
     options: {
@@ -402,6 +411,7 @@ const chartEstado = new Chart(ctxEstado, {
         plugins: {
             legend: { display: false },
             tooltip: {
+                enabled: totalReservasChart > 0,
                 callbacks: {
                     label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '%',
                 }
@@ -414,18 +424,16 @@ const chartEstado = new Chart(ctxEstado, {
 /* ──────────────────────────────────────────────────────
    GRÁFICA 3 — Reservas por día (barras)
 ────────────────────────────────────────────────────── */
-const ctxSemana = document.getElementById('chartSemana');
-const dataSemana = [4, 7, 5, 9, 6, 12, 8];
-const maxSemana  = Math.max(...dataSemana);
+const maxSemana = Math.max(...dataSemana) || 1; // evita división por 0
 
-const chartSemana = new Chart(ctxSemana, {
+const chartSemana = new Chart(document.getElementById('chartSemana'), {
     type: 'bar',
     data: {
         labels: ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],
         datasets: [{
             label: 'Reservas',
             data: dataSemana,
-            backgroundColor: dataSemana.map(v => v === maxSemana ? C.green : C.greenLight),
+            backgroundColor: dataSemana.map(v => v === maxSemana && v > 0 ? C.green : C.greenLight),
             borderRadius: 6,
             borderSkipped: false,
         }]
@@ -449,48 +457,41 @@ const chartSemana = new Chart(ctxSemana, {
 
 /* ──────────────────────────────────────────────────────
    EXPORTAR A PDF
-   Usa html2canvas para capturar el main-content
-   y jsPDF para generar el PDF en A4 horizontal.
+   Usa html2canvas + jsPDF (A4 horizontal, paginado).
 ────────────────────────────────────────────────────── */
 document.getElementById('btnExportPdf').addEventListener('click', async function () {
     const btn   = this;
     const label = document.getElementById('exportLabel');
 
-    // Estado de carga
     btn.classList.add('loading');
     btn.querySelector('i').className = 'bi bi-hourglass-split';
     label.textContent = 'Generando…';
 
     try {
-        // Capturar el main-content completo
         const target = document.querySelector('.main-content');
 
         const canvas = await html2canvas(target, {
-            scale       : 2,          // alta resolución
-            useCORS     : true,
+            scale          : 2,
+            useCORS        : true,
             backgroundColor: '#f0f4f1',
-            logging     : false,
-            scrollY     : -window.scrollY,  // captura desde el top
-            windowWidth : target.scrollWidth,
-            windowHeight: target.scrollHeight,
+            logging        : false,
+            scrollY        : -window.scrollY,
+            windowWidth    : target.scrollWidth,
+            windowHeight   : target.scrollHeight,
         });
 
-        const imgData  = canvas.toDataURL('image/jpeg', 0.92);
-        const { jsPDF } = window.jspdf;
+        const imgData       = canvas.toDataURL('image/jpeg', 0.92);
+        const { jsPDF }     = window.jspdf;
+        const pdf           = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+        const pdfW          = pdf.internal.pageSize.getWidth();
+        const pdfH          = pdf.internal.pageSize.getHeight();
+        const ratio         = pdfW / canvas.width;
+        const totalH        = canvas.height * ratio;
+        let   posY          = 0;
+        const totalPages    = Math.ceil(totalH / pdfH);
+        let   pageNum       = 1;
 
-        // Crear PDF A4 horizontal
-        const pdf      = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-        const pdfW     = pdf.internal.pageSize.getWidth();
-        const pdfH     = pdf.internal.pageSize.getHeight();
-
-        const imgW     = canvas.width;
-        const imgH     = canvas.height;
-        const ratio    = pdfW / imgW;
-        const totalH   = imgH * ratio;   // alto total en mm
-        let   posY     = 0;
-
-        // Encabezado en cada página
-        const addHeader = (pageNum, totalPages) => {
+        const addHeader = (n, total) => {
             pdf.setFillColor(26, 37, 30);
             pdf.rect(0, 0, pdfW, 10, 'F');
             pdf.setTextColor(255, 255, 255);
@@ -498,51 +499,38 @@ document.getElementById('btnExportPdf').addEventListener('click', async function
             pdf.setFont('helvetica', 'bold');
             pdf.text('MONAGUA — Tablero de Rendimiento', 8, 6.5);
             const fecha = new Date().toLocaleDateString('es-CO', { year:'numeric', month:'long', day:'numeric' });
-            pdf.text('Generado: ' + fecha + '   |   Página ' + pageNum + ' / ' + totalPages, pdfW - 8, 6.5, { align: 'right' });
+            pdf.text('Generado: ' + fecha + '   |   Página ' + n + ' / ' + total, pdfW - 8, 6.5, { align: 'right' });
         };
-
-        // Cuántas páginas necesitamos
-        const totalPages = Math.ceil(totalH / pdfH);
-        let   pageNum    = 1;
 
         while (posY < totalH) {
             if (pageNum > 1) pdf.addPage();
             addHeader(pageNum, totalPages);
 
-            // Altura de este "slice" de imagen
-            const sliceH = Math.min(pdfH - 10, totalH - posY);
-
-            // Recortar canvas para este slice
-            const sliceCanvas  = document.createElement('canvas');
-            const scaleRatio   = canvas.width / imgW; // siempre 1, pero explícito
+            const sliceH      = Math.min(pdfH - 10, totalH - posY);
+            const sliceCanvas = document.createElement('canvas');
             sliceCanvas.width  = canvas.width;
-            sliceCanvas.height = Math.round((sliceH / ratio));
+            sliceCanvas.height = Math.round(sliceH / ratio);
 
             const sliceCtx = sliceCanvas.getContext('2d');
             sliceCtx.drawImage(
                 canvas,
-                0, Math.round(posY / ratio),    // sx, sy (en px)
-                canvas.width, sliceCanvas.height,// sw, sh
+                0, Math.round(posY / ratio),
+                canvas.width, sliceCanvas.height,
                 0, 0,
                 sliceCanvas.width, sliceCanvas.height
             );
 
-            const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
-            pdf.addImage(sliceData, 'JPEG', 0, 10, pdfW, sliceH);
-
+            pdf.addImage(sliceCanvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 10, pdfW, sliceH);
             posY    += sliceH;
             pageNum += 1;
         }
 
-        // Nombre de archivo con fecha
-        const fecha = new Date().toISOString().slice(0, 10);
-        pdf.save('monagua-dashboard-' + fecha + '.pdf');
+        pdf.save('monagua-dashboard-' + new Date().toISOString().slice(0, 10) + '.pdf');
 
     } catch (err) {
         console.error('Error al exportar:', err);
         alert('Ocurrió un error al generar el PDF. Por favor intenta de nuevo.');
     } finally {
-        // Restaurar botón
         btn.classList.remove('loading');
         btn.querySelector('i').className = 'bi bi-file-earmark-pdf-fill';
         label.textContent = 'Exportar PDF';

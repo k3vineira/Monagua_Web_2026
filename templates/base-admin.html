@@ -54,23 +54,28 @@
     </a>
 
     <div class="sidebar-section">Gestión</div>
-    <a href="{% url 'admin_paquetes' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_paquetes' %}active{% endif %}">
+    <a href="{% url 'admin_paquetes' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'admin_paquetes' %}active{% endif %}">
         <i class="bi bi-box-seam-fill"></i> Paquetes Turísticos
     </a>
-    <a href="{% url 'admin_blog' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_blog' %}active{% endif %}">
+    <a href="{% url 'admin_blog' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'admin_blog' %}active{% endif %}">
         <i class="bi bi-journal-text"></i> Blog
     </a>
-    <a href="{% url 'admin_categorias' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_categorias' %}active{% endif %}">
+    <a href="{% url 'admin_categorias' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'admin_categorias' %}active{% endif %}">
         <i class="bi bi-tags-fill"></i> Categorías
     </a>
-    <a href="{% url 'admin_actividades' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_actividades' %}active{% endif %}">
+    <a href="{% url 'admin_actividades' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'admin_actividades' %}active{% endif %}">
         <i class="bi bi-bicycle"></i> Actividades
     </a>
     <a href="{% url 'gestion_usuarios' %}"
        class="sidebar-link {% if request.resolver_match.url_name == 'gestion_usuarios' %}active{% endif %}">
         <i class="bi bi-people-fill"></i> Guías y Usuarios
     </a>
-    <a href="{% url 'admin_reservas' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_reservas' %}active{% endif %}">
+    <a href="{% url 'admin_reservas' %}"
+       class="sidebar-link {% if request.resolver_match.url_name == 'admin_reservas' %}active{% endif %}">
         <i class="bi bi-calendar-check-fill"></i> Reservas
     </a>
     <a href="{% url 'gestion_promociones' %}"
@@ -123,29 +128,40 @@
 <!-- ── Sidebar toggle (móvil) ── -->
 <script>
 (function () {
-    const toggle   = document.getElementById('sidebar-toggle');
-    const sidebar  = document.getElementById('mainSidebar');
-    const overlay  = document.getElementById('sidebar-overlay');
+    const toggle  = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('mainSidebar');
+    const overlay = document.getElementById('sidebar-overlay');
 
     function openSidebar() {
         sidebar.classList.add('sidebar-open');
         overlay.classList.add('active');
         toggle.innerHTML = '<i class="bi bi-x-lg"></i>';
+        toggle.setAttribute('aria-label', 'Cerrar menú');
     }
+
     function closeSidebar() {
         sidebar.classList.remove('sidebar-open');
         overlay.classList.remove('active');
         toggle.innerHTML = '<i class="bi bi-list"></i>';
+        toggle.setAttribute('aria-label', 'Abrir menú');
     }
 
     toggle.addEventListener('click', function () {
         sidebar.classList.contains('sidebar-open') ? closeSidebar() : openSidebar();
     });
+
     overlay.addEventListener('click', closeSidebar);
 
-    // Cerrar al cambiar a pantalla grande
+    // Cerrar al pasar a pantalla grande
     window.addEventListener('resize', function () {
         if (window.innerWidth > 992) closeSidebar();
+    });
+
+    // Cerrar al navegar (clic en cualquier link del sidebar)
+    sidebar.querySelectorAll('.sidebar-link').forEach(function (link) {
+        link.addEventListener('click', function () {
+            if (window.innerWidth <= 992) closeSidebar();
+        });
     });
 })();
 </script>
